@@ -89,6 +89,82 @@ class LoginForm extends Model
         return Yii::$app->user->login($this->getIdentity());
     }
 
+    public function forbidden()
+    {
+
+        $checkLoginIp = LoginLogs::find()
+            ->where(['login_ip' => Yii::$app->request->getUserIP()])
+            ->orderBy(['id' => SORT_DESC])
+            ->one();
+        if($checkLoginIp){
+            $expire = 3600;
+            $unlockTime = strtotime($checkLoginIp['login_time'])+$expire;
+            /*var_dump($unlockTime.' : ');
+            var_dump($_SERVER['REQUEST_TIME']);exit;*/
+            if($checkLoginIp['status'] == 4 && $_SERVER['REQUEST_TIME'] < $unlockTime){//锁ip
+                return ['lock_type' => 'IP','unlock_time' => date('Y-m-d H:i:s',$unlockTime)];
+            }
+        }
+
+        $checkLoginAccount = false;
+        if($this->getIdentity()){
+            $checkLoginAccount = LoginLogs::find()
+                ->where(['uid' => $this->getIdentity()->id])
+                ->orderBy(['id' => SORT_DESC])
+                ->limit(6)
+                ->all();
+        }
+
+
+        if($checkLoginAccount){
+            $count = 0;
+            $countCode = 0;
+            foreach ($checkLoginAccount as $k=>$v){
+                if($v['status'] == 1){
+                    return false;
+                }
+
+                //密码错误
+                if($v['status'] == 2){
+                    ++$count;
+                    if($count==4){
+                        $unlockAdTime = strtotime($v['login_time'])+1800;
+                        if($_SERVER['REQUEST_TIME'] < $unlockAdTime){
+                            return ['lock_type' => '账号','unlock_time' => date('Y-m-d H:i:s',$unlockAdTime)];
+                        }
+                    }
+                    if($count==5){
+                        $unlockAdTime = strtotime($v['login_time'])+3600;
+                        if($_SERVER['REQUEST_TIME'] < $unlockAdTime){
+                            return ['lock_type' => 'ad','unlock_time' => date('Y-m-d H:i:s',$unlockAdTime)];
+                        }
+                    }
+                    if($count==6){
+                        $unlockAdTime = strtotime('+1 year');
+                        if($_SERVER['REQUEST_TIME'] < $unlockAdTime){
+                            return ['lock_type' => '账号','unlock_time' => date('Y-m-d H:i:s',$unlockAdTime)];
+                        }
+                    }
+
+                }
+
+                //验证码错误
+                if($v['status'] == 3){
+                    ++ $countCode;
+                    if($countCode==3){
+                        $unlockAdTime = strtotime('+1 year');
+                        if($_SERVER['REQUEST_TIME'] < $unlockAdTime){
+                            return ['lock_type' => '账号','unlock_time' => date('Y-m-d H:i:s',$unlockAdTime)];
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+        return false;
+    }
 
     public function preLogin()
     {
@@ -96,12 +172,6 @@ class LoginForm extends Model
             return true;
         }
         return false;
-    }
-
-    public function beforeValidate()
-    {
-
-        return parent::beforeValidate(); // TODO:
     }
 
     //写入登录日志

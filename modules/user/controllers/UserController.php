@@ -2,6 +2,7 @@
 
 namespace app\modules\user\controllers;
 
+use app\modules\user\models\LoginLogs;
 use Yii;
 use app\modules\user\models\User;
 use app\modules\user\models\UserSearch;
@@ -115,11 +116,13 @@ class UserController extends GController
             $posts = Yii::$app->request->post();
 
             if($posts['unlock']){
-                //todo 解锁
+                $loginLog = LoginLogs::find()->where(['uid' => $model->id])->orderBy(['id'=>SORT_DESC])->one();
+                $loginLog->status = 1;
+                $loginLog->save();
             }
 
             if($model->email){
-                if(User::findOne(['email'=>$model->email . $posts['email-postfix']])){
+                if(User::findOne(['id'=>'!='.$model->id,'email'=>$model->email . $posts['email-postfix']])){
                     Yii::$app->getSession()->setFlash('error', '该邮箱已被占用');
                     return $this->redirect(['index', 'id' => $model->id]);
                 }else{

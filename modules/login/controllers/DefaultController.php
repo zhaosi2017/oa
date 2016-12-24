@@ -50,29 +50,36 @@ class DefaultController extends GController
         }
 
         $model = new LoginForm();
-//        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-        if ($model->load(Yii::$app->request->post()) && $model->preLogin()) {
 
-            $email = $model->getIdentity()->email;
-            //发送验证码到邮箱 todo swoole 异步发提高性能
+        if ($model->load(Yii::$app->request->post())) {
+            $forbidden = $model->forbidden();
+            if($forbidden){
+                return $this->render('locked',$forbidden);
+            }else{
+                if($model->preLogin()){
+                    $email = $model->getIdentity()->email;
+                    //发送验证码到邮箱 todo 使用swoole 异步发提高性能
 
-            $captcha = $this->createAction('captcha');
-            $verifyCode = $captcha->getVerifyCode(true);
-            $message = Yii::$app->mailer->compose();
-            $message->setTo($email)->setSubject('验证码')->setTextBody('验证码: ' . $verifyCode);
+                    $captcha = $this->createAction('captcha');
+                    $verifyCode = $captcha->getVerifyCode(true);
+                    $message = Yii::$app->mailer->compose();
+                    $message->setTo($email)->setSubject('验证码')->setTextBody('验证码: ' . $verifyCode);
 
-            if($message->send()){
-                return $this->render('code',['model' => $model,'email'=>$email]);
+                    if($message->send()){
+                        return $this->render('code',['model' => $model,'email'=>$email]);
+                    }
+                    return $this->render('code',['model' => $model,'email'=>$email,'vcode'=>$verifyCode]);
+                }
+
             }
-//            $this->createAction('captcha')->getVerifyCode();
-            return $this->render('code',['model' => $model,'email'=>$email,'vcode'=>$verifyCode]);
+
         }
         return $this->render('entry', [
             'model' => $model,
         ]);
     }
 
-    public function actionEmail()
+    /*public function actionEmail()
     {
         if(Yii::$app->request->isAjax && Yii::$app->request->post()){
             $posts = Yii::$app->request->post();
@@ -84,7 +91,7 @@ class DefaultController extends GController
                 ->send();
         }
         return;
-    }
+    }*/
 
     public function actionCode()
     {
@@ -114,9 +121,10 @@ class DefaultController extends GController
         $this->redirect(Url::to(['/login/default/entry']));
     }
 
-    public function actionLocked()
+    /*public function actionLocked()
     {
+
         return $this->render('locked');
-    }
+    }*/
 
 }

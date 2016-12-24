@@ -10,8 +10,8 @@ $this->title = '账号锁定';
 
         </div>
         <h3>第一平台</h3>
-        <code>账号锁定</code>
-        <p>解锁时间：2016年12月12日 12:12:12</p>
+        <code><?=  $lock_type ?>锁定</code>
+        <p>解锁时间：<?= $unlock_time ?></p>
 
     </div>
 </div>
