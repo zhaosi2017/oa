@@ -8,6 +8,7 @@ use app\models\CActiveRecord;
  * This is the model class for table "department".
  *
  * @property integer $id
+ * @property integer $company_id
  * @property string $name
  * @property string $company_name
  * @property integer $superior_department_id
@@ -34,7 +35,7 @@ class Department extends CActiveRecord
     {
         return [
             [['name', 'company_name'], 'required'],
-            [['superior_department_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
+            [['superior_department_id', 'company_id','status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
             [['name', 'company_name'], 'string', 'max' => 20],
         ];
@@ -65,5 +66,41 @@ class Department extends CActiveRecord
     public static function find()
     {
         return new DepartmentQuery(get_called_class());
+    }
+
+    /**
+     * 获取创建人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreator()
+    {
+        return $this->hasOne(User::className(), ['id' => 'create_author_uid'])->alias('creator');
+    }
+
+    /**
+     * 获取最后修改人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdater()
+    {
+        return $this->hasOne(User::className(), ['id' => 'update_author_uid'])->alias('updater');
+    }
+
+    /**
+     * 获取上级
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuperior()
+    {
+        return $this->hasOne($this::className(), ['id' => 'superior_department_id'])->alias('superior');
+    }
+
+    /**
+     * 获取公司
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCompany()
+    {
+        return $this->hasOne(Company::className(), ['id' => 'company_id'])->alias('company');
     }
 }

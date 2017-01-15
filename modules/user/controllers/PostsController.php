@@ -48,7 +48,7 @@ class PostsController extends GController
     public function actionTrash()
     {
         $searchModel = new PostsSearch();
-        $dataProvider = $searchModel->searchTrash(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -162,6 +162,24 @@ class PostsController extends GController
     {
         $this->findModel($id)->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $id
+     * @param $status
+     * @return \yii\web\Response
+     */
+    public function actionSwitch($id, $status)
+    {
+        $model = $this->findModel($id);
+
+        $model->status = $status;
+        if($model->save()){
+            Yii::$app->getSession()->setFlash('success', '操作成功');
+        }else{
+            Yii::$app->getSession()->setFlash('error', '操作失败');
+        }
         return $this->redirect(['index']);
     }
 

@@ -6,7 +6,7 @@ GlobalAsset::register($this);
 
 $identity = Yii::$app->user->identity;
 $identity = (Object) $identity;
-$username = isset($identity->account) ? $identity->account : '';
+$username = isset($identity->account) ? $identity->account : 'Guest';
 ?>
 <?php $this->beginContent('@app/views/layouts/global.php'); ?>
 <?php $srcDataPrefix = 'data:image/jpg;base64,'; ?>
@@ -40,36 +40,7 @@ $username = isset($identity->account) ? $identity->account : '';
                     <li>
                         <a class="J_menuItem" href="<?= Url::to('home/main/index') ?>"><i class="fa fa-home"></i> <span class="nav-label">主页</span></a>
                     </li>
-                    <!--<li>
-                        <a href="#">
-                            <i class="fa fa-user"></i>
-                            <span class="nav-label">统计图表</span>
-                            <span class="fa arrow"></span>
-                        </a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a class="J_menuItem" href="graph_echarts.html">百度ECharts</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="graph_flot.html">Flot</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="graph_morris.html">Morris.js</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="graph_rickshaw.html">Rickshaw</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="graph_peity.html">Peity</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="graph_sparkline.html">Sparkline</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="graph_metrics.html">图表组合</a>
-                            </li>
-                        </ul>
-                    </li>-->
+
 
                     <li>
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">用户</span><span class="fa arrow"></span></a>
@@ -89,7 +60,7 @@ $username = isset($identity->account) ? $identity->account : '';
                                 <ul class="nav nav-third-level">
                                     <li><a class="J_menuItem" href="<?= Url::to(['/user/company/index']) ?>">公司管理-列表</a></li>
                                     <li><a class="J_menuItem" href="<?= Url::to(['/user/company/trash']) ?>">公司管理-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/company/add']) ?>">新增公司</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/company/create']) ?>">新增公司</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -113,7 +84,191 @@ $username = isset($identity->account) ? $identity->account : '';
                         </ul>
                     </li>
 
+                    <li>
+                        <a href="#"><i class="fa fa-user-secret"></i> <span class="nav-label">客户</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="#">外部客户<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/customer/customer/index']) ?>">外部客户-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/customer/customer/trash']) ?>">外部客户-垃圾筒</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/customer/customer/create']) ?>">新增客户</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="<?= Url::to(['/customer/group/rate']) ?>">集团公司评级</a>
+                            </li>
+                        </ul>
+                    </li>
 
+                    <li>
+                        <a href="#"><i class="fa fa-cart-plus"></i> <span class="nav-label">产品</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a class="J_menuItem" href="<?= Url::to(['/product/category/root-set']) ?>">根分类设置</a>
+                            </li>
+                            <li>
+                                <a href="#">产品分类<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product-category/index']) ?>">产品分类-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product-category/create']) ?>">新增分类</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">产品管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product/index']) ?>">产品管理-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product/trash']) ?>">产品管理-垃圾筒</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product/create']) ?>">新增产品</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#"><i class="fa fa-tasks"></i> <span class="nav-label">任务</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="#">已发任务<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/sent-index']) ?>">已发任务-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/sent-trash']) ?>">已发任务-垃圾筒</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/create']) ?>">新增任务</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/create-child']) ?>">新增子任务</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">待接收任务<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/wait-index']) ?>">待接收任务-列表</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">已接收任务<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-index']) ?>">已接收任务-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-handle']) ?>">已接收任务-处理</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-feedback']) ?>">已接收任务-反馈</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-money"></i> <span class="nav-label">财务</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="#">付款单<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/finance/finance/payment-index']) ?>">付款单-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/finance/finance/payment-trash']) ?>">付款单-垃圾桶</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">收款单<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/finance/finance/receipt-index']) ?>">收款单-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/finance/finance/receipt-trash']) ?>">收款单-垃圾桶</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="<?= Url::to(['/finance/finance/summary']) ?>">公司账目汇总</a>
+                            </li>
+                            <li>
+                                <a href="#">流水账<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/finance/diary/index']) ?>">流水账-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/finance/diary/trash']) ?>">流水账-垃圾筒</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/finance/diary/create']) ?>">新增流水</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">系统</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="#">任务中心<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/task/index']) ?>">任务-列表</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">收款中心<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/receipt/index']) ?>">收款单-列表</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">付款中心<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/payment/index']) ?>">付款单-列表</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">根分类<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/category/index']) ?>">根分类-列表</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">产品分类中心<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/category/product']) ?>">产品分类-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/category/product-trash']) ?>">产品分类-垃圾桶</a></li>
+                                </ul>
+                                <a class="J_menuItem" href="<?= Url::to(['/system/group/rate']) ?>">集团公司级别表</a>
+                            </li>
+                            <li>
+                                <a href="#">外部客户中心<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/customer/list']) ?>">外部客户-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/customer/trash']) ?>">外部客户-垃圾桶</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">产品中心<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/product/list']) ?>">产品-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/product/trash']) ?>">产品-垃圾桶</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">货币管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/money/index']) ?>">货币-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/money/trash']) ?>">货币-垃圾桶</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/money/create']) ?>">新增货币</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">财务科目管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/subject/list']) ?>">财务科目-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/subject/trash']) ?>">财务科目-垃圾桶</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/subject/create']) ?>">新增科目</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">流水账中心<span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level">
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/diary/list']) ?>">流水账-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?= Url::to(['/system/diary/trash']) ?>">流水账-垃圾桶</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="<?= Url::to(['/system/item/index']) ?>">公司账目中心</a>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="<?= Url::to(['/system/notice/index']) ?>">通知中心</a>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="<?= Url::to(['/system/login/record']) ?>">登录记录</a>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="<?= Url::to(['/system/login/ip-lock']) ?>">IP登录锁定</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -221,7 +376,6 @@ $username = isset($identity->account) ? $identity->account : '';
                 </button>
                 <nav class="page-tabs J_menuTabs">
                     <div class="page-tabs-content">
-<!--                        <a href="javascript:;" class="active J_menuTab" data-id="home/main/index">首页</a>-->
                         <a class="active J_menuTab" data-id="home/main/index">首页</a>
                     </div>
                 </nav>
@@ -570,96 +724,6 @@ $username = isset($identity->account) ? $identity->account : '';
         </div>
         <!--右侧边栏结束-->
         <!--mini聊天窗口开始-->
-        <!--<div class="small-chat-box fadeInRight animated">
-
-            <div class="heading" draggable="true">
-                <small class="chat-date pull-right">
-                    2015.9.1
-                </small> 与 Beau-zihan 聊天中
-            </div>
-
-            <div class="content">
-
-                <div class="left">
-                    <div class="author-name">
-                        Beau-zihan <small class="chat-date">
-                            10:02
-                        </small>
-                    </div>
-                    <div class="chat-message active">
-                        你好
-                    </div>
-
-                </div>
-                <div class="right">
-                    <div class="author-name">
-                        游客
-                        <small class="chat-date">
-                            11:24
-                        </small>
-                    </div>
-                    <div class="chat-message">
-                        你好，请问H+有帮助文档吗？
-                    </div>
-                </div>
-                <div class="left">
-                    <div class="author-name">
-                        Beau-zihan
-                        <small class="chat-date">
-                            08:45
-                        </small>
-                    </div>
-                    <div class="chat-message active">
-                        有，购买的H+源码包中有帮助文档，位于docs文件夹下
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="author-name">
-                        游客
-                        <small class="chat-date">
-                            11:24
-                        </small>
-                    </div>
-                    <div class="chat-message">
-                        那除了帮助文档还提供什么样的服务？
-                    </div>
-                </div>
-                <div class="left">
-                    <div class="author-name">
-                        Beau-zihan
-                        <small class="chat-date">
-                            08:45
-                        </small>
-                    </div>
-                    <div class="chat-message active">
-                        1.所有源码(未压缩、带注释版本)；
-                        <br> 2.说明文档；
-                        <br> 3.终身免费升级服务；
-                        <br> 4.必要的技术支持；
-                        <br> 5.付费二次开发服务；
-                        <br> 6.授权许可；
-                        <br> ……
-                        <br>
-                    </div>
-                </div>
-
-            </div>
-            <div class="form-chat">
-                <div class="input-group input-group-sm">
-                    <input type="text" class="form-control"> <span class="input-group-btn"> <button
-                            class="btn btn-primary" type="button">发送
-                </button> </span>
-                </div>
-            </div>
-
-        </div>
-        <div id="small-chat">
-            <span class="badge badge-warning pull-right">5</span>
-            <a class="open-small-chat">
-                <i class="fa fa-comments"></i>
-
-            </a>
-        </div>-->
         <!--mini聊天窗口结束-->
     </div>
 

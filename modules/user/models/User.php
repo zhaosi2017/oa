@@ -2,7 +2,7 @@
 
 namespace app\modules\user\models;
 
-//use Yii;
+use Yii;
 use app\models\CActiveRecord;
 /**
  * This is the model class for table "user".
@@ -75,9 +75,14 @@ class User extends CActiveRecord
 
     public function beforeSave($insert)
     {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        $this->update_author_uid = $uid;
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
-                $this->auth_key = \Yii::$app->security->generateRandomString();
+                $this->create_author_uid = $uid;
+                $this->auth_key = Yii::$app->security->generateRandomString();
+            }else{
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
             }
             return true;
         }

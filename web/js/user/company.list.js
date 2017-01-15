@@ -63,7 +63,7 @@ $(function () {
             title : '创建人／时间',
             align : 'center',
             formatter : function(value, row) {
-                return (row.username ? row.username : '管理员') + '<br>' + value;
+                return (row.creater ? row.creater : '管理员') + '<br>' + value;
             }
         },
         {
@@ -71,7 +71,7 @@ $(function () {
             title : '最后修改人／时间',
             align : 'center',
             formatter : function(value, row) {
-                return (row.username ? row.username : '管理员') + '<br>' + value;
+                return (row.updater ? row.updater : '管理员') + '<br>' + value;
             }
         },
         {

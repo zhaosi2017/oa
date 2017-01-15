@@ -2,13 +2,12 @@
 
 namespace app\modules\user\models;
 
-use yii\db\ActiveQuery;
 /**
  * This is the ActiveQuery class for [[Company]].
  *
  * @see Company
  */
-class CompanyQuery extends ActiveQuery
+class CompanyQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {

@@ -2,14 +2,15 @@
 
 namespace app\modules\user\models;
 
-use Yii;
-use yii\db\Query;
 use app\models\CActiveRecord;
+//use Yii;
+
 /**
  * This is the model class for table "company".
  *
+ * @property integer $id
  * @property string $name
- * @property string $superior_company_name
+ * @property integer $sup_id
  * @property integer $status
  * @property integer $level
  * @property integer $create_author_uid
@@ -19,7 +20,6 @@ use app\models\CActiveRecord;
  */
 class Company extends CActiveRecord
 {
-
     /**
      * @inheritdoc
      */
@@ -34,10 +34,29 @@ class Company extends CActiveRecord
     public function rules()
     {
         return [
-            [['name', 'superior_company_name'], 'required'],
-            [['status', 'level', 'create_author_uid', 'update_author_uid'], 'integer'],
+            [['status', 'sup_id', 'level', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name', 'superior_company_name'], 'string', 'max' => 40],
+            [['name'], 'string', 'max' => 20],
+            [['name'], 'required'],
+            [['name'], 'unique'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'name' => '公司名称',
+            'sup_id' => '上级公司',
+            'status' => '状态',
+            'level' => '层级',
+            'create_author_uid' => 'Create Author Uid',
+            'update_author_uid' => 'Update Author Uid',
+            'create_time' => 'Create Time',
+            'update_time' => 'Update Time',
         ];
     }
 
@@ -51,138 +70,44 @@ class Company extends CActiveRecord
     }
 
     /**
-     * @获取状态为正常公司列表
-     *
+     * 获取创建人
+     * @return \yii\db\ActiveQuery
      */
-    public function getCompanyList()
+    public function getCreator()
     {
-        return (new Query())->from($this::tableName())->where(['status'=>0])->all();
-    }
-
-    public function nameExists($name)
-    {
-        $sql = 'SELECT `name`,level FROM'.' ' . $this::tableName() .' WHERE `name`= :name';
-        $res = $this::getDb()->createCommand($sql)->bindValue(':name',$name)->queryOne();
-        return $res;
-    }
-
-    public function oneCompany($condition)
-    {
-        return (new Query())->from($this::tableName())->where($condition)->one();
-    }
-
-    public function listHandle()
-    {
-        $posts = Yii::$app->request->post();
-        if($posts){
-            $query = new Query();
-            $where = [
-                'and',
-                ['status' => $posts['type']==1 ? 0 : 1],
-                ['like',$posts['name'],isset($posts['search']) ? $posts['search'] : ''],
-            ];
-
-
-            /*$where = ['like',$posts['name'],isset($posts['search']) ? $posts['search'] : ''];
-            if($posts['type']==1){
-                $where['status'] = 0;
-            }else{
-                $where['status'] = 1;
-            }*/
-            $total = $query->select('name')->from($this::tableName())->where($where)->count();
-
-            $data = $query->select([])
-                ->from($this::tableName())
-                ->where($where)
-                ->limit($posts['limit'])
-                ->offset($posts['offset'])
-                ->orderBy(['create_time'=>$posts['order']])
-                ->all();
-            $this->ajaxResponse([
-                'code'  => 0,
-                'msg'   => 'list',
-                'data'  => $data,
-                'total' => $total
-            ]);
-        }
-        return;
+        return $this->hasOne(User::className(), ['id' => 'create_author_uid'])->alias('creator');
     }
 
     /**
-     * @param  int $level prent-level
-     * @return array
+     * 获取最后修改人
+     * @return \yii\db\ActiveQuery
      */
-    public function filterCompanyList($level){
-        return (new Query())->from($this::tableName())->where(['status'=>0,'level'=>$level])->all();
+    public function getUpdater()
+    {
+        return $this->hasOne(User::className(), ['id' => 'update_author_uid'])->alias('updater');
     }
 
-    public function editHandle()
+    /**
+     * 获取上级
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuperior()
     {
-        $posts = Yii::$app->request->post();
-        if($posts['primary_key']!=$posts['name']){
-            //判断公司名是否存在
-            $isExists = $this->nameExists($posts['name']);
-
-            if($isExists){
-                $this->ajaxResponse([
-                    'code'    => 1,
-                    'msg'     => '公司名称已存在，请勿重复添加！',
-                    'data'    => $isExists
-                ]);
-            }
-        }
-
-        $params = [
-            'name'     => $posts['name'],
-            'superior_company_name' => $posts['superior_company_name'],
-            'level'    => ++$posts['level']
-            //            ':cuid'     => $posts['create_author_uid'],TODO 超级管理员先添加公司，UID为默认值
-            //            ':uuid'     => $posts['update_author_uid'],
-        ];
-        if($this::getDb()->createCommand('')->update($this::tableName(),$params,['name'=>$posts['primary_key']])->execute()){
-            $this->ajaxResponse([
-                'code'    => 0,
-                'msg'     => '公司编辑成功',
-                'data'    => $this->filterCompanyList($posts['level'])
-            ]);
-        }else{
-            $this->ajaxResponse([
-                'code'    => 1,
-                'msg'     => '操作失败',
-                'data'    => []
-            ]);
-        }
-        return;
+        return $this->hasOne($this::className(), ['id' => 'sup_id'])->alias('superior');
     }
 
-    public function addHandle()
+    public function getChildren($id)
     {
-        $posts = Yii::$app->request->post();
-        //判断公司名是否存在
-        $isExists = $this->nameExists($posts['name']);
+        $self = $this::findOne(['id'=>$id,'status'=>0]);
 
-        if($isExists){
-            $this->ajaxResponse([
-                'code'    => 1,
-                'msg'     => '公司名称已存在，请勿重复添加！',
-                'data'    => $isExists
-            ]);
-        }
+        $sql = 'select id,sup_id,name from 
+                  (select * from '.$this::tableName().' where sup_id>0 order by id desc) realname_sorted, 
+                  (select @pv :='.$id.') initialisation 
+                  where (find_in_set(sup_id,@pv)>0 and @pv := concat(@pv,",",id))';
+        $children = [] + $this::getDb()->createCommand($sql)->queryAll();
 
-        $params = [
-            'name'     => $posts['name'],
-            'superior_company_name' => $posts['superior_company_name'],
-            'level'    => ++$posts['level']
-        //            ':cuid'     => $posts['create_author_uid'],TODO 超级管理员先添加公司，UID为默认值
-        //            ':uuid'     => $posts['update_author_uid'],
-        ];
-        if($this::getDb()->createCommand('')->insert($this::tableName(),$params)->execute()){
-            $this->ajaxResponse([
-                'code'    => 0,
-                'msg'     => '公司添加成功',
-                'data'    => $this->getCompanyList()
-            ]);
-        }
-        return;
+        array_unshift($children, $self);
+
+        return $children;
     }
 }

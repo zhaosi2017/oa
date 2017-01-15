@@ -10,6 +10,7 @@ use app\models\CActiveRecord;
  *
  * @property integer $id
  * @property string $name
+ * @property integer $company_id
  * @property integer $department_id
  * @property string $company_name
  * @property integer $status
@@ -34,7 +35,7 @@ class Posts extends CActiveRecord
     public function rules()
     {
         return [
-            [['name', 'department_id', 'company_name'], 'required'],
+            [['name', 'department_id'], 'required'],
             [['id', 'department_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
             [['name', 'company_name'], 'string', 'max' => 40],
@@ -66,5 +67,41 @@ class Posts extends CActiveRecord
     public static function find()
     {
         return new PostsQuery(get_called_class());
+    }
+
+    /**
+     * 获取创建人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreator()
+    {
+        return $this->hasOne(User::className(), ['id' => 'create_author_uid'])->alias('creator');
+    }
+
+    /**
+     * 获取最后修改人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdater()
+    {
+        return $this->hasOne(User::className(), ['id' => 'update_author_uid'])->alias('updater');
+    }
+
+    /**
+     * 获取公司
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCompany()
+    {
+        return $this->hasOne(Company::className(), ['id' => 'company_id'])->alias('company');
+    }
+
+    /**
+     * 获取部门
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartment()
+    {
+        return $this->hasOne(Department::className(), ['id' => 'department_id'])->alias('department');
     }
 }

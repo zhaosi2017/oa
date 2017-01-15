@@ -107,6 +107,9 @@ $config = [
         'user'=>[
             'class' => 'app\modules\user\Module'
         ],
+        'system'=>[
+            'class' => 'app\modules\system\Module'
+        ],
     ],
 
 ];

@@ -5,6 +5,7 @@ namespace app\modules\user\models;
 //use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+
 //use app\modules\user\models\Department;
 
 /**
@@ -12,6 +13,11 @@ use yii\data\ActiveDataProvider;
  */
 class DepartmentSearch extends Department
 {
+
+    public $superior_name;
+
+    public $company_name;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +25,7 @@ class DepartmentSearch extends Department
     {
         return [
             [['id', 'superior_department_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'company_name', 'create_time', 'update_time'], 'safe'],
+            [['name', 'company_name', 'superior_name', 'create_time', 'update_time'], 'safe'],
         ];
     }
 
@@ -41,9 +47,12 @@ class DepartmentSearch extends Department
      */
     public function search($params)
     {
-        $query = Department::find()->where(['status' => 0]);
-
+        $query = Department::find()->select([])
+            ->where([
+            'department.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
+        ]);
         // add conditions that should always apply here
+        $query->joinWith('company')->joinWith('superior')->joinWith('creator')->joinWith('updater');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -75,53 +84,11 @@ class DepartmentSearch extends Department
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'company_name', $this->company_name])
-            ->andFilterWhere(['like', 'superior_department_id', $this->superior_department_id]);
+        $query->andFilterWhere(['like', 'department.name', $this->name])
+            ->andFilterWhere(['like', 'company.name', $this->company_name])
+            ->andFilterWhere(['like', 'superior.name', $this->superior_name]);
 
         return $dataProvider;
     }
 
-    public function searchTrash($params)
-    {
-        $query = Department::find()->where(['status' => 1]);
-
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'create_time' => SORT_DESC,
-                ]
-            ],
-        ]);
-
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'status' => $this->status,
-            'create_author_uid' => $this->create_author_uid,
-            'update_author_uid' => $this->update_author_uid,
-            'create_time' => $this->create_time,
-            'update_time' => $this->update_time,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'company_name', $this->company_name])
-            ->andFilterWhere(['like', 'superior_department_id', $this->superior_department_id]);
-
-        return $dataProvider;
-    }
 }

@@ -12,6 +12,11 @@ use yii\data\ActiveDataProvider;
  */
 class PostsSearch extends Posts
 {
+
+    public $company_name;
+
+    public $department_name;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +24,7 @@ class PostsSearch extends Posts
     {
         return [
             [['id', 'department_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'company_name', 'create_time', 'update_time'], 'safe'],
+            [['name', 'company_name', 'department_name','create_time', 'update_time'], 'safe'],
         ];
     }
 
@@ -41,9 +46,12 @@ class PostsSearch extends Posts
      */
     public function search($params)
     {
-        $query = $this::find()->where(['status' => 0]);
+        $query = $this::find()->where([
+            'posts.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
+        ]);
 
         // add conditions that should always apply here
+        $query->joinWith('company')->joinWith('department')->joinWith('creator')->joinWith('updater');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -75,53 +83,11 @@ class PostsSearch extends Posts
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'company_name', $this->company_name])
-            ->andFilterWhere(['like', 'department_id', $this->department_id]);
+        $query->andFilterWhere(['like', 'posts.name', $this->name])
+            ->andFilterWhere(['like', 'company.name', $this->company_name])
+            ->andFilterWhere(['like', 'department.name', $this->department_name]);
 
         return $dataProvider;
     }
 
-    public function searchTrash($params)
-    {
-        $query = $this::find()->where(['status' => 1]);
-
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'create_time' => SORT_DESC,
-                ]
-            ],
-        ]);
-
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'status' => $this->status,
-            'create_author_uid' => $this->create_author_uid,
-            'update_author_uid' => $this->update_author_uid,
-            'create_time' => $this->create_time,
-            'update_time' => $this->update_time,
-        ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'company_name', $this->company_name])
-            ->andFilterWhere(['like', 'department_id', $this->department_id]);
-
-        return $dataProvider;
-    }
 }

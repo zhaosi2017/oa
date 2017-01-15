@@ -17,8 +17,8 @@ $actionId = Yii::$app->requestedAction->id;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p class="btn-group hidden-xs">
-        <?= Html::a($this->title.'-列表', ['index'], ['class' => $actionId=='index' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a($this->title.'-垃圾筒', ['trash'], ['class' => $actionId=='trash' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('列表', ['index'], ['class' => $actionId=='index' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('垃圾筒', ['trash'], ['class' => $actionId=='trash' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
 
     <p class="btn-group hidden-xs"><?= $actionId=='index' ? Html::a('新增部门', ['create'], ['class' => 'btn btn-link']) : '' ?></p>
@@ -39,15 +39,11 @@ $actionId = Yii::$app->requestedAction->id;
             ['class' => 'yii\grid\SerialColumn','header' => '序号'],
 
             'name',
-            'company_name',
-            [
-                'class' => 'yii\grid\DataColumn', //由于是默认类型，可以省略
-                'header' => '上级部门',
-                'value' => function ($data) {
-                    return $data->superior_department_id ? $data->superior_department_id : '无'; // 如果是数组数据则为 $data['name'] ，例如，使用 SqlDataProvider 的情形。
-                },
-            ],
-//            'status',
+
+            ['value'=>'company.name','attribute'=>'company_name', 'label'=>'所属公司'],
+
+            ['label' => '上级部门', 'attribute'=>'superior_name', 'value' => 'superior.name'],
+
             [
                 'class' => 'yii\grid\DataColumn', //由于是默认类型，可以省略
                 'header' => '状态',
@@ -55,50 +51,55 @@ $actionId = Yii::$app->requestedAction->id;
                     return $data->status==0 ? '正常' : '已作废';
                 },
             ],
-            // 'create_author_uid',
-            // 'update_author_uid',
+
             [
-                'class' => 'yii\grid\DataColumn', //由于是默认类型，可以省略
+                'class' => 'yii\grid\DataColumn',
                 'header' => '创建人／时间',
-                'value' => function ($data) {
-                    $author = $data->create_author_uid==0 ? '管理员' : $data->create_author_uid;
-                    $time   = $data->create_time;
-                    return $author.'/'.$time;
+                'format' => 'html',
+                'value'  => function ($data)
+                {
+                    return $data['creator']['account'] . '<br>' . $data->create_time;
                 },
             ],
+
             [
-                'class' => 'yii\grid\DataColumn', //由于是默认类型，可以省略
+                'class' => 'yii\grid\DataColumn',
                 'header' => '最后修改人／时间',
-                'value' => function ($data) {
-                    $author = $data->create_author_uid==0 ? '管理员' : $data->create_author_uid;
-                    $time   = $data->update_time;
-                    return $author.'/'.$time;
+                'format' => 'html',
+                'value'  => function ($data)
+                {
+                    return $data['updater']['account'] . '<br>' . $data->update_time;
                 },
             ],
 
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => $actionId=='index' ? '{update} {delete}' : '{recover}',
+                'template' => '{update} {switch}',
                 'buttons' => [
-                    'delete' => function($url){
-                        return Html::a('<i class="glyphicon glyphicon-trash red-bg"></i>',
-                            $url,
-                            [
-                                'class' => 'btn btn-xs',
-                                'data-method' => 'post',
-//                                'data-toggle' => 'modal',
-                                'data' => ['confirm' => '你确定要作废吗？']
-                            ]);
-                    },
-                    'recover' => function($url){
-                        return Html::a('恢复',
-                            $url,
-                            [
-                                'class' => 'btn btn-xs',
-                                'data-method' => 'post',
-                                'data' => ['confirm' => '你确定要恢复吗?']
-                            ]);
+                    'switch' => function($url, $model){
+                        $btn_link = '';
+                        switch ($model->status){
+                            case 0:
+                                $btn_link = Html::a('<i class="glyphicon glyphicon-ban-circle"></i>',
+                                    $url . '&status=1',
+                                    [
+                                        'class' => 'btn btn-xs',
+                                        'data-method' => 'post',
+                                        'data' => ['confirm' => '你确定要作废吗?']
+                                    ]);
+                                break;
+                            case 1:
+                                $btn_link = Html::a('<i class="glyphicon glyphicon-ok"></i>',
+                                    $url . '&status=0',
+                                    [
+                                        'class' => 'btn btn-xs',
+                                        'data-method' => 'post',
+                                        'data' => ['confirm' => '你确定要恢复吗?']
+                                    ]);
+                                break;
+                        }
+                        return $btn_link;
                     },
 
                 ],

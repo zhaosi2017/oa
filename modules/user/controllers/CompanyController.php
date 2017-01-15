@@ -3,87 +3,164 @@
 namespace app\modules\user\controllers;
 
 use Yii;
-use app\controllers\GController;
 use app\modules\user\models\Company;
+use app\modules\user\models\CompanySearch;
+use app\controllers\GController;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
 /**
- * Default controller for the `user` module
+ * CompanyController implements the CRUD actions for Company model.
  */
 class CompanyController extends GController
 {
-
-    public function actionAdd()
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
     {
-        $model = new Company();
-        $companyList = $model->getCompanyList();
-
-        if(Yii::$app->request->isAjax){
-            $model->addHandle();
-        }
-        return $this->render('add',['companyList'=>$companyList]);
-
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
-    public function actionEdit()
-    {
-        $model = new Company();
-
-        $gets = Yii::$app->request->get();
-        $oneCompany = $model->oneCompany(['name'=>$gets['name']]);
-
-        $companyList = $model->filterCompanyList($oneCompany['level']-1);
-
-        if(Yii::$app->request->isAjax){
-            $model->editHandle();
-        }
-        return $this->render('edit',['companyList'=>$companyList,'oneCompany'=>$oneCompany]);
-
-    }
-
+    /**
+     * Lists all Company models.
+     * @return mixed
+     */
     public function actionIndex()
     {
-        $model = new Company();
-        if(Yii::$app->request->isAjax){
-            $model->listHandle();
-        }
-        return $this->render('index');
+        $searchModel = new CompanySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
+    /**
+     * Lists all Company models.
+     * @return mixed
+     */
     public function actionTrash()
     {
-        $model = new Company();
-        if(Yii::$app->request->isAjax){
-            $model->listHandle();
-        }
-        return $this->render('trash');
+        $searchModel = new CompanySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
-    public function actionDisable()
+    /**
+     * Displays a single Company model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Creates a new Company model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
     {
         $model = new Company();
-        if(Yii::$app->request->isAjax){
-            $posts = Yii::$app->request->post();
-            if($model->oneCompany(["superior_company_name"=>$posts["name"],"status"=>0])){
-                $this->ajaxResponse([
-                    'code' => 1,
-                    'msg'  => '当前公司下具有状态为正常的公司，不能作废！',//todo
-                    'data' => []
-                ]);
-            }
-            if($model->changeStatus($posts["status"],["name" => $posts["name"]])){
-                $this->ajaxResponse([
-                    'code' => 0,
-                    'msg'  => '操作成功',
-                    'data' => $model->oneCompany(["name"=>$posts["name"]])
-                ]);
-            }else{
-                $this->ajaxResponse([
-                    'code' => 1,
-                    'msg'  => '操作失败',
-                    'data' => []
-                ]);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->sendSuccess();
+            return $this->redirect(['index', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Company model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->sendSuccess();
+            return $this->redirect(['index', 'id' => $model->id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /**
+     * Deletes an existing Company model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $id
+     * @param $status
+     * @return \yii\web\Response
+     */
+    public function actionSwitch($id, $status)
+    {
+        $model = $this->findModel($id);
+
+        if($status == 1){
+            if(Company::findOne(['sup_id' => $id])){
+                $model->sendError('当前公司下具有状态为正常的公司，不能作废！');
+                return $this->redirect(['index']);
             }
         }
-        return;
+
+        $model->status = $status;
+        if($model->save()){
+            Yii::$app->getSession()->setFlash('success', '操作成功');
+        }else{
+            Yii::$app->getSession()->setFlash('error', '操作失败');
+        }
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Company model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Company the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Company::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
     }
 }

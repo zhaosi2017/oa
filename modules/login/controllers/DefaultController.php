@@ -121,10 +121,5 @@ class DefaultController extends GController
         $this->redirect(Url::to(['/login/default/entry']));
     }
 
-    /*public function actionLocked()
-    {
-
-        return $this->render('locked');
-    }*/
 
 }

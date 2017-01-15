@@ -99,8 +99,6 @@ class LoginForm extends Model
         if($checkLoginIp){
             $expire = 3600;
             $unlockTime = strtotime($checkLoginIp['login_time'])+$expire;
-            /*var_dump($unlockTime.' : ');
-            var_dump($_SERVER['REQUEST_TIME']);exit;*/
             if($checkLoginIp['status'] == 4 && $_SERVER['REQUEST_TIME'] < $unlockTime){//锁ip
                 return ['lock_type' => 'IP','unlock_time' => date('Y-m-d H:i:s',$unlockTime)];
             }

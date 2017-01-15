@@ -37,7 +37,6 @@ class DepartmentController extends GController
     {
         $searchModel = new DepartmentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -47,8 +46,7 @@ class DepartmentController extends GController
     public function actionTrash()
     {
         $searchModel = new DepartmentSearch();
-
-        $dataProvider = $searchModel->searchTrash(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -76,7 +74,6 @@ class DepartmentController extends GController
     public function actionCreate()
     {
         $model = new Department();
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->getSession()->setFlash('success', '新增部门成功');
             return $this->redirect(['index', 'id' => $model->id]);
@@ -108,36 +105,43 @@ class DepartmentController extends GController
     }
 
     /**
-     * Deletes an existing Department model.
+     * Deletes an existing Company model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-//        $this->findModel($id)->delete();
-        $model = $this->findModel($id);
-
-        if(Department::find()->where(['superior_department_id'=>$model->getAttribute('id'),'status'=>0])->one()){
-            Yii::$app->getSession()->setFlash('error', '当前部门下具有状态为正常的岗位，不能作废！');
-        }else{
-            $model->status = 1;
-            $model->save();
-            Yii::$app->getSession()->setFlash('success', '操作成功');
-        }
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
-    public function actionRecover($id)
+    /**
+     * @param $id
+     * @param $status
+     * @return \yii\web\Response
+     */
+    public function actionSwitch($id, $status)
     {
         $model = $this->findModel($id);
-        $model->status = 0;
-        $model->save();
-        Yii::$app->getSession()->setFlash('success', '操作成功');
-        return $this->redirect(['trash']);
+
+        if($status == 1){
+            if(Department::find()->where(['superior_department_id'=>$model->getAttribute('id'),'status'=>0])->one()){
+                Yii::$app->getSession()->setFlash('error', '当前部门下具有状态为正常的岗位，不能作废！');
+                return $this->redirect(['index']);
+            }
+        }
+
+        $model->status = $status;
+        if($model->save()){
+            Yii::$app->getSession()->setFlash('success', '操作成功');
+        }else{
+            Yii::$app->getSession()->setFlash('error', '操作失败');
+        }
+        return $this->redirect(['index']);
     }
-    
+
     /**
      * Finds the Department model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
