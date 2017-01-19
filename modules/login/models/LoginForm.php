@@ -29,7 +29,7 @@ class LoginForm extends Model
             [['username', 'password','code'], 'required'],
             ['username', 'validateAccount'],
             ['password', 'validatePassword'],
-//            ['code', 'captcha', 'message'=>'验证码输入不正确，请重新输入！3次输入错误，账号将被锁定1年！', 'captchaAction'=>'/login/default/captcha'],
+            ['code', 'captcha', 'message'=>'验证码输入不正确，请重新输入！3次输入错误，账号将被锁定1年！', 'captchaAction'=>'/login/default/captcha'],
         ];
     }
 

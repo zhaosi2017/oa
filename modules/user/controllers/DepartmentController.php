@@ -6,28 +6,14 @@ use app\controllers\GController;
 use Yii;
 use app\modules\user\models\Department;
 use app\modules\user\models\DepartmentSearch;
+use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * DepartmentController implements the CRUD actions for Department model.
  */
 class DepartmentController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * Lists all Department models.
@@ -53,7 +39,20 @@ class DepartmentController extends GController
             'dataProvider' => $dataProvider,
         ]);
     }
-    
+
+    public function actionSuperior()
+    {
+        if(Yii::$app->request->isPost){
+            $company_id = Yii::$app->request->post('company_id');
+            $model = ["" => '--请选择--'] + Department::find()->downList($company_id);
+            foreach($model as $value=>$name)
+            {
+                echo Html::tag('option',Html::encode($name),array('value'=>$value));
+            }
+        }
+        return false;
+    }
+
     /**
      * Displays a single Department model.
      * @param integer $id

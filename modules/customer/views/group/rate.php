@@ -34,33 +34,33 @@ $this->params['breadcrumbs'][] = 'rate';
                         <td class="text-center"><?= $k+1 ?></td>
                         <td class="text-center"><?= $v->name ?></td>
                         <td>
-                            <input type="hidden" name="<?= 'company'.$k.'[name]' ?>" value="<?= $v->name ?>">
+                            <input type="hidden" name="<?= 'company'.$k.'[id]' ?>" value="<?= $v->id ?>">
                             <label><input type="radio" <?php
-                                if(isset($groupRate[$v->name])){
-                                    echo $groupRate[$v->name] == 4 ? 'checked' : '';
+                                if(isset($groupRate[$v->id])){
+                                    echo $groupRate[$v->id] == 4 ? 'checked' : '';
                                 }
                                 ?> name="<?= 'company'.$k.'[grade]' ?>" value="4"> D级
                             </label>
                             <label><input type="radio" <?php
-                                if(isset($groupRate[$v->name])){
-                                    echo $groupRate[$v->name] == 3 ? 'checked' : '';
+                                if(isset($groupRate[$v->id])){
+                                    echo $groupRate[$v->id] == 3 ? 'checked' : '';
                                 }
                                 ?> name="<?= 'company'.$k.'[grade]' ?>" value="3"> C级
                             </label>
                             <label><input type="radio" <?php
-                                if(isset($groupRate[$v->name])){
-                                    echo $groupRate[$v->name] == 2 ? 'checked' : '';
+                                if(isset($groupRate[$v->id])){
+                                    echo $groupRate[$v->id] == 2 ? 'checked' : '';
                                 }
                                 ?> name="<?= 'company'.$k.'[grade]' ?>" value="2"> B级
                             </label>
                             <label><input type="radio" <?php
-                                if(isset($groupRate[$v->name])){
-                                    echo $groupRate[$v->name] == 1 ? 'checked' : '';
+                                if(isset($groupRate[$v->id])){
+                                    echo $groupRate[$v->id] == 1 ? 'checked' : '';
                                 }
                                 ?> name="<?= 'company'.$k.'[grade]' ?>" value="1"> A级
                             </label>
                         </td>
-                        <td><?= $users[$v->update_author_uid] ?>／<?= $v->update_time ?></td>
+                        <td><?= $v['updater']['account'] ?>／<?= $v->update_time ?></td>
                     </tr>
             <?php
                 }

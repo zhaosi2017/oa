@@ -12,7 +12,8 @@ use app\models\CActiveRecord;
  * @property string $nickname
  * @property string $email
  * @property string $password
- * @property string $company_name
+ * @property string $auth_key
+ * @property integer $company_id
  * @property integer $department_id
  * @property integer $posts_id
  * @property integer $status
@@ -38,12 +39,12 @@ class User extends CActiveRecord
     public function rules()
     {
         return [
-            [['account', 'company_name', 'department_id', 'posts_id'], 'required'],
-            [['department_id', 'posts_id', 'status', 'login_permission', 'create_author_uid', 'update_author_uid'], 'integer'],
+            [['account', 'company_id', 'department_id', 'posts_id'], 'required'],
+            [['company_id', 'department_id', 'posts_id', 'status', 'login_permission', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['account'], 'string', 'max' => 20],
-            [['nickname', 'password'], 'string', 'max' => 64],
-            [['company_name', 'email'], 'string', 'max' => 30],
+            [['account'], 'string', 'max' => 10],
+            [['nickname', 'password', 'auth_key'], 'string', 'max' => 64],
+            [['email'], 'string', 'max' => 30],
             [['account'], 'unique'],
             [['email'], 'unique'],
         ];
@@ -61,7 +62,7 @@ class User extends CActiveRecord
             'email' => '验证邮箱',
             'password' => '密码',
             'auth_key' => '认证密钥',
-            'company_name' => '所属公司',
+            'company_id' => '所属公司',
             'department_id' => '所属部门',
             'posts_id' => '所属岗位',
             'status' => '状态',
@@ -98,5 +99,49 @@ class User extends CActiveRecord
         return new UserQuery(get_called_class());
     }
 
+    /**
+     * 获取创建人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreator()
+    {
+        return $this->hasOne($this::className(), ['id' => 'create_author_uid'])->alias('creator');
+    }
+
+    /**
+     * 获取最后修改人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdater()
+    {
+        return $this->hasOne($this::className(), ['id' => 'update_author_uid'])->alias('updater');
+    }
+
+    /**
+     * 获取公司
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCompany()
+    {
+        return $this->hasOne(Company::className(), ['id' => 'company_id'])->alias('company');
+    }
+
+    /**
+     * 获取部门
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartment()
+    {
+        return $this->hasOne(Department::className(), ['id' => 'department_id'])->alias('department');
+    }
+
+    /**
+     * 获取岗位
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPosts()
+    {
+        return $this->hasOne(Posts::className(), ['id' => 'posts_id'])->alias('posts');
+    }
 
 }

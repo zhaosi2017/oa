@@ -2,33 +2,21 @@
 
 namespace app\modules\user\controllers;
 
+use app\modules\user\models\Department;
 use app\modules\user\models\LoginLogs;
+use app\modules\user\models\Posts;
 use Yii;
 use app\modules\user\models\User;
 use app\modules\user\models\UserSearch;
 use app\controllers\GController;
+use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * UserController implements the CRUD actions for User model.
  */
 class UserController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * Lists all User models.
@@ -45,15 +33,50 @@ class UserController extends GController
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function actionTrash()
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->searchTrash(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function actionDepartment()
+    {
+        if(Yii::$app->request->isPost){
+            $company_id = Yii::$app->request->post('company_id');
+            $model = ["" => '--请选择--'] + Department::find()->downList($company_id);
+            foreach($model as $value=>$name)
+            {
+                echo Html::tag('option',Html::encode($name),array('value'=>$value));
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function actionPosts()
+    {
+        if(Yii::$app->request->isPost){
+            $department_id = Yii::$app->request->post('department_id');
+            $model = ["" => '--请选择--'] + Posts::find()->downList($department_id);
+            foreach($model as $value=>$name)
+            {
+                echo Html::tag('option',Html::encode($name),array('value'=>$value));
+            }
+        }
+        return false;
     }
 
     /**
@@ -78,6 +101,14 @@ class UserController extends GController
         $model = new User();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            //权限逻辑
+            $auth = Yii::$app->authManager;
+            //添加角色[岗位编号对应岗位这类角色]
+            $role = $auth->createRole($model->posts_id);
+            //给用户分配角色
+            $auth->assign($role, $model->id);
+
             Yii::$app->getSession()->setFlash('success', '新增用户成功');
             return $this->redirect(['update', 'id' => $model->id]);
         } else {
@@ -159,6 +190,24 @@ class UserController extends GController
     {
         $this->findModel($id)->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $id
+     * @param $status
+     * @return \yii\web\Response
+     */
+    public function actionSwitch($id, $status)
+    {
+        $model = $this->findModel($id);
+
+        $model->status = $status;
+        if($model->save()){
+            Yii::$app->getSession()->setFlash('success', '操作成功');
+        }else{
+            Yii::$app->getSession()->setFlash('error', '操作失败');
+        }
         return $this->redirect(['index']);
     }
 

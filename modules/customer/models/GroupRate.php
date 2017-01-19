@@ -7,8 +7,8 @@ use app\models\CActiveRecord;
 /**
  * This is the model class for table "group_rate".
  *
- * @property string $rate_company_name
- * @property string $company_name
+ * @property string $rate_company_id
+ * @property string $company_id
  * @property integer $rater_uid
  * @property integer $grade
  * @property string $create_time
@@ -30,10 +30,9 @@ class GroupRate extends CActiveRecord
     public function rules()
     {
         return [
-            [['company_name', 'rater_uid', 'grade'], 'required'],
-            [['rater_uid', 'grade'], 'integer'],
+            [['company_id', 'rater_uid', 'grade'], 'required'],
+            [['rater_uid', 'grade', 'company_id', 'rate_company_id'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['company_name','rate_company_name'], 'string', 'max' => 40],
         ];
     }
 
@@ -43,8 +42,8 @@ class GroupRate extends CActiveRecord
     public function attributeLabels()
     {
         return [
-            'rate_company_name' => '当前所在公司',
-            'company_name' => 'Company Name',
+            'rate_company_id' => '当前所在公司',
+            'company_id' => 'Company ID',
             'rater_uid' => 'Rater Uid',
             'grade' => 'Grade',
             'create_time' => 'Create Time',
@@ -66,7 +65,7 @@ class GroupRate extends CActiveRecord
         $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
 
         $identity = (Object) Yii::$app->user->identity;
-        $this->rate_company_name = $identity->company_name;
+        $this->rate_company_id = $identity->company_id;
         $this->rater_uid = $uid;
         $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
         if ($this->isNewRecord) {

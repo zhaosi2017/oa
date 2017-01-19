@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 
 $identity = (Object) Yii::$app->user->identity;
+$companyName = \app\modules\user\models\Company::findOne($identity->company_id)->getAttribute('name');
 ?>
 
 <div class="customer-form">
@@ -19,6 +20,13 @@ $identity = (Object) Yii::$app->user->identity;
             'labelOptions' => ['class' => 'col-sm-3 control-label'],
         ],
     ]) ?>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="sup_level">所属公司</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="sup_level" type="text" readonly="readonly" value="<?= $companyName ?>">
+        </div>
+    </div>
 
     <?= $form->field($model, 'company_id')->hiddenInput(['value' => $identity->company_id])->label(false) ?>
 

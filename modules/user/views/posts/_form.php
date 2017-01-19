@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\modules\user\models\Company;
 use app\modules\user\models\Department;
@@ -25,43 +25,27 @@ use app\modules\user\models\Department;
 
     <?php
 
-        //todo 只显示有相关部门和相关公司关联的数据，其余的不显示
-        //所有公司 type Object
-        $comList = Company::find()->select(['name'])->where(['status'=>0])->all();
-        $optionsMapArr = $optionsHtmlArr = $comListMap = ArrayHelper::map($comList, 'name', 'name');
+        $companyMap = Company::find()->downList();
+        $departmentMap = [];
 
-        //所有部门 type Object
-        $supList = Department::find()->select(['id','name','company_name'])->where(['status'=>0])->all();
-        $supListMap = ArrayHelper::map($supList,'id','name');
-
-        foreach ($optionsHtmlArr as $item){
-            $optionsMapArr[$item] = [];
-            $optionsHtmlArr[$item] = '';
-        }
-        foreach ($supList as $item){
-            $optionsMapArr[$item->company_name][$item->id] = $item->name;
-            $optionsHtmlArr[$item->company_name] .= '<option value="'.$item->id.'">'.$item->name.'</option>';
-        }
-        $optionJson = json_encode($optionsHtmlArr,JSON_UNESCAPED_UNICODE);
-
-        if($model->company_name){
-            $supListMap = $optionsMapArr[$model->company_name];
-        }else{
-            $supListMap = $optionsMapArr[current($comListMap)];
+        if(!$model->isNewRecord){
+            $departmentMap = Department::find()->downList($model->company_id);
         }
 
     ?>
 
-    <?= $form->field($model, 'company_name')->dropDownList($comListMap,
-        ['onchange' => '
-            var comName = $(this).val();
-            var changeCom = '.$optionJson.';
-            $("#posts-department_id").html(changeCom[comName]);   
-        ']
+    <?= $form->field($model, 'company_id')->dropDownList($companyMap,
+        [
+            'prompt'=>'--请选择--',
+            'onchange'=>'
+            $.post("'.Url::to(['/user/posts/department']).'",{"company_id": $(this).val(),"_csrf":"'.Yii::$app->request->csrfToken.'"},function(data){
+                $("#posts-department_id").html(data);
+            });',
+        ]
     ) ?>
 
 
-    <?= $form->field($model, 'department_id')->dropDownList($supListMap)?>
+    <?= $form->field($model, 'department_id')->dropDownList($departmentMap, ['prompt'=>'--请选择--'])?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

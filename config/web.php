@@ -22,9 +22,10 @@ $config = [
             'identityClass' => 'app\modules\login\models\User',
             'enableAutoLogin' => true,
         ],
-        /*'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],*/
+        'errorHandler' => [
+            'maxSourceLines' => 20,
+//            'errorAction' => 'home/main/error',
+        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             // send all mails to a file by default. You have to set

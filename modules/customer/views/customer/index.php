@@ -11,7 +11,6 @@ $this->title = '客户管理';
 $this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 
-$users = \app\modules\user\models\User::find()->select(['company_name','account','id'])->indexBy('id')->all();
 ?>
 <div class="customer-index">
 

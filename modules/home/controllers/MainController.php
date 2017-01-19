@@ -20,4 +20,9 @@ class MainController extends GController
     {
         return $this->render('index');
     }
+
+    public function actionDeny()
+    {
+        return $this->render('deny');
+    }
 }

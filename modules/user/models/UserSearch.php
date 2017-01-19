@@ -5,21 +5,28 @@ namespace app\modules\user\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\user\models\User;
 
 /**
  * UserSearch represents the model behind the search form about `app\modules\user\models\User`.
  */
 class UserSearch extends User
 {
+    public $department_name;
+
+    public $posts_name;
+
+    public $create_author;
+
+    public $update_author;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'department_id', 'posts_id', 'status', 'login_permission', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['account', 'nickname', 'email', 'password', 'company_name', 'create_time', 'update_time'], 'safe'],
+            [['id', 'company_id', 'department_id', 'posts_id', 'status', 'login_permission', 'create_author_uid', 'update_author_uid'], 'integer'],
+            [['account', 'department_name', 'posts_name', 'nickname', 'email', 'password', 'create_author', 'update_author', 'create_time', 'update_time'], 'safe'],
         ];
     }
 
@@ -41,8 +48,9 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = $this::find()->where(['status' => 0]);
+        $query = $this::find()->where(['user.status' => Yii::$app->requestedAction->id == 'index' ? 0 : 1]);
 
+        $query->joinWith('company')->joinWith('department')->joinWith('posts')->joinWith('creator')->joinWith('updater');
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -67,71 +75,30 @@ class UserSearch extends User
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'department_id' => $this->department_id,
-            'posts_id' => $this->posts_id,
-            'status' => $this->status,
-            'login_permission' => $this->login_permission,
-            'create_author_uid' => $this->create_author_uid,
-            'update_author_uid' => $this->update_author_uid,
-            'create_time' => $this->create_time,
-            'update_time' => $this->update_time,
+            'user.id' => $this->id,
+            'user.company_id' => $this->company_id,
+            'user.department_id' => $this->department_id,
+            'user.posts_id' => $this->posts_id,
+            'user.status' => $this->status,
+            'user.login_permission' => $this->login_permission,
+            'user.create_author_uid' => $this->create_author_uid,
+            'user.update_author_uid' => $this->update_author_uid,
+            'user.create_time' => $this->create_time,
+            'user.update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'account', $this->account])
-            ->andFilterWhere(['like', 'nickname', $this->nickname])
-//            ->andFilterWhere(['like', 'email', $this->email])
-//            ->andFilterWhere(['like', 'password', $this->password])
-            ->andFilterWhere(['like', 'company_name', $this->company_name]);
+        $query->andFilterWhere(['like', 'user.account', $this->account])
+            ->andFilterWhere(['like', 'department.name', $this->department_name])
+            ->andFilterWhere(['like', 'posts.name', $this->posts_name])
+            ->andFilterWhere(['like', 'creator.account', $this->create_author])
+            ->andFilterWhere(['like', 'updater.account', $this->update_author]);
 
         return $dataProvider;
     }
 
-    public function searchTrash($params)
+    public function filterCompany()
     {
-        $query = $this::find()->where(['status' => 1]);
-
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'create_time' => SORT_DESC,
-                ]
-            ],
-        ]);
-
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'department_id' => $this->department_id,
-            'posts_id' => $this->posts_id,
-            'status' => $this->status,
-            'login_permission' => $this->login_permission,
-            'create_author_uid' => $this->create_author_uid,
-            'update_author_uid' => $this->update_author_uid,
-            'create_time' => $this->create_time,
-            'update_time' => $this->update_time,
-        ]);
-
-        $query->andFilterWhere(['like', 'account', $this->account])
-            ->andFilterWhere(['like', 'nickname', $this->nickname])
-//            ->andFilterWhere(['like', 'email', $this->email])
-//            ->andFilterWhere(['like', 'password', $this->password])
-            ->andFilterWhere(['like', 'company_name', $this->company_name]);
-
-        return $dataProvider;
+        return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
     }
+
 }

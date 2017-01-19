@@ -31,4 +31,9 @@ class CompanyQuery extends \yii\db\ActiveQuery
     {
         return parent::one($db);
     }
+
+    public function downList()
+    {
+        return Company::find()->select(['name','id'])->where(['status' => 0])->indexBy('id')->column();
+    }
 }

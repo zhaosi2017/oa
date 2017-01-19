@@ -9,6 +9,46 @@ $this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'auth';
 $actionId = Yii::$app->requestedAction->id;
+$auth = Yii::$app->authManager;
+$permissions = $auth->getPermissionsByRole($model->id);
+$data = [
+    [
+        'module' => '用户模块',
+        'items' => [
+            [
+                'page_name' => '用户管理',
+                'permission' => ['user/user/index', 'user/user/create', 'user/user/update', 'user/user/switch'],//注意顺序
+            ],
+            [
+                'page_name' => '公司管理',
+                'permission' => ['user/company/index', 3=>'user/company/switch'], //顺序可指定
+            ],
+            [
+                'page_name' => '部门管理',
+                'permission' => ['user/department/index'],
+            ],
+            [
+                'page_name' => '岗位管理',
+                'permission' => ['user/posts/index'],
+            ],
+        ],
+
+    ],
+    [
+        'module' => '客户模块',
+        'items' => [
+            [
+                'page_name' => '外部客户',
+                'permission' => ['customer/customer/index', 'customer/customer/create'],
+            ],
+            [
+                'page_name' => '集团公司评级',
+                'permission' => ['customer/group/rate'],
+            ],
+        ],
+
+    ],
+];
 ?>
 <div class="posts-grid">
 
@@ -22,10 +62,11 @@ $actionId = Yii::$app->requestedAction->id;
             <input type="hidden" name="Posts[id]" value="<?= $model->id ?>">
             <input type="hidden" name="_csrf" id="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
 
+        <?php foreach ($data as $k=>$v){ ?>
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th colspan="3">用户模块</th>
+                <th colspan="3"><?= $v['module'] ?></th>
             </tr>
             </thead>
             <tbody>
@@ -34,56 +75,37 @@ $actionId = Yii::$app->requestedAction->id;
                 <td class="text-center" width="20%">页面名称</td>
                 <td>权限</td>
             </tr>
+            <?php foreach ($v['items'] as $key=>$val){ ?>
             <tr>
-                <td class="text-center">1</td>
-                <td class="text-center">用户管理</td>
-                <td><label for="view-user"><input id="view-user" type="checkbox" name="Auth[viewUser]" value="viewUser"> 进入</label></td>
+                <td class="text-center"><?= ++$key; ?></td>
+                <td class="text-center"><?= $val['page_name'] ?></td>
+                <td>
+                    <?php foreach ($val['permission'] as $i=>$permission){ ?>
+                    <label for="<?= 'I-'.$k.$key.$i ?>">
+                        <input id="<?= 'I-'.$k.$key.$i ?>" <?= array_key_exists($permission, $permissions) ? 'checked="checked"' : ' ' ?> type="checkbox" name="Auth[<?= 'I-'.$k.$key.$i ?>]" value="<?= $permission ?>">
+                        <?php
+                            $label = '进入';
+                            switch ($i){
+                                case 1:
+                                    $label = '创建';
+                                    break;
+                                case 2:
+                                    $label = '编辑';
+                                    break;
+                                case 3:
+                                    $label = '作废/恢复';
+                                    break;
+                            }
+                            echo $label . '&nbsp;&nbsp;&nbsp;&nbsp;';
+                        ?>
+                    </label>
+                    <?php } ?>
+                </td>
             </tr>
+            <?php } ?>
 
-            <tr>
-                <td class="text-center">2</td>
-                <td class="text-center">公司管理</td>
-                <td><label for="view-company"><input id="view-company" type="checkbox" name="Auth[viewCompany]" value="viewCompany"> 进入</label></td>
-            </tr>
-
-            <tr>
-                <td class="text-center">2</td>
-                <td class="text-center">部门管理</td>
-                <td><label for="view-department"><input id="view-department" type="checkbox" name="Auth[viewDepartment]" value="viewDepartment"> 进入</label></td>
-            </tr>
-            <tr>
-                <td class="text-center">2</td>
-                <td class="text-center">岗位管理</td>
-                <td><label for="view-posts"><input id="view-posts" type="checkbox" name="Auth[viewPosts]" value="viewPosts"> 进入</label></td>
-            </tr>
-            </tbody>
         </table>
-
-        <!--<table class="table table-bordered">
-            <thead>
-            <tr>
-                <th colspan="3">任务模块</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td class="text-center" width="10%">序号</td>
-                <td class="text-center" width="20%">页面名称</td>
-                <td>权限</td>
-            </tr>
-            <tr>
-                <td class="text-center">1</td>
-                <td class="text-center">任务列表</td>
-                <td><label for="task-list"><input id="task-list" type="checkbox" name="Task[list]" value="1"> 进入</label></td>
-            </tr>
-
-            <tr>
-                <td class="text-center">2</td>
-                <td class="text-center">新增任务</td>
-                <td><label for="task-create"><input id="task-create" type="checkbox" name="Task[create]" value="1"> 进入</label></td>
-            </tr>
-            </tbody>
-        </table>-->
+        <?php } ?>
 
         <div class="form-group">
             <div class="col-sm-offset-9">

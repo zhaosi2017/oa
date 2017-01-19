@@ -12,7 +12,6 @@ use app\models\CActiveRecord;
  * @property string $name
  * @property integer $company_id
  * @property integer $department_id
- * @property string $company_name
  * @property integer $status
  * @property integer $create_author_uid
  * @property integer $update_author_uid
@@ -35,10 +34,10 @@ class Posts extends CActiveRecord
     public function rules()
     {
         return [
-            [['name', 'department_id'], 'required'],
-            [['id', 'department_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
+            [['name', 'department_id', 'company_id'], 'required'],
+            [['id', 'department_id', 'company_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name', 'company_name'], 'string', 'max' => 40],
+            [['name'], 'string', 'max' => 40],
         ];
     }
 
@@ -51,7 +50,7 @@ class Posts extends CActiveRecord
             'id' => 'ID',
             'name' => '岗位名称',
             'department_id' => '所属部门',
-            'company_name' => '所属公司',
+            'company_id' => '所属公司',
             'status' => '状态',
             'create_author_uid' => '创建人',
             'update_author_uid' => '最后修改人',

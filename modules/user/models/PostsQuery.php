@@ -2,12 +2,14 @@
 
 namespace app\modules\user\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[Posts]].
  *
  * @see Posts
  */
-class PostsQuery extends \yii\db\ActiveQuery
+class PostsQuery extends ActiveQuery
 {
     /*public function active()
     {
@@ -30,5 +32,10 @@ class PostsQuery extends \yii\db\ActiveQuery
     public function one($db = null)
     {
         return parent::one($db);
+    }
+
+    public function downList($department_id)
+    {
+        return Posts::find()->select(['name', 'id'])->where(['status'=>0,'department_id'=>$department_id])->indexBy('id')->column();
     }
 }

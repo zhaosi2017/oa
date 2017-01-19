@@ -2,33 +2,20 @@
 
 namespace app\modules\user\controllers;
 
-use app\modules\user\models\User;
+//use app\modules\user\models\User;
+use app\modules\user\models\Department;
 use Yii;
 use app\modules\user\models\Posts;
 use app\modules\user\models\PostsSearch;
 use app\controllers\GController;
+use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * PostsController implements the CRUD actions for Posts model.
  */
 class PostsController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * Lists all Posts models.
@@ -45,6 +32,9 @@ class PostsController extends GController
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function actionTrash()
     {
         $searchModel = new PostsSearch();
@@ -54,6 +44,22 @@ class PostsController extends GController
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function actionDepartment()
+    {
+        if(Yii::$app->request->isPost){
+            $company_id = Yii::$app->request->post('company_id');
+            $model = ["" => '--请选择--'] + Department::find()->downList($company_id);
+            foreach($model as $value=>$name)
+            {
+                echo Html::tag('option',Html::encode($name),array('value'=>$value));
+            }
+        }
+        return false;
     }
 
     /**
@@ -78,6 +84,14 @@ class PostsController extends GController
         $model = new Posts();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            //创建角色
+            $auth = Yii::$app->authManager;
+            //添加角色[岗位编号对应岗位这类角色]
+            $role = $auth->createRole($model->id);
+            $role->description = '岗位编号-' . $model->id;
+            $auth->add($role);
+
             Yii::$app->getSession()->setFlash('success', '新增岗位成功');
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
@@ -111,34 +125,31 @@ class PostsController extends GController
     {
         $this->layout = '@app/views/layouts/form';
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post())) {
 
             $posts = Yii::$app->request->post();
             if(isset($posts['Auth'])){
+
+                //创建许可，给角色分配许可，并创建它们的层次关系
                 $auth = Yii::$app->authManager;
-                $role = false;
+                $role = $auth->createRole($model->id);
+
+                //如果获取不到角色就添加角色
+                $role->description = '岗位编号:' . $model->id;
+                $auth->getRole($model->id) || $auth->add($role) ;
+
+                //重新分配许可
+                empty($auth->getChildren($model->id)) || $auth->removeChildren($role);
+
                 foreach ($posts['Auth'] as $permission){
                     //添加权限
                     $permissionData = $auth->createPermission($permission);
                     $permissionData->description = 'permission: '.$permission;
-                    $auth->add($permissionData);
 
-                    //添加角色并赋于权限 //todo 可以放在循环外
-                    if($role===false){
-                        $role = $auth->createRole($model->id);
-                        $auth->add($role);
-                    }
+                    //如果能获取到许可就不再添加许可
+                    $auth->getPermission($permission) || $auth->add($permissionData);
 
                     $auth->addChild($role, $permissionData);
-                }
-
-                if($role!==false){
-                    $users = User::find()->select(['id'])->where(['status'=>0,'posts_id'=>$model->id])->column();
-                    //为用户指派角色 ／／todo 这一步放在添加用户的时候做
-                    foreach ($users as $userId){
-                        $auth->assign($role, $userId);
-                    }
                 }
             }
 

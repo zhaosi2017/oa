@@ -1,9 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\modules\user\models\Company;
+use app\modules\user\models\Department;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\user\models\Department */
@@ -25,44 +26,28 @@ use app\modules\user\models\Company;
 
     <?php
 
-        //todo 只显示和部门相关公司关联的数据，其余的不显示
-
-        //所有公司 type Object
-        $optionsMapArr = $optionsHtmlArr = $comListMap = Company::find()->select(['name'])->where(['status'=>0])->indexBy('name')->column();
-
-        //所有部门 type Object
-        $supList = $model::find()->select(['id','name','company_name'])->where(['status'=>0])->all();
-
-        $supListMap = ArrayHelper::map($supList,'id','name') + [0 => '无'];
-
-        foreach ($optionsHtmlArr as $item){
-            $optionsMapArr[$item] = [0=>'无'];
-            $optionsHtmlArr[$item] = '<option value="0">无</option>';
-        }
-
-        foreach ($supList as $item){
-            $optionsMapArr[$item->company_name][$item->id] = $item->name;
-            $optionsHtmlArr[$item->company_name] .= '<option value="'.$item->id.'">'.$item->name.'</option>';
-        }
-        $optionJson = json_encode($optionsHtmlArr,JSON_UNESCAPED_UNICODE);
-
-        if($model->company_name){
-            $supListMap = $optionsMapArr[$model->company_name];
-        }else{
-            $supListMap = $optionsMapArr[current($comListMap)];
-        }
-
+    $companyMap = Company::find()->downList();
+    $departmentMap = [];
+    if(!$model->isNewRecord){
+        $departmentMap = Department::find()->downList($model->company_id);
+        //去掉自己及下级
+        $departmentChildren = \yii\helpers\ArrayHelper::map(Department::find()->getChildren($model->id),'id','name');
+        $departmentMap = array_diff($departmentMap, $departmentChildren);
+    }
     ?>
 
-    <?= $form->field($model, 'company_name')->dropDownList($comListMap,
-        ['onchange' => '
-            var comName = $(this).val();
-            var changeCom = '.$optionJson.';
-            $("#department-superior_department_id").html(changeCom[comName]);      
-        ']
+    <?= $form->field($model, 'company_id')->dropDownList($companyMap,
+        [
+            'prompt'=>'--请选择--',
+            'onchange'=>'
+            $.post("'.Url::to(['/user/department/superior']).'",{"company_id": $(this).val(),"_csrf":"'.Yii::$app->request->csrfToken.'"},function(data){
+                $("#department-superior_department_id").html(data);
+            });',
+        ]
     ) ?>
 
-    <?= $form->field($model, 'superior_department_id')->dropDownList($supListMap) ?>
+
+    <?= $form->field($model, 'superior_department_id')->dropDownList($departmentMap, ['prompt'=>'--请选择--'])?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

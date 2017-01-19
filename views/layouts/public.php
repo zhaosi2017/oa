@@ -38,7 +38,7 @@ $username = isset($identity->account) ? $identity->account : 'Guest';
                     </li>
 
                     <li>
-                        <a class="J_menuItem" href="<?= Url::to('home/main/index') ?>"><i class="fa fa-home"></i> <span class="nav-label">主页</span></a>
+                        <a class="J_menuItem" href="<?= Url::to(['/home/main/index']) ?>"><i class="fa fa-home"></i> <span class="nav-label">主页</span></a>
                     </li>
 
 

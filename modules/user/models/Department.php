@@ -10,7 +10,6 @@ use app\models\CActiveRecord;
  * @property integer $id
  * @property integer $company_id
  * @property string $name
- * @property string $company_name
  * @property integer $superior_department_id
  * @property integer $status
  * @property integer $create_author_uid
@@ -34,10 +33,10 @@ class Department extends CActiveRecord
     public function rules()
     {
         return [
-            [['name', 'company_name'], 'required'],
+            [['name', 'company_id'], 'required'],
             [['superior_department_id', 'company_id','status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name', 'company_name'], 'string', 'max' => 20],
+            [['name'], 'string', 'max' => 20],
         ];
     }
 
@@ -49,7 +48,7 @@ class Department extends CActiveRecord
         return [
             'id' => 'ID',
             'name' => '部门名称',
-            'company_name' => '所属公司',
+            'company_id' => '所属公司',
             'superior_department_id' => '上级部门',
             'status' => '状态',
             'create_author_uid' => 'Create Author Uid',

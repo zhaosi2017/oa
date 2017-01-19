@@ -1,5 +1,6 @@
 <?php
 
+/* @var $model app\modules\login\models\LoginForm */
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\captcha\Captcha;
@@ -28,8 +29,11 @@ function handleEmail($str){
         </div>
         <h3>第一平台</h3>
 
+        <!--<blockquote>
+            已向邮箱<?php /*echo $useremail ? handleEmail($useremail) : '' */?>发送登录验证码，请登录邮箱获取验证码！
+        </blockquote>-->
         <blockquote>
-            已向邮箱<?= $useremail ? handleEmail($useremail) : '' ?>发送登录验证码，请登录邮箱获取验证码！
+            登录验证码,请正确输入！
         </blockquote>
         <?php $form = ActiveForm::begin([
             'id' => 'verify-form',
@@ -41,14 +45,25 @@ function handleEmail($str){
 
         <?= $form->field($model, 'password')->hiddenInput(['value' => isset($model->password) ? $model->password : 'password'])->label(false) ?>
 
-        <?= $form->field($model, 'code')
+        <?php /*= $form->field($model, 'code')
             ->widget(Captcha::className(),[
             'captchaAction'=>'/login/default/captcha',
-//            'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
+            'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-9">{input}</div></div>',
         ])
             ->textInput(['autofocus' => true,'placeholder'=>'请输入验证码'])
             ->label(false)
+        */?>
+
+
+        <?= $form->field($model, 'code')
+            ->widget(Captcha::className(),[
+            'captchaAction'=>'/login/default/captcha',
+            'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-9">{input}</div></div>',
+        ])
+//            ->textInput(['autofocus' => true,'placeholder'=>'请输入验证码'])
+            ->label(false)
         ?>
+
 
         <?= Html::submitButton('确定', ['class' => 'btn btn-primary block full-width m-b']) ?>
 
@@ -57,9 +72,5 @@ function handleEmail($str){
     </div>
 </div>
 
-<?php
-//var_dump($vcode);
-
-?>
 
 

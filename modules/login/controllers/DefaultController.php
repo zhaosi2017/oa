@@ -25,7 +25,7 @@ class DefaultController extends GController
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-                'height' => 50,
+                'height' => 35,
                 'width' => 80,
                 'minLength' => 4,
                 'maxLength' => 4
@@ -52,22 +52,28 @@ class DefaultController extends GController
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post())) {
+
+            //禁用拦截
             $forbidden = $model->forbidden();
+
             if($forbidden){
                 return $this->render('locked',$forbidden);
             }else{
                 if($model->preLogin()){
                     $email = $model->getIdentity()->email;
-                    //发送验证码到邮箱 todo 使用swoole 异步发提高性能
 
-                    $captcha = $this->createAction('captcha');
+                    //发送验证码到邮箱 todo 使用swoole 异步发提高性能
+                    /*$captcha = $this->createAction('captcha');
                     $verifyCode = $captcha->getVerifyCode(true);
                     $message = Yii::$app->mailer->compose();
                     $message->setTo($email)->setSubject('验证码')->setTextBody('验证码: ' . $verifyCode);
-
                     if($message->send()){
                         return $this->render('code',['model' => $model,'email'=>$email]);
-                    }
+                    }*/
+
+                    //不使用邮箱，普通图片验证码
+                    $verifyCode = Yii::createObject('yii\captcha\CaptchaAction', ['__captcha', $this])->getVerifyCode();
+
                     return $this->render('code',['model' => $model,'email'=>$email,'vcode'=>$verifyCode]);
                 }
 
@@ -79,19 +85,6 @@ class DefaultController extends GController
         ]);
     }
 
-    /*public function actionEmail()
-    {
-        if(Yii::$app->request->isAjax && Yii::$app->request->post()){
-            $posts = Yii::$app->request->post();
-            $message = Yii::$app->mailer->compose();
-            $message
-                ->setTo($posts['email'])
-                ->setSubject('验证码')
-                ->setTextBody('验证码: ' . $posts['code'])
-                ->send();
-        }
-        return;
-    }*/
 
     public function actionCode()
     {
@@ -99,7 +92,8 @@ class DefaultController extends GController
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post())) {
-            if($this->createAction('captcha')->validate($model->code, false)){
+            $captcha = (Object) $this->createAction('captcha');
+            if($captcha->validate($model->code, false)){
                 if($model->login()){
                     $model->writeLoginLog(1);
                     $homeUrl = Url::to(['/home/default/index']);
@@ -118,7 +112,7 @@ class DefaultController extends GController
     {
         Yii::$app->user->logout();
 
-        $this->redirect(Url::to(['/login/default/entry']));
+        return $this->redirect(Url::to(['/login/default/entry']));
     }
 
 
