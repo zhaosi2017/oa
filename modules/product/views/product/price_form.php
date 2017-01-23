@@ -135,7 +135,7 @@ $actionId = Yii::$app->requestedAction->id;
                 $execute_price = [] + \app\modules\product\models\ProductExecutePrice::find()->where(['product_id'=>$model->id])->indexBy('company_id')->all();
                 foreach ($execute_price as $company_id => $price){
                     echo '<tr><td>'.$company_column[$company_id].'</td>'
-                        .'<td><input class="form-control" type="text" name="ProductPurchasePrice['.$company_id.'][price]" value="'.$price['price'].'"></td>'
+                        .'<td><input class="form-control" type="text" name="ProductExecutePrice['.$company_id.'][price]" value="'.$price['price'].'"></td>'
                         .'<td><a class="del-tr">删除</a></td></tr>';
                 }
                 ?>

@@ -2,12 +2,14 @@
 
 namespace app\modules\product\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[ProductCategory]].
  *
  * @see ProductCategory
  */
-class ProductCategoryQuery extends \yii\db\ActiveQuery
+class ProductCategoryQuery extends ActiveQuery
 {
     /*public function active()
     {
@@ -30,5 +32,14 @@ class ProductCategoryQuery extends \yii\db\ActiveQuery
     public function one($db = null)
     {
         return parent::one($db);
+    }
+
+    public function getChildren($first_category_id)
+    {
+        return ProductCategory::find()
+            ->select(['name','id'])
+            ->where(['superior_id'=>$first_category_id])
+            ->indexBy('id')
+            ->column();
     }
 }

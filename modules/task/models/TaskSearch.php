@@ -18,8 +18,8 @@ class TaskSearch extends Task
     public function rules()
     {
         return [
-            [['id', 'execute_type', 'fee_settlement', 'customer_category', 'customer_grate', 'product_id', 'status', 'superior_task_id', 'create_author_uid', 'update_author_uid', 'create_time', 'update_time'], 'integer'],
-            [['name', 'company_cuntomer_name', 'requirement', 'attachment'], 'safe'],
+            [['id', 'company_id', 'company_customer_id', 'execute_type', 'fee_settlement', 'customer_category', 'customer_grate', 'product_id', 'status', 'superior_task_id', 'create_author_uid', 'update_author_uid', 'create_time', 'update_time'], 'integer'],
+            [['name', 'requirement', 'attachment'], 'safe'],
         ];
     }
 
@@ -74,7 +74,6 @@ class TaskSearch extends Task
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'company_cuntomer_name', $this->company_cuntomer_name])
             ->andFilterWhere(['like', 'requirement', $this->requirement])
             ->andFilterWhere(['like', 'attachment', $this->attachment]);
 

@@ -44,7 +44,7 @@ class DepartmentController extends GController
     {
         if(Yii::$app->request->isPost){
             $company_id = Yii::$app->request->post('company_id');
-            $model = ["" => '--请选择--'] + Department::find()->downList($company_id);
+            $model = ["" => '--请选择--', 0=>'无'] + Department::find()->downList($company_id);
             foreach($model as $value=>$name)
             {
                 echo Html::tag('option',Html::encode($name),array('value'=>$value));

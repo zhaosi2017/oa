@@ -3,6 +3,7 @@
 namespace app\modules\product\models;
 
 use app\models\CActiveRecord;
+use app\modules\system\models\Money;
 
 /**
  * This is the model class for table "product_purchase_price".
@@ -68,5 +69,10 @@ class ProductPurchasePrice extends CActiveRecord
     public static function find()
     {
         return new ProductPurchasePriceQuery(get_called_class());
+    }
+
+    public function getMoney()
+    {
+        return $this->hasOne(Money::className(),['id'=>'money_id'])->alias('money');
     }
 }

@@ -33,7 +33,7 @@ class Department extends CActiveRecord
     public function rules()
     {
         return [
-            [['name', 'company_id'], 'required'],
+            [['name', 'company_id', 'superior_department_id'], 'required'],
             [['superior_department_id', 'company_id','status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 20],

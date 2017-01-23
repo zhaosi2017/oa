@@ -107,4 +107,5 @@ class ProductCategory extends CActiveRecord
     {
         return $this->hasOne($this::className(), ['id' => 'superior_id'])->alias('superior');
     }
+
 }

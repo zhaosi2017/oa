@@ -91,7 +91,6 @@ class GController extends Controller
             default:
                 $this->layout = '@app/views/layouts/global';
         }
-
         return parent::beforeAction($action);
 
     }

@@ -45,7 +45,7 @@ use yii\widgets\ActiveForm;
             if($item->superior_id != 0){
 
                 if($model->second_category_id == $item->id){
-                    $model->category_id = $item->superior_id;
+                    $model->first_category_id = $item->superior_id;
                 }
 
                 $child_category[$item->superior_id][$item->id] = $item->name;
@@ -53,9 +53,8 @@ use yii\widgets\ActiveForm;
             }
         }
 
-//        var_dump($model->category_id);exit;
         $second_category = !empty($child_category) && !empty($one_category)
-            ? $child_category[$model->isNewRecord ? key($one_category) : $model->category_id]
+            ? $child_category[$model->isNewRecord ? key($one_category) : $model->first_category_id]
             : [];
 
         //js json
@@ -67,10 +66,9 @@ use yii\widgets\ActiveForm;
 
     ?>
 
-    <?= $form->field($model, 'category_id')->dropDownList(
+    <?= $form->field($model, 'first_category_id')->dropDownList(
         $one_category,
         [
-            'class' => 'from-control col-sm-9',
             'onchange' => '
                 var one_level = $(this).val();
                 var option_json = '.$option_json.';
@@ -79,8 +77,7 @@ use yii\widgets\ActiveForm;
         ]
     )->label('产品分类') ?>
 
-    <?= $form->field($model, 'second_category_id')->dropDownList($second_category,
-        ['class' => 'from-control col-sm-9'])->label('') ?>
+    <?= $form->field($model, 'second_category_id')->dropDownList($second_category)->label('') ?>
 
     <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
 

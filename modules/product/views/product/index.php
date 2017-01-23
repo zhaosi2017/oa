@@ -67,6 +67,7 @@ $actionId = Yii::$app->requestedAction->id;
                             break;
                         case 1:
                             $status = '停用';
+                            break;
                     }
                     return $status;
                 },
@@ -83,6 +84,7 @@ $actionId = Yii::$app->requestedAction->id;
                             break;
                         case 1:
                             $status = '已作废';
+                            break;
                     }
                     return $status;
                 },

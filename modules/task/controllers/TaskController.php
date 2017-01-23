@@ -2,32 +2,20 @@
 
 namespace app\modules\task\controllers;
 
+use app\modules\product\models\ProductCategory;
 use Yii;
 use app\modules\task\models\Task;
 use app\modules\task\models\TaskSearch;
+use app\modules\task\models\ProductSearch;
 use app\controllers\GController;
+use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * TaskController implements the CRUD actions for Task model.
  */
 class TaskController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * Lists all Task models.
@@ -210,5 +198,80 @@ class TaskController extends GController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionCustomer()
+    {
+        if(Yii::$app->request->isPost && Yii::$app->request->isAjax){
+            $identity = (Object) Yii::$app->user->identity;
+            $company_id = $identity->company_id;
+            $model = ["" => '--请选择客户--'];
+            switch (Yii::$app->request->post('customer_category')){
+                case 1:
+                    $model += Task::find()->customerDownList($company_id);
+                    break;
+                case 2:
+                    $model += Task::find()->companyDownList();
+                    break;
+            }
+            foreach($model as $value=>$name)
+            {
+                echo Html::tag('option',Html::encode($name),array('value'=>$value));
+            }
+        }
+        return false;
+    }
+
+    public function actionGrade()
+    {
+        if(Yii::$app->request->isPost && Yii::$app->request->isAjax){
+            $identity = (Object) Yii::$app->user->identity;
+
+            $grade = 0;
+
+            $customer_category = Yii::$app->request->post('customer_category');
+            $company_customer_id = Yii::$app->request->post('company_customer_id');
+            $company_id = $identity->company_id;
+
+            $grade += Task::find()->getGrade($customer_category, $company_customer_id, $company_id);
+            return $grade;
+        }
+        return false;
+    }
+
+    public function actionSecondCategory()
+    {
+        if(Yii::$app->request->isPost && Yii::$app->request->isAjax){
+            $first_category_id = Yii::$app->request->post('first_category_id');
+            $model = ["" => '--产品二级分类--'] + ProductCategory::find()->getChildren($first_category_id);
+            foreach($model as $value=>$name)
+            {
+                echo Html::tag('option',Html::encode($name),array('value'=>$value));
+            }
+        }
+        return false;
+    }
+
+    public function actionProductSearch()
+    {
+        $this->layout = '@app/views/layouts/list';
+        $searchModel = new ProductSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('product-search', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionProductTree()
+    {
+        $searchModel = new ProductSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('product-search', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }
