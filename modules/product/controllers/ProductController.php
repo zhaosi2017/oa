@@ -116,7 +116,6 @@ class ProductController extends GController
      */
     public function actionPrice($id)
     {
-        $this->layout = '@app/views/layouts/form';
         $model = $this->findModel($id);
 
         if (Yii::$app->request->isPost) {
@@ -217,4 +216,5 @@ class ProductController extends GController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

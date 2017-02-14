@@ -65,7 +65,8 @@ class GController extends Controller
      */
     public function beforeAction($action)
     {
-        $actionId = Yii::$app->requestedAction->id;
+        $this->layout = '@app/views/layouts/right';
+        /*$actionId = Yii::$app->requestedAction->id;
         switch ($actionId){
             case 'add':
                 $this->layout = '@app/views/layouts/form';
@@ -90,7 +91,7 @@ class GController extends Controller
                 break;
             default:
                 $this->layout = '@app/views/layouts/global';
-        }
+        }*/
         return parent::beforeAction($action);
 
     }

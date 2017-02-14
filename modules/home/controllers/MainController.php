@@ -10,7 +10,7 @@ use app\controllers\GController;
 class MainController extends GController
 {
 
-    public $layout = '@app/views/layouts/iframe';
+//    public $layout = '@app/views/layouts/iframe';
 
     /**
      * Renders the index view for the module

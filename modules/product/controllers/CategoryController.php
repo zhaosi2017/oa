@@ -31,7 +31,6 @@ class CategoryController extends GController
 
     public function actionRootSet()
     {
-        $this->layout = '@app/views/layouts/form';
         $model = new RootCategory();
 
         $identify = (Object) Yii::$app->user->identity;

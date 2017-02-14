@@ -92,7 +92,7 @@ class DefaultController extends GController
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post())) {
-            $captcha = (Object) $this->createAction('captcha');
+            $captcha = $this->createAction('captcha');
             if($captcha->validate($model->code, false)){
                 if($model->login()){
                     $model->writeLoginLog(1);

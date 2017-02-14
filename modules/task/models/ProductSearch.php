@@ -15,6 +15,8 @@ class ProductSearch extends Product
 {
     public $root_category_id;
 
+    public $grade;
+
     /**
      * @inheritdoc
      */

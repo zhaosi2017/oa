@@ -323,7 +323,7 @@ CREATE TABLE `login_logs` (
   `login_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `login_ip` char(15) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -332,7 +332,7 @@ CREATE TABLE `login_logs` (
 
 LOCK TABLES `login_logs` WRITE;
 /*!40000 ALTER TABLE `login_logs` DISABLE KEYS */;
-INSERT INTO `login_logs` VALUES (1,6,1,'2016-12-06 17:37:14','0'),(2,0,4,'2016-12-23 15:30:17','::1'),(3,0,4,'2016-12-23 15:31:37','::1'),(4,2,2,'2016-12-23 15:31:44','::1'),(5,2,1,'2016-12-23 15:41:24','::1'),(6,2,3,'2016-12-23 15:59:30','::1'),(7,2,3,'2016-12-23 16:02:03','::1'),(8,2,1,'2016-12-23 16:02:59','::1'),(9,0,4,'2016-12-24 09:31:35','::1'),(10,0,4,'2016-12-24 09:31:54','::1'),(11,2,2,'2016-12-24 13:49:07','::1'),(12,2,1,'2016-12-24 13:49:34','::1'),(13,2,3,'2016-12-24 13:52:49','::1'),(14,2,1,'2016-12-24 13:53:20','::1'),(15,2,1,'2016-12-24 13:55:03','::1'),(16,2,1,'2017-01-19 06:10:57','::1'),(17,2,1,'2017-01-19 06:18:43','::1');
+INSERT INTO `login_logs` VALUES (1,6,1,'2016-12-06 17:37:14','0'),(2,0,4,'2016-12-23 15:30:17','::1'),(3,0,4,'2016-12-23 15:31:37','::1'),(4,2,2,'2016-12-23 15:31:44','::1'),(5,2,1,'2016-12-23 15:41:24','::1'),(6,2,3,'2016-12-23 15:59:30','::1'),(7,2,3,'2016-12-23 16:02:03','::1'),(8,2,1,'2016-12-23 16:02:59','::1'),(9,0,4,'2016-12-24 09:31:35','::1'),(10,0,4,'2016-12-24 09:31:54','::1'),(11,2,2,'2016-12-24 13:49:07','::1'),(12,2,1,'2016-12-24 13:49:34','::1'),(13,2,3,'2016-12-24 13:52:49','::1'),(14,2,1,'2016-12-24 13:53:20','::1'),(15,2,1,'2016-12-24 13:55:03','::1'),(16,2,1,'2017-01-19 06:10:57','::1'),(17,2,1,'2017-01-19 06:18:43','::1'),(18,2,1,'2017-01-19 08:07:41','::1');
 /*!40000 ALTER TABLE `login_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -460,7 +460,8 @@ CREATE TABLE `product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` char(20) NOT NULL,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `second_category_id` int(10) unsigned NOT NULL COMMENT 'äºŒçº§åˆ†ç±»ç¼–å·',
+  `first_category_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '产品一级分类',
+  `second_category_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '产品二级分类',
   `number` char(20) NOT NULL COMMENT 'ç¼–å·',
   `description` text COMMENT 'è¯´æ˜Ž',
   `enable` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -471,7 +472,7 @@ CREATE TABLE `product` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='äº§å“è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='äº§å“è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -480,7 +481,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'产品二',11,4,'A0002','aaaaa',0,0,2,2,'2017-01-09 04:06:41','2017-01-09 05:01:02'),(2,'产品一',11,2,'A0001','',0,0,2,2,'2017-01-09 04:18:03','2017-01-09 05:39:57'),(3,'美女一枚',11,4,'A00011','哈哈',1,0,2,2,'2017-01-09 05:42:51','2017-01-09 08:34:44');
+INSERT INTO `product` VALUES (1,'产品二',11,3,4,'A0002','aaaaa',0,0,2,2,'2017-01-09 04:06:41','2017-01-09 05:01:02'),(2,'产品一',11,1,2,'A0001','',0,0,2,2,'2017-01-09 04:18:03','2017-01-09 05:39:57'),(3,'美女一枚',11,3,4,'A00011','哈哈qq',1,0,2,2,'2017-01-09 05:42:51','2017-01-23 10:15:45'),(4,'攻瑰花',11,3,4,'a0003','AAA',0,0,2,2,'2017-01-22 09:37:08','2017-01-22 09:39:14');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -534,7 +535,7 @@ CREATE TABLE `product_execute_price` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='äº§å“æ‰§è¡Œä»·æ ¼è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='äº§å“æ‰§è¡Œä»·æ ¼è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -543,7 +544,7 @@ CREATE TABLE `product_execute_price` (
 
 LOCK TABLES `product_execute_price` WRITE;
 /*!40000 ALTER TABLE `product_execute_price` DISABLE KEYS */;
-INSERT INTO `product_execute_price` VALUES (7,3,17,2,200.00,2,2,'2017-01-14 04:40:42','2017-01-14 04:40:42'),(6,3,11,2,2.22,2,2,'2017-01-14 04:40:42','2017-01-14 04:40:42');
+INSERT INTO `product_execute_price` VALUES (15,3,17,2,33.00,2,2,'2017-01-23 10:35:33','2017-01-23 10:35:33');
 /*!40000 ALTER TABLE `product_execute_price` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -567,7 +568,7 @@ CREATE TABLE `product_purchase_price` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='äº§å“è´­ä¹°ä»·æ ¼è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COMMENT='äº§å“è´­ä¹°ä»·æ ¼è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -576,7 +577,7 @@ CREATE TABLE `product_purchase_price` (
 
 LOCK TABLES `product_purchase_price` WRITE;
 /*!40000 ALTER TABLE `product_purchase_price` DISABLE KEYS */;
-INSERT INTO `product_purchase_price` VALUES (13,3,2,24.00,24.00,24.00,24.00,2,2,'2017-01-14 04:40:42','2017-01-14 04:40:42'),(12,3,1,22.22,22.22,22.22,2.22,2,2,'2017-01-14 04:40:42','2017-01-14 04:40:42');
+INSERT INTO `product_purchase_price` VALUES (39,3,1,22.22,23.22,24.22,25.22,2,2,'2017-01-23 10:35:33','2017-01-23 10:35:33'),(38,3,2,24.00,25.00,26.00,27.00,2,2,'2017-01-23 10:35:33','2017-01-23 10:35:33');
 /*!40000 ALTER TABLE `product_purchase_price` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -619,19 +620,20 @@ DROP TABLE IF EXISTS `task`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `task` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(40) NOT NULL,
-  `execute_type` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT 'æ‰§è¡Œæ–¹å¼:1ä¸€æ¬¡æ€§2é‡å¤ ',
-  `fee_settlement` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT 'è´¹ç”¨ç»“ç®—:1å…¨åŒ…2ç‹¬ç«‹',
-  `customer_category` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT 'å®¢æˆ·ç±»åˆ«:1å¤–éƒ¨å®¢æˆ·2é›†å›¢å…¬å¸',
-  `customer_grate` tinyint(2) unsigned DEFAULT '0' COMMENT 'å®¢æˆ·çº§åˆ«1A2B3C4D',
-  `company_cuntomer_name` char(40) NOT NULL COMMENT 'é›†å›¢æˆ–å¤–éƒ¨å®¢æˆ·åç§°',
-  `product_id` int(10) unsigned NOT NULL,
-  `requirement` text NOT NULL COMMENT 'ä»»åŠ¡è¦æ±‚',
-  `attachment` varchar(64) DEFAULT NULL,
-  `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '0å¾…å‘å¸ƒ1å¾…æŽ¥æ”¶2å¤„ç†ä¸­3å¾…éªŒæ”¶4ç»“ç®—ä¸­5å·²å®Œæˆ6ä»»åŠ¡æ’¤é”€7æ— æ³•æ‰§è¡Œ8å·²ä½œåºŸ',
-  `superior_task_id` int(10) unsigned NOT NULL,
-  `create_author_uid` int(11) NOT NULL,
-  `update_author_uid` int(11) NOT NULL,
+  `name` char(40) NOT NULL DEFAULT '',
+  `company_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `execute_type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '1:一次性,2:重复',
+  `fee_settlement` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '1:全包,2:独立',
+  `customer_category` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '1外部客户，2集团公司',
+  `customer_grate` tinyint(3) unsigned DEFAULT '0' COMMENT '客户级别：1A2B3C4D',
+  `company_customer_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `product_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `requirement` text NOT NULL COMMENT '任务要求',
+  `attachment` varchar(64) NOT NULL DEFAULT '',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '0正常，1作废，2待发布，3待接收，4处理中，5待验收，6结算中，7已完成，8撤销，9无法执行',
+  `superior_task_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `create_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
+  `update_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0',
   `update_time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
@@ -838,4 +840,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-01-19 12:48:06
+-- Dump completed on 2017-01-25 13:35:47

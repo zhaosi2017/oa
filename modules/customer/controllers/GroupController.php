@@ -12,7 +12,6 @@ class GroupController extends GController
 {
     public function actionRate()
     {
-        $this->layout = '@app/views/layouts/form';
         $identity = (Object) Yii::$app->user->identity;
         if(Yii::$app->request->post()){
             $posts = Yii::$app->request->post();

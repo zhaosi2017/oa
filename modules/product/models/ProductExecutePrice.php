@@ -2,7 +2,9 @@
 
 namespace app\modules\product\models;
 
-use Yii;
+use app\modules\user\models\Company;
+use app\models\CActiveRecord;
+//use Yii;
 
 /**
  * This is the model class for table "product_execute_price".
@@ -17,7 +19,7 @@ use Yii;
  * @property string $create_time
  * @property string $update_time
  */
-class ProductExecutePrice extends \app\models\CActiveRecord
+class ProductExecutePrice extends CActiveRecord
 {
     /**
      * @inheritdoc
@@ -65,5 +67,10 @@ class ProductExecutePrice extends \app\models\CActiveRecord
     public static function find()
     {
         return new ProductExecutePriceQuery(get_called_class());
+    }
+
+    public function getCompany()
+    {
+        return $this->hasOne(Company::className(),['id' => 'company_id'])->alias('company');
     }
 }

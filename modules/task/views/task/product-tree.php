@@ -84,7 +84,7 @@ $searchModel->grade = $grade;
                 'buttons' => [
                     'choose' => function($url, $model)
                     {
-                        $product_price_html = '<tr><td>货币</td><td>购买价格</td><td>成交价格</td></tr>';
+                        $product_price_html = '<tr><th>货币</th><th>购买价格</th><th>成交价格 </th></tr>';
                         $grade_price = [
                             1 => 'a_grade_price',
                             2 => 'b_grade_price',
@@ -95,8 +95,8 @@ $searchModel->grade = $grade;
                         foreach ($model->purchasePrice as $k=>$v){
                             $product_price_html .= '<tr>'
                                 .'<td>'.$model->money[$v->money_id].'</td>'
-                                .'<td><input title="" readonly="readonly" class="no-borders" name="PurchasePrice['.$v->money_id.']" value="'.$v[$grade_price[$model->grade]].'" ></td>'
-                                .'<td><input title="" required class="form-control" step="0.01" min="'.$v[$grade_price[$model->grade]].'" name="TaskDealPrice['.$v->money_id.']" type="number" value="'.$v[$grade_price[$model->grade]].'"></td>'
+                                .'<td>'.$v[$grade_price[$model->grade]].'</td>'
+                                .'<td><input title="" required class="form-control" step="0.01" min="'.$v[$grade_price[$model->grade]].'" name="TaskDealPrice['.$v->money_id.']" type="number" value=""></td>'
                                 .'</tr>';
                         }
 
@@ -107,7 +107,7 @@ $searchModel->grade = $grade;
                                     var url = \''.$url.'\';
                                     var $body = parent.$("body");
                                     $body.find("#task-product_id").val(\''.$model->id.'\');
-                                    $body.find("#product-name-number").html(\''.$model->name.'\' + \'('.$model->number.')\');
+                                    $body.find("#product-name-number").html(\''.$model->name.'\' + \''.$model->number.'\');
                                     $body.find("#product-company").removeClass("hide").find("input").val(\''.$model['company']['name'].'\');
                                     $body.find("#product-requirement").removeClass("hide").find("textarea").val(\''.$model->description.'\');
                                     $body.find("#product_price_table").removeClass("hide").find("table").html(\''.$product_price_html.'\');

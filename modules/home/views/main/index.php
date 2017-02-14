@@ -7,6 +7,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('@web/js/home/content.js',['depends' => 'app\assets\GlobalAsset']);
 $this->registerJsFile('@web/js/home/welcome.js',['depends' => 'app\assets\GlobalAsset']);
+
 ?>
 Welcome Page ...
 <!--

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 //use yii\bootstrap\NavBar;
 //use yii\widgets\Breadcrumbs;
 use app\assets\GlobalAsset;
-use yii\bootstrap\Alert;
+//use yii\bootstrap\Alert;
 
 GlobalAsset::register($this);
 ?>
@@ -33,12 +33,13 @@ GlobalAsset::register($this);
     <?php $this->head() ?>
 </head>
 
-<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<body class="fixed-sidebar full-height-layout gray-bg pace-done" style="overflow:hidden">
 <?php
-if( Yii::$app->getSession()->hasFlash('success') ) {
+/*if( Yii::$app->getSession()->hasFlash('success') ) {
     echo Alert::widget([
         'options' => [
-            'class' => 'alert-success', //这里是提示框的class
+            'class' => 'alert-success no-margins', //这里是提示框的class
+            // 'style' => 'z-index:9999;position:fixed;width:100%',
         ],
         'body' => Yii::$app->getSession()->getFlash('success'), //消息体
     ]);
@@ -46,7 +47,7 @@ if( Yii::$app->getSession()->hasFlash('success') ) {
 if( Yii::$app->getSession()->hasFlash('error') ) {
     echo Alert::widget([
         'options' => [
-            'class' => 'alert-warning',
+            'class' => 'alert-warning no-margins',
         ],
         'body' => Yii::$app->getSession()->getFlash('error'),
     ]);
@@ -54,11 +55,11 @@ if( Yii::$app->getSession()->hasFlash('error') ) {
 if( Yii::$app->getSession()->hasFlash('info') ) {
     echo Alert::widget([
         'options' => [
-            'class' => 'alert-info',
+            'class' => 'alert-info no-margins',
         ],
         'body' => Yii::$app->getSession()->getFlash('info'),
     ]);
-}
+}*/
 ?>
 <?php $this->beginBody() ?>
     <?= isset($content) ? $content : ''  ?>

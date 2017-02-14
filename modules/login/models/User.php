@@ -2,12 +2,13 @@
 
 namespace app\modules\login\models;
 
-//use \yii\base\Object;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
+//    public $auth_key;
+
     public static function tableName()
     {
         return 'user';
@@ -26,7 +27,7 @@ class User extends ActiveRecord implements IdentityInterface
      * 根据 token 查询身份。
      *
      * @param string $token 被查询的 token
-     * @return IdentityInterface|null 通过 token 得到的身份对象
+     * @return IdentityInterface 通过 token 得到的身份对象
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {

@@ -1,17 +1,18 @@
 <?php
 
 use yii\helpers\Url;
-use app\assets\GlobalAsset;
-GlobalAsset::register($this);
 
 $identity = Yii::$app->user->identity;
 $identity = (Object) $identity;
 $username = isset($identity->account) ? $identity->account : 'Guest';
+
+$module = $this->context->module->id;
+
 ?>
 <?php $this->beginContent('@app/views/layouts/global.php'); ?>
 <?php $srcDataPrefix = 'data:image/jpg;base64,'; ?>
 <?php $imgUrl = Url::home(true) .'img/'; ?>
-    <div id="wrapper">
+    <div id="wrapper" data-url="<?= $_SERVER['REQUEST_URI'] ?>">
         <!--左侧导航开始-->
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="nav-close"><i class="fa fa-times-circle"></i>
@@ -23,8 +24,8 @@ $username = isset($identity->account) ? $identity->account : 'Guest';
                             <span><img alt="image" class="img-circle" src="<?= $srcDataPrefix . (base64_encode(file_get_contents($imgUrl.'profile_small.jpg'))) ?>" /></span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
-                               <span class="block m-t-xs"><strong class="font-bold"><?= $username ?></strong></span>
-<!--                                <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>-->
+                                <span class="block m-t-xs"><strong class="font-bold"><?= $username ?></strong></span>
+                                <!--<span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>-->
                                 </span>
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
@@ -37,120 +38,54 @@ $username = isset($identity->account) ? $identity->account : 'Guest';
                         </div>
                     </li>
 
-                    <li>
+                    <li class="<?= $module=='home' ? 'active' : '' ?>">
                         <a class="J_menuItem" href="<?= Url::to(['/home/main/index']) ?>"><i class="fa fa-home"></i> <span class="nav-label">主页</span></a>
                     </li>
 
-
-                    <li>
+                    <li class="<?= $module=='user' ? 'active' : '' ?>">
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">用户</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <!--<li><a class="J_menuItem" href="typography.html">排版</a>
-                            </li>-->
-                            <li>
-                                <a href="#">用户管理 <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/user/index']) ?>">用户管理-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/user/trash']) ?>">用户管理-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/user/create']) ?>">新增用户</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">公司管理 <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/company/index']) ?>">公司管理-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/company/trash']) ?>">公司管理-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/company/create']) ?>">新增公司</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">部门管理 <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/department/index']) ?>">部门管理-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/department/trash']) ?>">部门管理-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/department/create']) ?>">新增部门</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">岗位管理 <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/posts/index']) ?>">岗位管理-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/posts/trash']) ?>">岗位管理-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/user/posts/create']) ?>">新增岗位</a></li>
-<!--                                    <li><a class="J_menuItem" href="#">岗位详情-权限设置</a></li>-->
-                                </ul>
-                            </li>
-
+                            <li><a class="J_menuItem" href="<?= Url::to(['/user/user/index']) ?>">用户管理</a>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/user/company/index']) ?>">公司管理</a>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/user/department/index']) ?>">部门管理</a>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/user/posts/index']) ?>">岗位管理</a>
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="<?= $module=='customer' ? 'active' : '' ?>">
                         <a href="#"><i class="fa fa-user-secret"></i> <span class="nav-label">客户</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">外部客户<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/customer/customer/index']) ?>">外部客户-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/customer/customer/trash']) ?>">外部客户-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/customer/customer/create']) ?>">新增客户</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="<?= Url::to(['/customer/group/rate']) ?>">集团公司评级</a>
-                            </li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/customer/customer/index']) ?>">外部客户</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/customer/group/rate']) ?>">集团公司评级</a></li>
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="<?= $module=='product' ? 'active' : '' ?>">
                         <a href="#"><i class="fa fa-cart-plus"></i> <span class="nav-label">产品</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a class="J_menuItem" href="<?= Url::to(['/product/category/root-set']) ?>">根分类设置</a>
-                            </li>
-                            <li>
-                                <a href="#">产品分类<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product-category/index']) ?>">产品分类-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product-category/create']) ?>">新增分类</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">产品管理<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product/index']) ?>">产品管理-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product/trash']) ?>">产品管理-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/product/product/create']) ?>">新增产品</a></li>
-                                </ul>
-                            </li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/product/category/root-set']) ?>">根分类设置</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/product/product-category/index']) ?>">产品分类</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/product/product/index']) ?>">产品管理</a></li>
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="<?= $module=='task' ? 'active' : '' ?>">
                         <a href="#"><i class="fa fa-tasks"></i> <span class="nav-label">任务</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">已发任务<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/sent-index']) ?>">已发任务-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/sent-trash']) ?>">已发任务-垃圾筒</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/create']) ?>">新增任务</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/create-child']) ?>">新增子任务</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">待接收任务<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/wait-index']) ?>">待接收任务-列表</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/sent-index']) ?>">已发任务</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/wait-index']) ?>">待接收任务</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-index']) ?>">已接收任务</a></li>
+                                    <!--<li><a class="J_menuItem" href="<?/*= Url::to(['/task/task/wait-index']) */?>">待接收任务-列表</a></li>
                                 </ul>
                             </li>
                             <li>
                                 <a href="#">已接收任务<span class="fa arrow"></span></a>
                                 <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-index']) ?>">已接收任务-列表</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-handle']) ?>">已接收任务-处理</a></li>
-                                    <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-feedback']) ?>">已接收任务-反馈</a></li>
+                                    <li><a class="J_menuItem" href="<?/*= Url::to(['/task/task/received-index']) */?>">已接收任务-列表</a></li>
+                                    <li><a class="J_menuItem" href="<?/*= Url::to(['/task/task/received-handle']) */?>">已接收任务-处理</a></li>
+                                    <li><a class="J_menuItem" href="<?/*= Url::to(['/task/task/received-feedback']) */?>">已接收任务-反馈</a></li>
                                 </ul>
-                            </li>
+                            </li>-->
                         </ul>
                     </li>
                     <li>
@@ -372,7 +307,7 @@ $username = isset($identity->account) ? $identity->account : 'Guest';
                 </nav>
             </div>
             <div class="row content-tabs">
-                <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i>
+                <!--<button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i>
                 </button>
                 <nav class="page-tabs J_menuTabs">
                     <div class="page-tabs-content">
@@ -394,12 +329,11 @@ $username = isset($identity->account) ? $identity->account : 'Guest';
                         <li class="J_tabCloseOther"><a>关闭其他选项卡</a>
                         </li>
                     </ul>
-                </div>
+                </div>-->
                 <a data-method="post" href="<?= Url::to(['/login/default/logout']) ?>" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
             </div>
-            <div class="row J_mainContent" id="content-main">
+            <div class="row J_mainContent" id="content-main" style="overflow: auto">
                 <?= isset($content) ? $content : '' ?>
-<!--                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="index_v1.html?v=4.0" frameborder="0" data-id="index_v1.html" seamless></iframe>-->
             </div>
             <div class="footer">
                 <div class="pull-right">Yii: <?= Yii::getVersion() ?> &copy; 2016-2017 <a href="#" target="_blank">oa-system</a>
@@ -726,5 +660,5 @@ $username = isset($identity->account) ? $identity->account : 'Guest';
         <!--mini聊天窗口开始-->
         <!--mini聊天窗口结束-->
     </div>
-
 <?php $this->endContent(); ?>
+

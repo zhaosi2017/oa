@@ -140,7 +140,6 @@ class UserController extends GController
 
     public function actionPermission($id)
     {
-        $this->layout = '@app/views/layouts/form';
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {

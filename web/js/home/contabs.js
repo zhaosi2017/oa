@@ -105,6 +105,12 @@ $(function () {
         }
     });
 
+    $(".J_menuItem").each(function () {
+        if ($(this).attr('href') == $("#wrapper").attr("data-url")) {
+            $(this).parent('li').addClass('active');
+        }
+    });
+
     function menuItem() {
         // 获取标识数据
         var dataUrl = $(this).attr('href'),
@@ -112,6 +118,9 @@ $(function () {
             menuName = $.trim($(this).text()),
             flag = true;
         if (dataUrl == undefined || $.trim(dataUrl).length == 0)return false;
+
+        // 添加链接地址到地址栏
+        history.pushState({},'', dataUrl);
 
         // 选项卡菜单已存在
         $('.J_menuTab').each(function () {
@@ -155,7 +164,7 @@ $(function () {
         return false;
     }
 
-    $('.J_menuItem').on('click', menuItem);
+    // $('.J_menuItem').on('click', menuItem);
 
     // 关闭选项卡菜单
     function closeTab() {

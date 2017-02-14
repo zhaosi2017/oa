@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 <div class="product-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['product-search'],
+        'action' => ['product-search','grade'=>$model->grade],
         'method' => 'get',
     ]); ?>
 

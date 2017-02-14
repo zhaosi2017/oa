@@ -9,7 +9,6 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 
 $identity = (Object) Yii::$app->user->identity;
-//var_dump($identity);
 ?>
 
 <div class="task-form">
@@ -24,7 +23,16 @@ $identity = (Object) Yii::$app->user->identity;
 
     <?= $form->field($model, 'company_id')->hiddenInput(['value' => $identity->company_id])->label(false) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('子任务名称') ?>
+
+    <div class="form-group" id="product-company">
+        <label class="col-sm-2 control-label" for="product-company">项目编号</label>
+        <div class="col-sm-10">
+            <input title="" type="text" readonly="readonly" class="form-control" value="<?= Yii::$app->request->get('number') ?>">
+        </div>
+    </div>
+
+    <?= $form->field($model, 'superior_task_id')->hiddenInput(['value' => Yii::$app->request->get('task_id')])->label(false) ?>
 
     <?= $form->field($model, 'execute_type')->radioList([1=>'一次性',2=>'重复'],['value'=>1]) ?>
 
@@ -114,7 +122,7 @@ $identity = (Object) Yii::$app->user->identity;
         [
             'template' => "{label}\n<div class=\"col-sm-10\">{input}
             \n<span class=\"help-block m-b-none\"><i class=\"fa fa-info-circle\"></i>(由于安全原因，当前附件仅允许上传zip、rar、7z格式的压缩包，且仅限上传一个附件！)</span></div>"
-        ])->fileInput(['class'=>'form-control']) ?>
+        ])->fileInput(['class'=>'form-control'])->label('附件') ?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

@@ -211,6 +211,7 @@ class LoginForm extends Model
     public function getIdentity()
     {
         if($this->identity === false){
+
             $this->identity = User::findOne(['account' => $this->username]);
         }
 

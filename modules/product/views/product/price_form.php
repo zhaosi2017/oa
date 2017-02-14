@@ -9,12 +9,12 @@ use yii\widgets\ActiveForm;
 
 $this->title = ' 编辑产品: ' . $model->name;
 $actionId = Yii::$app->requestedAction->id;
-//var_dump($company);
+
 ?>
 <div class="product-price">
     <p class="btn-group hidden-xs">
-        <?= Html::a('基本信息', ['update?id=' . $model->id], ['class' => $actionId=='update' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a('产品价格', ['price?id=' . $model->id], ['class' => $actionId=='price' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('基本信息', ['update?id=' . $model->id], ['class' => $actionId=='update' ? 'btn btn-primary' : 'btn btn-outline btn-default']) ?>
+        <?= Html::a('产品价格', ['price?id=' . $model->id], ['class' => $actionId=='price' ? 'btn btn-primary' : 'btn btn-outline btn-default']) ?>
     </p>
 
     <div class="table-responsive">
@@ -62,10 +62,10 @@ $actionId = Yii::$app->requestedAction->id;
                     $purchase_price = [] + \app\modules\product\models\ProductPurchasePrice::find()->where(['product_id'=>$model->id])->indexBy('money_id')->all();
                     foreach ($purchase_price as $money_id => $price){
                         echo '<tr><td>'.$money_column[$money_id].'</td>'
-                            .'<td><input class="form-control" type="text" name="ProductPurchasePrice['.$money_id.'][a_grade_price]" value="'.$price['a_grade_price'].'"></td>'
-                            .'<td><input class="form-control" type="text" name="ProductPurchasePrice['.$money_id.'][b_grade_price]" value="'.$price['b_grade_price'].'"></td>'
-                            .'<td><input class="form-control" type="text" name="ProductPurchasePrice['.$money_id.'][c_grade_price]" value="'.$price['c_grade_price'].'"></td>'
-                            .'<td><input class="form-control" type="text" name="ProductPurchasePrice['.$money_id.'][d_grade_price]" value="'.$price['d_grade_price'].'"></td>'
+                            .'<td><input class="form-control" type="number" step="0.01"  name="ProductPurchasePrice['.$money_id.'][a_grade_price]" value="'.$price['a_grade_price'].'"></td>'
+                            .'<td><input class="form-control" type="number" step="0.01"  name="ProductPurchasePrice['.$money_id.'][b_grade_price]" value="'.$price['b_grade_price'].'"></td>'
+                            .'<td><input class="form-control" type="number" step="0.01"  name="ProductPurchasePrice['.$money_id.'][c_grade_price]" value="'.$price['c_grade_price'].'"></td>'
+                            .'<td><input class="form-control" type="number" step="0.01"  name="ProductPurchasePrice['.$money_id.'][d_grade_price]" value="'.$price['d_grade_price'].'"></td>'
                             .'<td><a class="del-tr">删除</a></td></tr>';
                     }
                 ?>
@@ -135,7 +135,7 @@ $actionId = Yii::$app->requestedAction->id;
                 $execute_price = [] + \app\modules\product\models\ProductExecutePrice::find()->where(['product_id'=>$model->id])->indexBy('company_id')->all();
                 foreach ($execute_price as $company_id => $price){
                     echo '<tr><td>'.$company_column[$company_id].'</td>'
-                        .'<td><input class="form-control" type="text" name="ProductExecutePrice['.$company_id.'][price]" value="'.$price['price'].'"></td>'
+                        .'<td><input class="form-control" required type="number" step="0.01"  name="ProductExecutePrice['.$company_id.'][price]" value="'.$price['price'].'"></td>'
                         .'<td><a class="del-tr">删除</a></td></tr>';
                 }
                 ?>
@@ -170,10 +170,10 @@ $("#add_money").click(function(){
 
         var money_name = $("#money_list option:selected").text();
         var tr_purchase_html = \'<tr><td>\'+ money_name +\'</td>\' +
-            \'<td><input class="form-control" type="text" name="ProductPurchasePrice[\'+money_value+\'][a_grade_price]"></td>\'+
-            \'<td><input class="form-control" type="text" name="ProductPurchasePrice[\'+money_value+\'][b_grade_price]"></td>\'+
-            \'<td><input class="form-control" type="text" name="ProductPurchasePrice[\'+money_value+\'][c_grade_price]"></td>\'+
-            \'<td><input class="form-control" type="text" name="ProductPurchasePrice[\'+money_value+\'][d_grade_price]"></td>\'+
+            \'<td><input required class="form-control" type="number" step="0.01"  name="ProductPurchasePrice[\'+money_value+\'][a_grade_price]"></td>\'+
+            \'<td><input required class="form-control" type="number" step="0.01"  name="ProductPurchasePrice[\'+money_value+\'][b_grade_price]"></td>\'+
+            \'<td><input required class="form-control" type="number" step="0.01"  name="ProductPurchasePrice[\'+money_value+\'][c_grade_price]"></td>\'+
+            \'<td><input required class="form-control" type="number" step="0.01"  name="ProductPurchasePrice[\'+money_value+\'][d_grade_price]"></td>\'+
             \'<td><a class="del-tr">删除</a></td></tr>\';
         if(money_value){
             $("#purchase_price").append(tr_purchase_html);
@@ -191,7 +191,7 @@ $("#add_company").click(function(){
 
         var company_name = $("#company_list option:selected").text();
         var tr_company_html = \'<tr><td>\'+ company_name +\'</td>\' +
-            \'<td><input class="form-control" type="text" name="ProductExecutePrice[\'+company_value+\'][price]"></td>\' +
+            \'<td><input required class="form-control" type="number" step="0.01" name="ProductExecutePrice[\'+company_value+\'][price]"></td>\' +
             \'<td><a class="del-tr">删除</a></td></tr>\';
         if(company_value){
             $("#execute_price").append(tr_company_html);

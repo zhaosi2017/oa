@@ -60,7 +60,7 @@ class ProductSearch extends Product
             'product.update_time',
             'creator.account as creator_account',
             'updater.account as updater_account',
-            'category.name',
+//            'category.name',
         ])->where([
             'product.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
         ]);

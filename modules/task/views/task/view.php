@@ -34,7 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'fee_settlement',
             'customer_category',
             'customer_grate',
-            'company_cuntomer_name',
             'product_id',
             'requirement:ntext',
             'attachment',

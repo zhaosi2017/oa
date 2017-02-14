@@ -142,4 +142,5 @@ class Product extends CActiveRecord
     public function getGrade(){
         return \Yii::$app->request->get('grade');
     }
+
 }

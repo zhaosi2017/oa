@@ -3,13 +3,17 @@
 namespace app\modules\task\controllers;
 
 use app\modules\product\models\ProductCategory;
+use app\modules\task\models\TaskDealPrice;
+use app\modules\task\models\TaskExecuteInfo;
 use Yii;
 use app\modules\task\models\Task;
 use app\modules\task\models\TaskSearch;
 use app\modules\task\models\ProductSearch;
 use app\controllers\GController;
 use yii\helpers\Html;
+//use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * TaskController implements the CRUD actions for Task model.
@@ -34,7 +38,6 @@ class TaskController extends GController
 
     public function actionSentIndex()
     {
-        $this->layout = '@app/views/layouts/list';
         $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -46,7 +49,6 @@ class TaskController extends GController
 
     public function actionWaitIndex()
     {
-        $this->layout = '@app/views/layouts/list';
         $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -58,7 +60,6 @@ class TaskController extends GController
 
     public function actionReceivedIndex()
     {
-        $this->layout = '@app/views/layouts/list';
         $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -70,11 +71,10 @@ class TaskController extends GController
 
     public function actionSentTrash()
     {
-        $this->layout = '@app/views/layouts/list';
         $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('sent-trash', [
+        return $this->render('sent-index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -92,6 +92,33 @@ class TaskController extends GController
         ]);
     }
 
+    public function actionSentDetail($id)
+    {
+        $model = $this->findModel($id);
+        return $this->render('sent-detail', [
+            'model' => $model,
+            'children' => $model->getChildren($id),
+        ]);
+    }
+
+    public function actionWaitDetail($id)
+    {
+        $model = $this->findModel($id);
+        return $this->render('wait-detail', [
+            'model' => $model,
+            'children' => $model->getChildren($id),
+        ]);
+    }
+
+    public function actionReceivedDetail($id)
+    {
+        $model = $this->findModel($id);
+        return $this->render('received-detail', [
+            'model' => $model,
+            'children' => $model->getChildren($id),
+        ]);
+    }
+
     /**
      * Creates a new Task model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -101,8 +128,35 @@ class TaskController extends GController
     {
         $model = new Task();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->file =  UploadedFile::getInstance($model, 'file');
+            if($model->file){   //文件上传大小限制 10M
+                $randName = uniqid() . rand(1000, 9999) . "." . $model->file->extension;
+                $model->attachment = $randName;
+                //$model->attachment = $model->file->baseName . '.' . $model->file->extension;
+                $model->file->saveAs(Yii::$app->params['uploadPath'] . $randName);
+                $model->file = null;
+            }
+
+            $task_deal_price_model = new TaskDealPrice();
+
+            $model->save();
+            if(Yii::$app->request->post('PurchasePrice') && Yii::$app->request->post('TaskDealPrice')){
+                $purchasePrice = Yii::$app->request->post('PurchasePrice');
+                $taskDealPrice = Yii::$app->request->post('TaskDealPrice');
+                foreach ($taskDealPrice as $k=>$v){
+                    $_task_deal_price_model = clone $task_deal_price_model;
+                    $_task_deal_price_model->task_id = $model->id;
+                    $_task_deal_price_model->product_id = $model->product_id;
+                    $_task_deal_price_model->money_id = $k;
+                    $_task_deal_price_model->price = $v;
+                    $_task_deal_price_model->purchase_price = $purchasePrice[$k];
+                    $_task_deal_price_model->save();
+                }
+            }
+            $model->sendSuccess();
+
+            return $this->redirect(['sent-index', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -112,11 +166,38 @@ class TaskController extends GController
 
     public function actionCreateChild()
     {
-        $this->layout = '@app/views/layouts/form';
         $model = new Task();
 
+        $url = Yii::$app->request->referrer;
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $model->file =  UploadedFile::getInstance($model, 'file');
+            if($model->file){   //文件上传大小限制 10M
+                $randName = uniqid() . rand(1000, 9999) . "." . $model->file->extension;
+                $model->attachment = $randName;
+                //$model->attachment = $model->file->baseName . '.' . $model->file->extension;
+                $model->file->saveAs(Yii::$app->params['uploadPath'] . $randName);
+                $model->file = null;
+            }
+
+            $task_deal_price_model = new TaskDealPrice();
+
+            $model->save();
+            if(Yii::$app->request->post('PurchasePrice') && Yii::$app->request->post('TaskDealPrice')){
+                $purchasePrice = Yii::$app->request->post('PurchasePrice');
+                $taskDealPrice = Yii::$app->request->post('TaskDealPrice');
+                foreach ($taskDealPrice as $k=>$v){
+                    $_task_deal_price_model = clone $task_deal_price_model;
+                    $_task_deal_price_model->task_id = $model->id;
+                    $_task_deal_price_model->product_id = $model->product_id;
+                    $_task_deal_price_model->money_id = $k;
+                    $_task_deal_price_model->price = $v;
+                    $_task_deal_price_model->purchase_price = $purchasePrice[$k];
+                    $_task_deal_price_model->save();
+                }
+            }
+            $model->sendSuccess();
+            return $this->redirect($url);
         } else {
             return $this->render('create-child', [
                 'model' => $model,
@@ -150,6 +231,21 @@ class TaskController extends GController
                 'model' => $model,
             ]);
         }
+    }
+
+    public function actionReceive()
+    {
+        $model = new TaskExecuteInfo();
+        if ($model->load(Yii::$app->request->post()) && $model->save()){
+            $task_model = Task::findOne($model->task_id);
+            $task_model->status = 4;
+            $task_model->execute_company_id = $model->company_id;
+            $task_model->update();
+            //todo 发送通知
+            $model->sendSuccess();
+            $this->redirect(['wait-index']);
+        }
+        return false;
     }
 
     /**
@@ -266,12 +362,33 @@ class TaskController extends GController
 
     public function actionProductTree()
     {
+        $this->layout = '@app/views/layouts/list';
         $searchModel = new ProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('product-search', [
+        return $this->render('product-tree', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionRelease($task_id)
+    {
+        if(Yii::$app->request->isPost){
+            $model = Task::findOne($task_id);
+            $model->status = 3;
+            if($model->update()){
+                //todo 通知
+                $model->sendSuccess();
+                $this->redirect(['wait-index']);
+            }
+        }
+        return false;
+    }
+
+    public function actionDownload($attachment)
+    {
+        $path = Yii::$app->params['uploadPath'] . $attachment;
+        return Yii::$app->response->sendFile($path);
     }
 }

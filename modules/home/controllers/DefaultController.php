@@ -2,16 +2,17 @@
 
 namespace app\modules\home\controllers;
 
+use app\controllers\GController;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
-use yii\web\Controller;
+//use yii\web\Controller;
 
 /**
  * Default controller for the `home` module
  */
-class DefaultController extends Controller
+class DefaultController extends GController
 {
-    public $layout = '@app/views/layouts/public';
+//    public $layout = '@app/views/layouts/public';
 
     public function behaviors()
     {
@@ -44,6 +45,7 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = '@app/views/layouts/right';
         return $this->render('index');
     }
 }

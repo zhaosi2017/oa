@@ -34,8 +34,15 @@ class ProductCategoryQuery extends ActiveQuery
         return parent::one($db);
     }
 
+    /**
+     * @param $first_category_id
+     * @return array
+     */
     public function getChildren($first_category_id)
     {
+        if(!$first_category_id){
+            return [];
+        }
         return ProductCategory::find()
             ->select(['name','id'])
             ->where(['superior_id'=>$first_category_id])

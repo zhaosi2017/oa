@@ -7,6 +7,7 @@ use Yii;
 use app\modules\product\models\ProductCategory;
 use app\modules\product\models\ProductCategorySearch;
 use app\controllers\GController;
+use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -183,5 +184,18 @@ class ProductCategoryController extends GController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionGetSecondCategory()
+    {
+        if(Yii::$app->request->isPost && Yii::$app->request->isAjax){
+            $first_category_id = Yii::$app->request->post('first_category_id');
+            $model = ["" => '--产品二级分类--'] + ProductCategory::find()->getChildren($first_category_id);
+            foreach($model as $value=>$name)
+            {
+                echo Html::tag('option',Html::encode($name),array('value'=>$value));
+            }
+        }
+        return false;
     }
 }

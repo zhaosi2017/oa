@@ -20,7 +20,9 @@ $actionId = Yii::$app->requestedAction->id;
         <?= Html::a('垃圾筒', ['trash'], ['class' => $actionId=='trash' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
 
-    <p class="btn-group hidden-xs"><?= $actionId=='index' ? Html::a('新增公司', ['create'], ['class' => 'btn btn-link']) : '' ?></p>
+    <p class="btn-group hidden-xs pull-right ">
+        <?= Html::a('新增公司', ['create'], ['class'=>'btn btn-primary']) ?>
+    </p>
 <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -40,15 +42,6 @@ $actionId = Yii::$app->requestedAction->id;
             'name',
 //            'sup_id',
             ['label' => '上级公司', 'attribute'=>'superior_name', 'value' => 'superior.name'],
-            /*[
-                'class' => 'yii\grid\DataColumn',
-                'label' => '上级公司',
-                'attribute' => 'superior_name',
-                'value'  => function ($data)
-                {
-                    return $data['superior']['name'];
-                },
-            ],*/
 
             [
                 'class' => 'yii\grid\DataColumn',
@@ -130,4 +123,5 @@ $actionId = Yii::$app->requestedAction->id;
             ],
         ],
     ]); ?>
-<?php Pjax::end(); ?></div>
+<?php Pjax::end(); ?>
+</div>

@@ -56,7 +56,7 @@ use yii\widgets\ActiveForm;
             <input class="form-control" id="sup_level" type="text" readonly="readonly" value="<?= $model->level ? $model->level-1 : 0 ?>级">
         </div>
     </div>
-    <?= $form->field($model, 'level')->hiddenInput()->label(false) ?>
+    <?= $form->field($model, 'level')->hiddenInput(['value'=>1])->label(false) ?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

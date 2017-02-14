@@ -25,7 +25,8 @@ class GlobalAsset extends AssetBundle
     ];
     public $js = [
         'js/global/bootstrap.min.js?v=3.3.6',
-        'js/global/layer.min.js',
+//        'js/global/layer.min.js',
+        'js/global/layer.js',
         //public
         'js/public/jquery.metisMenu.js',
         'js/public/jquery.slimscroll.min.js',
