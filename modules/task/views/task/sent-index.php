@@ -20,7 +20,6 @@ $actionId = Yii::$app->requestedAction->id;
     <div class="help-block m-t"></div>
     <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
 
-
 <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -131,9 +130,7 @@ $actionId = Yii::$app->requestedAction->id;
         ],
     ]); ?>
 <?php Pjax::end(); ?>
-
-        <p class="<?= $actionId=='sent-index' ? 'btn-group pull-right' : 'hide' ?>">
+        <p class="<?= $actionId=='sent-index' ? 'text-right' : 'hide' ?>">
             <?= Html::a('新增任务', ['create'], ['class'=>'btn btn-sm btn-primary']) ?>
         </p>
-
 </div>

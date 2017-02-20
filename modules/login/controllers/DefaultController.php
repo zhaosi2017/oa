@@ -44,6 +44,7 @@ class DefaultController extends GController
 
     public function actionEntry()
     {
+        $this->layout = '@app/views/layouts/global';
         $homeUrl = Url::to(['/home/default/index']);
         if (!Yii::$app->user->isGuest) {
             $this->redirect($homeUrl);

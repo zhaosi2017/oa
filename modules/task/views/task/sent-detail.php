@@ -333,7 +333,7 @@ $identity = (Object) Yii::$app->user->identity;
                             btnAlign: \'c\',
                             success : function(layero, index){
                                 $("#feedback_type").val(2);
-                                $("#task_status").val(3);
+                                $("#task_status").val(10);
                             },
                             yes: function(index, layer_o){
                                 $("#btn-submit").click();

@@ -13,8 +13,8 @@ $actionId = Yii::$app->requestedAction->id;
 ?>
 <div class="user-update">
     <p class="btn-group hidden-xs">
-        <?= Html::a('基本信息', ['update?id='.$model->id], ['class' => $actionId=='update' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a('登录权限', ['permission?id='.$model->id], ['class' => $actionId=='permission' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('基本信息', ['update?id='.$model->id], ['class' => $actionId=='permission' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('登录权限', ['permission?id='.$model->id], ['class' => $actionId=='update' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
     <?= $this->render('_form', [
         'model' => $model,

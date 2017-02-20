@@ -3,6 +3,7 @@
 namespace app\modules\task\controllers;
 
 use app\modules\product\models\ProductCategory;
+use app\modules\system\models\Notice;
 use app\modules\task\models\TaskDealPrice;
 use app\modules\task\models\TaskExecuteInfo;
 use Yii;
@@ -378,7 +379,8 @@ class TaskController extends GController
             $model = Task::findOne($task_id);
             $model->status = 3;
             if($model->update()){
-                //todo 通知
+                $notice_model = new Notice();
+                $notice_model->notify($model);
                 $model->sendSuccess();
                 $this->redirect(['wait-index']);
             }

@@ -4,6 +4,8 @@ namespace app\modules\product\models;
 
 use app\modules\user\models\Company;
 use app\models\CActiveRecord;
+use app\modules\user\models\User;
+
 //use Yii;
 
 /**
@@ -72,5 +74,10 @@ class ProductExecutePrice extends CActiveRecord
     public function getCompany()
     {
         return $this->hasOne(Company::className(),['id' => 'company_id'])->alias('company');
+    }
+
+    public function getUser()
+    {
+        return $this->hasMany(User::className(),['company_id' => 'company_id'])->alias('user');
     }
 }

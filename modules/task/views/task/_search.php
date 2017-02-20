@@ -33,12 +33,8 @@ use yii\widgets\ActiveForm;
         'options' => ['class'=>'form-inline'],
     ]); ?>
     <div class="row">
-        <div class="col-xs-1">
-            <div class="form-group">
-                <label for="">筛选：</label>
-            </div>
-        </div>
-        <div class="col-lg-5">
+
+        <div class="col-lg-6">
 
             <?= $form->field($model, 'first_product_category')->dropDownList($model->getFirstProductCategory(),['prompt'=>'--产品一级分类--',
                 'onchange' => '
@@ -47,7 +43,7 @@ use yii\widgets\ActiveForm;
                     $.post(url,{"first_category_id":first_category_id}).done(function(r){
                         $("#tasksearch-second_product_category").html(r);
                     });
-            '])->label(false) ?>
+            '])->label('筛选：') ?>
 
             <?= $form->field($model, 'second_product_category')->dropDownList($second_category_column,['prompt'=>'--产品二级分类--','onchange'=>'
                 $("#search_hide").click();

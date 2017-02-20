@@ -114,6 +114,7 @@ class Task extends CActiveRecord
             7 => '已完成',
             8 => '任务撤销',
             9 => '无法执行',
+            10 => '待处理',
         ];
     }
 
@@ -214,7 +215,7 @@ class Task extends CActiveRecord
 
     public function getExecute()
     {
-        return $this->hasOne(ProductExecutePrice::className(), ['product_id' => 'product_id','company_id'=>'company_id'])->alias('execute');
+        return $this->hasOne(ProductExecutePrice::className(), ['product_id' => 'product_id'])->alias('execute');
     }
 
     public function getMoney()

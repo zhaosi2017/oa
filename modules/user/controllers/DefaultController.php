@@ -12,7 +12,6 @@ class DefaultController extends GController
 {
     public function actionPassword()
     {
-        $this->layout = '@app/views/layouts/form';
         $model = new PasswordForm();
         if($model->load(Yii::$app->request->post()) && $model->updateSave()){
             Yii::$app->getSession()->setFlash('success', '密码修改成功');

@@ -1,4 +1,6 @@
 <?php
+/* @var $this yii\web\View */
+
 use yii\helpers\Html;
 //use yii\bootstrap\Nav;
 //use yii\bootstrap\NavBar;
@@ -29,7 +31,6 @@ GlobalAsset::register($this);
 <!--    <link rel="shortcut icon" href="favicon.ico">-->
     <?= Html::csrfMetaTags() ?>
 
-<!--    <script>if(window.top !== window.self){ window.top.location = window.location;}</script>-->
     <?php $this->head() ?>
 </head>
 
@@ -64,6 +65,52 @@ if( Yii::$app->getSession()->hasFlash('info') ) {
 <?php $this->beginBody() ?>
     <?= isset($content) ? $content : ''  ?>
 </body>
+<?php
+$this->registerJs('
+    web_socket = new WebSocket("ws://127.0.0.1:9501/");
+    web_socket.onopen = function() {
+        $("#message-count").html(\'\');
+    };
+
+    web_socket.onerror = function (e) {
+        $("#message-count").addClass(\'red-bg\');
+        $("#message-count").html(e.data);
+    };
+
+    web_socket.onmessage = function(e){
+        var r = JSON.parse(e.data);
+        if(r.length!=0){
+            var uid = $("#login-user-id").val();
+            $("#message-count").html(r[uid]);
+        }
+    };
+
+    web_socket.onclose = function () {
+        $("#message-count").addClass(\'red-bg\');
+        $("#message-count").html(\'N\');
+    };
+');
+?>
+<!--<script>
+    web_socket = new WebSocket("ws://127.0.0.1:9501/");
+    web_socket.onopen = function() {
+        $("#message-count").html('9');
+    };
+
+    web_socket.onerror = function (e) {
+        $("#message-count").addClass('red-bg');
+        $("#message-count").html(e.data);
+    };
+
+    web_socket.onmessage = function(e){
+        $("#message-count").html(e.data);
+    };
+
+    web_socket.onclose = function () {
+        $("#message-count").addClass('red-bg');
+        $("#message-count").html('N');
+    };
+</script>-->
 <?php $this->endBody() ?>
 </html>
 <?php $this->endPage() ?>
