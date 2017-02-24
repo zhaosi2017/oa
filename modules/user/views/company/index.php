@@ -13,20 +13,17 @@ $actionId = Yii::$app->requestedAction->id;
 ?>
 <div class="company-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <p class="btn-group hidden-xs">
-        <?= Html::a('列表', ['index'], ['class' => $actionId=='index' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a('垃圾筒', ['trash'], ['class' => $actionId=='trash' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('公司列表', ['index'], ['class' => $actionId=='trash' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('垃圾筒', ['trash'], ['class' => $actionId=='index' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
 
-    <p class="btn-group hidden-xs pull-right ">
-        <?= Html::a('新增公司', ['create'], ['class'=>'btn btn-primary']) ?>
-    </p>
+    <div class="help-block m-t"></div>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
 <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
 //        'layout'=> '{items}<div class="text-right tooltip-demo">{pager}</div>',
         'pager'=>[
             //'options'=>['class'=>'hidden']//关闭自带分页
@@ -124,4 +121,7 @@ $actionId = Yii::$app->requestedAction->id;
         ],
     ]); ?>
 <?php Pjax::end(); ?>
+    <p class="text-right ">
+        <?= Html::a('新增公司', ['create'], ['class'=>'btn btn-primary btn-sm']) ?>
+    </p>
 </div>

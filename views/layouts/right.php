@@ -65,7 +65,6 @@ if( Yii::$app->getSession()->hasFlash('info') ) {
 
                     <div class="ibox-content">
                         <?= isset($content) ? $content : '' ?>
-                        <div class="help-block m-b-lg"></div>
                     </div>
 
                 </div>

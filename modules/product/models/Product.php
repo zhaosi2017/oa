@@ -2,7 +2,7 @@
 
 namespace app\modules\product\models;
 
-//use Yii;
+use Yii;
 use app\models\CActiveRecord;
 use app\modules\system\models\Money;
 use app\modules\user\models\Company;
@@ -26,6 +26,7 @@ use app\modules\user\models\User;
  */
 class Product extends CActiveRecord
 {
+
 
     /**
      * @inheritdoc
@@ -121,6 +122,21 @@ class Product extends CActiveRecord
     public function getRootCategory()
     {
         return $this->hasOne(RootCategory::className(),['company_id'=>'company_id'])->alias('rootCategory');
+    }
+
+    public function getFirstCategory()
+    {
+        return ProductCategory::find()->select(['name','id'])->where(['status'=>0,'superior_id'=>0])->indexBy('id')->column();
+    }
+
+    public function getSecondCategory()
+    {
+        $model = ProductCategory::find()->select(['name','id'])->where(['status'=>0]);
+        if(Yii::$app->request->get('ProductSearch')){
+            $search = Yii::$app->request->get('ProductSearch');
+            $model->andWhere(['superior_id'=>$search['first_category_id']]);
+        }
+        return $model->indexBy('id')->column();
     }
 
     /**

@@ -106,7 +106,7 @@ class TaskSearch extends Task
             'customer_category' => $this->customer_category,
             'customer_grate' => $this->customer_grate,
             'product_id' => $this->product_id,
-            'status' => $this->status,
+            'task.status' => $this->status,
             'superior_task_id' => $this->superior_task_id,
             'create_author_uid' => $this->create_author_uid,
             'update_author_uid' => $this->update_author_uid,

@@ -13,29 +13,35 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => ['class'=>'form-inline'],
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <div class="row">
+        <div class="col-lg-6">
+            <?= $form->field($model,'company_id')->dropDownList($model->getCompanyList(),['prompt'=>'全部公司','onchange'=>'
+                $("#search_hide").click();
+            '])->label('筛选：') ?>
 
-    <?= $form->field($model, 'name') ?>
+            <?= $form->field($model,'department_id')->dropDownList($model->getDepartmentList(),['prompt'=>'全部部门','onchange'=>'
+                $("#search_hide").click();
+            '])->label(false) ?>
 
-    <?= $form->field($model, 'department_id') ?>
-
-    <?= $form->field($model, 'company_name') ?>
-
-    <?= $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'create_author_uid') ?>
-
-    <?php // echo $form->field($model, 'update_author_uid') ?>
-
-    <?php // echo $form->field($model, 'create_time') ?>
-
-    <?php // echo $form->field($model, 'update_time') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        </div>
+        <div class="col-lg-6">
+            <div class="text-right no-padding">
+                <?= $form->field($model, 'search_type')->dropDownList([
+                    1 => '岗位名称',
+                ])->label(false) ?>
+                <?= $form->field($model, 'search_keywords')->textInput()->label(false) ?>
+                <div class="form-group">
+                    <?= Html::submitButton('search', ['class' => 'hide','id'=>'search_hide']) ?>
+                    <?= Html::submitButton('搜索', ['class' => 'btn btn-primary m-t-n-xs','id'=>'search','onclick'=>'
+                        $("#postssearch-company_id").val("");
+                        $("#postssearch-department_id").val("");
+                    ']) ?>
+                </div>
+            </div>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

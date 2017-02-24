@@ -14,6 +14,10 @@ class CompanySearch extends Company
 {
     public $superior_name;
 
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
@@ -21,7 +25,7 @@ class CompanySearch extends Company
     {
         return [
             [['id', 'sup_id', 'status', 'level', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'create_time', 'update_time', 'superior_name'], 'safe'],
+            [['name', 'create_time', 'update_time', 'superior_name', 'search_type', 'search_keywords'], 'safe'],
         ];
     }
 
@@ -110,9 +114,8 @@ class CompanySearch extends Company
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'company.name', $this->name])
-              ->andFilterWhere(['like', 'superior.name', $this->superior_name]);
-
+        $this->search_type ==1 && $query->andFilterWhere(['like', 'company.name', $this->search_keywords]);
+        $this->search_type ==2 && $query->andFilterWhere(['like', 'superior.name', $this->search_keywords]);
         return $dataProvider;
     }
 

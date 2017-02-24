@@ -5,6 +5,7 @@ $params = require(__DIR__ . '/params.php');
 $config = [
     'id' => 'basic',
     'language'=>'zh-CN',
+    'timeZone' => 'Asia/Phnom_Penh',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [

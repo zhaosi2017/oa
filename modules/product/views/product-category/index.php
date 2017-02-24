@@ -13,17 +13,17 @@ $actionId = Yii::$app->requestedAction->id;
 ?>
 <div class="product-category-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <p class="btn-group hidden-xs">
-        <?= Html::a('列表', ['index'], ['class' => $actionId=='index' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a('垃圾筒', ['trash'], ['class' => $actionId=='trash' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('分类列表', ['index'], ['class' => $actionId=='trash' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('垃圾筒', ['trash'], ['class' => $actionId=='index' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
-    <p class="btn-group hidden-xs"><?= $actionId=='index' ? Html::a('新增产品分类', ['create'], ['class' => 'btn btn-link']) : '' ?></p>
+
+    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+
 <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'pager'=>[
             //'options'=>['class'=>'hidden']//关闭自带分页
             'firstPageLabel'=>"首页",
@@ -128,4 +128,6 @@ $actionId = Yii::$app->requestedAction->id;
             ],
         ],
     ]); ?>
-<?php Pjax::end(); ?></div>
+<?php Pjax::end(); ?>
+    <p class="text-right"><?= $actionId=='index' ? Html::a('新增分类', ['create'], ['class' => 'btn btn-sm btn-primary']) : '' ?></p>
+</div>

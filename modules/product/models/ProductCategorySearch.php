@@ -12,14 +12,19 @@ use yii\data\ActiveDataProvider;
  */
 class ProductCategorySearch extends ProductCategory
 {
+
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'superior_id', 'company_id', 'avisible', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'create_time', 'update_time'], 'safe'],
+            [['id', 'superior_id', 'company_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
+            [['name', 'create_time', 'avisible', 'update_time', 'search_type', 'search_keywords'], 'safe'],
         ];
     }
 
@@ -74,7 +79,7 @@ class ProductCategorySearch extends ProductCategory
             'id' => $this->id,
             'superior_id' => $this->superior_id,
             'company_id' => $this->company_id,
-            'avisible' => $this->avisible,
+            // 'product_category.avisible' => $this->avisible,
             'status' => $this->status,
             'create_author_uid' => $this->create_author_uid,
             'update_author_uid' => $this->update_author_uid,
@@ -82,7 +87,12 @@ class ProductCategorySearch extends ProductCategory
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'product_category.name', $this->name]);
+        if(is_array($this->avisible)){
+            $visible = (array) $this->avisible;
+            $bit_num = array_sum($visible);
+            $query->andFilterWhere(['>=', 'product_category.avisible', $bit_num]);
+        }
+        $this->search_type==1 && $query->andFilterWhere(['like', 'product_category.name', $this->search_keywords]);
 
         return $dataProvider;
     }

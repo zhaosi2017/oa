@@ -2,7 +2,7 @@
 
 namespace app\modules\user\models;
 
-//use Yii;
+use Yii;
 use app\models\CActiveRecord;
 
 /**
@@ -102,5 +102,20 @@ class Posts extends CActiveRecord
     public function getDepartment()
     {
         return $this->hasOne(Department::className(), ['id' => 'department_id'])->alias('department');
+    }
+
+    public function getCompanyList()
+    {
+        return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+    }
+
+    public function getDepartmentList()
+    {
+        $model = Department::find()->select(['name','id'])->where(['status'=>0]);
+        if(Yii::$app->request->get('PostsSearch')){
+            $search = Yii::$app->request->get('PostsSearch');
+            $model->andWhere(['company_id'=>$search['company_id']]);
+        }
+        return $model->indexBy('id')->column();
     }
 }

@@ -14,8 +14,8 @@ $actionId = Yii::$app->requestedAction->id;
 <div class="posts-update">
 
     <p class="btn-group hidden-xs">
-        <?= Html::a('基本信息', ['update?id='.$model->id], ['class' => $actionId=='update' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a('权限设置', ['auth?id='.$model->id], ['class' => $actionId=='auth' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('基本信息', ['update?id='.$model->id], ['class' => $actionId=='auth' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('权限设置', ['auth?id='.$model->id], ['class' => $actionId=='update' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
 
     <?= $this->render('_form', [

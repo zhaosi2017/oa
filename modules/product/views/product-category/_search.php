@@ -13,31 +13,34 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => ['class'=>'form-inline'],
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'superior_id') ?>
-
-    <?= $form->field($model, 'company_id') ?>
-
-    <?= $form->field($model, 'avisible') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'create_author_uid') ?>
-
-    <?php // echo $form->field($model, 'update_author_uid') ?>
-
-    <?php // echo $form->field($model, 'create_time') ?>
-
-    <?php // echo $form->field($model, 'update_time') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+    <div class="row">
+        <div class="col-lg-6">
+            <?= $form->field($model, 'avisible')->checkboxList([
+                8 => '直属上级',
+                4 => '直属下级',
+                2 => '集团内旁枝',
+                1 => '集团外公司',
+            ],['onclick'=>'
+                $("#search_hide").click();
+            '])->label('可见：') ?>
+        </div>
+        <div class="col-lg-6">
+            <div class="text-right no-padding">
+                <?= $form->field($model, 'search_type')->dropDownList([
+                    1 => '分类名称',
+                ])->label(false) ?>
+                <?= $form->field($model, 'search_keywords')->textInput()->label(false) ?>
+                <div class="form-group">
+                    <?= Html::submitButton('search', ['class' => 'hide','id'=>'search_hide']) ?>
+                    <?= Html::submitButton('搜索', ['class' => 'btn btn-primary m-t-n-xs','id'=>'search','onclick'=>'
+                        $("#usersearch-company_id").val("");
+                    ']) ?>
+                </div>
+            </div>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

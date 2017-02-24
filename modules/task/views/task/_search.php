@@ -49,6 +49,10 @@ use yii\widgets\ActiveForm;
                 $("#search_hide").click();
             '])->label(false) ?>
 
+            <?= $form->field($model, 'status')->dropDownList($model->getStatuses(),['prompt'=>'--全部状态--','onchange'=>'
+                $("#search_hide").click();
+            '])->label(false) ?>
+
             <?= $form->field($model, 'execute_type')->dropDownList([1=>'一次性',2=>'重复'],['prompt'=>'--执行方式--','onchange'=>'
                 $("#search_hide").click();
             '])->label(false) ?>
@@ -80,6 +84,7 @@ use yii\widgets\ActiveForm;
                     <?= Html::submitButton('搜索', ['class' => 'btn btn-primary m-t-n-xs','id'=>'search','onclick'=>'
                         $("#tasksearch-first_product_category").val("");
                         $("#tasksearch-second_product_category").val("");
+                        $("#tasksearch-status").val("");
                         $("#tasksearch-execute_type").val("");
                         $("#tasksearch-fee_settlement").val("");
                         $("#tasksearch-top_level_task").val("");

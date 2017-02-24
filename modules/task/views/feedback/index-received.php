@@ -17,7 +17,7 @@ $actionId = Yii::$app->requestedAction->id;
     <p class="btn-group hidden-xs">
         <?= Html::a('任务信息', ['/task/task/received-detail','id'=>$model->id], ['class' => 'btn btn-outline btn-default']) ?>
         <?= Html::a('执行反馈', ['/task/feedback/index-received','id'=>$model->id], ['class' =>  'btn btn-primary']) ?>
-        <?= Html::a('收付款信息', ['/task/pay-info/detail','id'=>$model->id], ['class' =>  'btn btn-outline btn-default']) ?>
+        <?= Html::a('收付款信息', ['/task/pay/index-received','id'=>$model->id], ['class' =>  'btn btn-outline btn-default']) ?>
     </p>
         <table class="table table-bordered">
             <thead>

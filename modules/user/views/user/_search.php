@@ -13,41 +13,47 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => ['class'=>'form-inline'],
     ]); ?>
+    <div class="row">
+        <div class="col-lg-6">
+            <?= $form->field($model,'company_id')->dropDownList($model->getCompanyList(),['prompt'=>'全部公司','onchange'=>'
+                $("#search_hide").click();
+            '])->label('筛选：') ?>
 
-    <?= $form->field($model, 'id') ?>
+            <?= $form->field($model,'department_id')->dropDownList($model->getDepartmentList(),['prompt'=>'全部部门','onchange'=>'
+                $("#search_hide").click();
+            '])->label(false) ?>
 
-    <?= $form->field($model, 'account') ?>
+            <?= $form->field($model,'posts_id')->dropDownList($model->getPostsList(),['prompt'=>'全部岗位','onchange'=>'
+                $("#search_hide").click();
+            '])->label(false) ?>
 
-    <?= $form->field($model, 'nickname') ?>
+            <?= $form->field($model,'login_permission')->dropDownList([0=>'允许',1=>'禁止'],['prompt'=>'登录许可','onchange'=>'
+                $("#search_hide").click();
+            '])->label(false) ?>
 
-    <?= $form->field($model, 'email') ?>
-
-    <?= $form->field($model, 'password') ?>
-
-    <?php // echo $form->field($model, 'company_name') ?>
-
-    <?php // echo $form->field($model, 'department_id') ?>
-
-    <?php // echo $form->field($model, 'posts_id') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'login_permission') ?>
-
-    <?php // echo $form->field($model, 'create_author_uid') ?>
-
-    <?php // echo $form->field($model, 'update_author_uid') ?>
-
-    <?php // echo $form->field($model, 'create_time') ?>
-
-    <?php // echo $form->field($model, 'update_time') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        </div>
+        <div class="col-lg-6">
+            <div class="text-right no-padding">
+                <?= $form->field($model, 'search_type')->dropDownList([
+                    1 => '姓名',
+                    2 => '创建人',
+                    3 => '最后修改人',
+                ])->label(false) ?>
+                <?= $form->field($model, 'search_keywords')->textInput()->label(false) ?>
+                <div class="form-group">
+                    <?= Html::submitButton('search', ['class' => 'hide','id'=>'search_hide']) ?>
+                    <?= Html::submitButton('搜索', ['class' => 'btn btn-primary m-t-n-xs','id'=>'search','onclick'=>'
+                        $("#usersearch-company_id").val("");
+                        $("#usersearch-department_id").val("");
+                        $("#usersearch-posts_id").val("");
+                        $("#usersearch-login_permission").val("");
+                    ']) ?>
+                </div>
+            </div>
+        </div>
     </div>
-
     <?php ActiveForm::end(); ?>
 
 </div>

@@ -12,6 +12,11 @@ use yii\data\ActiveDataProvider;
  */
 class CustomerSearch extends Customer
 {
+
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +24,7 @@ class CustomerSearch extends Customer
     {
         return [
             [['id', 'grade', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'remarks', 'create_time', 'update_time'], 'safe'],
+            [['name', 'remarks', 'create_time', 'update_time', 'search_type', 'search_keywords'], 'safe'],
         ];
     }
 
@@ -71,7 +76,7 @@ class CustomerSearch extends Customer
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'customer.name', $this->name]);
+        $this->search_type ==1 && $query->andFilterWhere(['like', 'customer.name', $this->search_keywords]);
 
         return $dataProvider;
     }

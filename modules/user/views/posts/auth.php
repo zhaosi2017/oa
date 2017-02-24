@@ -13,6 +13,56 @@ $auth = Yii::$app->authManager;
 $permissions = $auth->getPermissionsByRole($model->id);
 $data = [
     [
+        'module' => '任务模块',
+        'items' => [
+            [
+                'page_name' => '已发任务',
+                'permission' => ['task/task/sent-index',],//注意顺序
+            ],
+            [
+                'page_name' => '待接收任务',
+                'permission' => ['task/task/wait-index',], //顺序可指定
+            ],
+            [
+                'page_name' => '已接收任务',
+                'permission' => ['task/task/received-index'],
+            ],
+        ],
+
+    ],
+    [
+        'module' => '产品模块',
+        'items' => [
+            [
+                'page_name' => '根分类设置',
+                'permission' => ['product/category/root-set',],//注意顺序
+            ],
+            [
+                'page_name' => '产品分类',
+                'permission' => ['product/product-category/index',], //顺序可指定
+            ],
+            [
+                'page_name' => '产品管理',
+                'permission' => ['product/product/index'],
+            ],
+        ],
+
+    ],
+    [
+        'module' => '客户模块',
+        'items' => [
+            [
+                'page_name' => '外部客户',
+                'permission' => ['customer/customer/index', 'customer/customer/create'],
+            ],
+            [
+                'page_name' => '集团公司评级',
+                'permission' => ['customer/group/rate'],
+            ],
+        ],
+
+    ],
+    [
         'module' => '用户模块',
         'items' => [
             [
@@ -34,27 +84,14 @@ $data = [
         ],
 
     ],
-    [
-        'module' => '客户模块',
-        'items' => [
-            [
-                'page_name' => '外部客户',
-                'permission' => ['customer/customer/index', 'customer/customer/create'],
-            ],
-            [
-                'page_name' => '集团公司评级',
-                'permission' => ['customer/group/rate'],
-            ],
-        ],
 
-    ],
 ];
 ?>
 <div class="posts-grid">
 
     <p class="btn-group hidden-xs">
-        <?= Html::a('基本信息', ['update?id='.$model->id], ['class' => $actionId=='update' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a('权限设置', ['auth?id='.$model->id], ['class' => $actionId=='auth' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('基本信息', ['update?id='.$model->id], ['class' => $actionId=='auth' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('权限设置', ['auth?id='.$model->id], ['class' => $actionId=='update' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
 
     <div class="table-responsive">
@@ -108,7 +145,7 @@ $data = [
         <?php } ?>
 
         <div class="form-group">
-            <div class="col-sm-offset-9">
+            <div class="text-right">
                 <?= Html::submitButton('提交', ['class' => 'btn btn-primary']) ?>
             </div>
         </div>

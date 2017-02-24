@@ -13,29 +13,21 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => ['class'=>'form-inline'],
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'grade') ?>
-
-    <?= $form->field($model, 'remarks') ?>
-
-    <?= $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'create_author_uid') ?>
-
-    <?php // echo $form->field($model, 'update_author_uid') ?>
-
-    <?php // echo $form->field($model, 'create_time') ?>
-
-    <?php // echo $form->field($model, 'update_time') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-right no-padding">
+                <?= $form->field($model, 'search_type')->dropDownList([
+                    1 => '客户名称',
+                ])->label(false) ?>
+                <?= $form->field($model, 'search_keywords')->textInput()->label(false) ?>
+                <div class="form-group">
+                    <?= Html::submitButton('搜索', ['class' => 'btn btn-primary m-t-n-xs','id'=>'search']) ?>
+                </div>
+            </div>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

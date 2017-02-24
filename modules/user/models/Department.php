@@ -102,4 +102,9 @@ class Department extends CActiveRecord
     {
         return $this->hasOne(Company::className(), ['id' => 'company_id'])->alias('company');
     }
+
+    public function getCompanyList()
+    {
+        return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+    }
 }

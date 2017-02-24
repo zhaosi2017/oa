@@ -30,13 +30,13 @@ $identity = (Object) Yii::$app->user->identity;
 
     <?= $form->field($model, 'fee_settlement')->radioList([1=>'全包',2=>'独立'],['value'=>1]) ?>
 
-    <div class="row">
-        <div class="col-lg-2">
+    <div class="row form-inline">
+        <div class="col-lg-2 text-right">
             <div class="form-group">
                 <label for="task-customer-category" class="col-sm-12 control-label">客户</label>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-lg-10">
             <?= $form->field($model, 'customer_category')->dropDownList([1=>'外部客户',2=>'集团公司'],[
                 'prompt'=>'--客户类别--',
                 'onchange'=>'
@@ -44,8 +44,7 @@ $identity = (Object) Yii::$app->user->identity;
                     $("#task-company_customer_id").html(data);
                 });',
             ])->label(false) ?>
-        </div>
-        <div class="col-sm-2">
+
             <?= $form->field($model, 'company_customer_id')->dropDownList([],[
                 'prompt'=>'--请选择客户--',
                 'onchange'=>'
@@ -53,8 +52,7 @@ $identity = (Object) Yii::$app->user->identity;
                     $("#task-customer_grate").val(data);
                 });',
             ])->label(false) ?>
-        </div>
-        <div class="col-sm-1 form-inline">
+
             <?= $form->field($model, 'customer_grate')->dropDownList([''=>'--级别--',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'],[
                 'readonly'=>'readonly',
                 'onfocus'=>'this.defaultIndex=this.selectedIndex;',

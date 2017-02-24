@@ -13,31 +13,32 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => ['class'=>'form-inline'],
     ]); ?>
 
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'company_name') ?>
-
-    <?= $form->field($model, 'superior_department_id') ?>
-
-    <?= $form->field($model, 'status') ?>
-
-    <?= $form->field($model, 'create_author_uid') ?>
-
-    <?php // echo $form->field($model, 'create_author_uid') ?>
-
-    <?php // echo $form->field($model, 'update_author_uid') ?>
-
-    <?php // echo $form->field($model, 'create_time') ?>
-
-    <?php // echo $form->field($model, 'update_time') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
+    <div class="row">
+        <div class="col-lg-6">
+            <?= $form->field($model,'company_id')->dropDownList($model->getCompanyList(),['prompt'=>'全部公司','onchange'=>'
+                $("#search_hide").click();
+            '])->label('筛选：') ?>
+        </div>
+        <div class="col-lg-6">
+            <div class="text-right no-padding">
+                <?= $form->field($model, 'search_type')->dropDownList([
+                    1 => '部门名称',
+                    2 => '所属公司',
+                    3 => '上级部门',
+                ])->label(false) ?>
+                <?= $form->field($model, 'search_keywords')->textInput()->label(false) ?>
+                <div class="form-group">
+                    <?= Html::submitButton('search', ['class' => 'hide','id'=>'search_hide']) ?>
+                    <?= Html::submitButton('搜索', ['class' => 'btn btn-primary m-t-n-xs','id'=>'search','onclick'=>'
+                        $("#departmentsearch-company_id").val("");
+                    ']) ?>
+                </div>
+            </div>
+        </div>
     </div>
-
     <?php ActiveForm::end(); ?>
 
 </div>

@@ -20,7 +20,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-
     <?php
 
         $supList = [0=>'无'];

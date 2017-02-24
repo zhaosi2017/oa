@@ -144,4 +144,29 @@ class User extends CActiveRecord
         return $this->hasOne(Posts::className(), ['id' => 'posts_id'])->alias('posts');
     }
 
+    public function getCompanyList()
+    {
+        return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+    }
+
+    public function getDepartmentList()
+    {
+        $model = Department::find()->select(['name','id'])->where(['status'=>0]);
+        if(Yii::$app->request->get('UserSearch')){
+            $search = Yii::$app->request->get('UserSearch');
+            $model->andWhere(['company_id'=>$search['company_id']]);
+        }
+        return $model->indexBy('id')->column();
+    }
+
+    public function getPostsList()
+    {
+        $model = Posts::find()->select(['name','id'])->where(['status'=>0]);
+        if(Yii::$app->request->get('UserSearch')){
+            $search = Yii::$app->request->get('UserSearch');
+            $model->andWhere(['department_id'=>$search['department_id'],'company_id'=>$search['company_id']]);
+        }
+        return $model->indexBy('id')->column();
+    }
+
 }

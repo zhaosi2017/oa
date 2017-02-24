@@ -123,10 +123,8 @@ class PostsController extends GController
 
     public function actionAuth($id)
     {
-        $this->layout = '@app/views/layouts/form';
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
-
             $posts = Yii::$app->request->post();
             if(isset($posts['Auth'])){
 

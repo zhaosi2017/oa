@@ -16,6 +16,10 @@ class ProductSearch extends Product
 
     public $updater_account;
 
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
@@ -23,7 +27,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'second_category_id', 'enable', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'number', 'description', 'create_time', 'update_time', 'creator_account', 'updater_account'], 'safe'],
+            [['name','enable', 'number', 'description', 'create_time', 'update_time', 'creator_account', 'updater_account', 'search_type', 'search_keywords', 'first_category_id', 'second_category_id'], 'safe'],
         ];
     }
 
@@ -45,23 +49,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find()->select([
-            'product.id',
-            'product.name',
-            'product.number',
-            'product.second_category_id',
-            'product.enable',
-            'product.status',
-            'product.company_id',
-            'product.description',
-            'product.create_author_uid',
-            'product.create_time',
-            'product.update_author_uid',
-            'product.update_time',
-            'creator.account as creator_account',
-            'updater.account as updater_account',
-//            'category.name',
-        ])->where([
+        $query = Product::find()->where([
             'product.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
         ]);
 
@@ -91,9 +79,10 @@ class ProductSearch extends Product
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'second_category_id' => $this->second_category_id,
-            'enable' => $this->enable,
-            'status' => $this->status,
+            'product.first_category_id' => $this->first_category_id,
+            'product.second_category_id' => $this->second_category_id,
+            'product.enable' => $this->enable,
+            'product.status' => $this->status,
             'create_author_uid' => $this->create_author_uid,
             'update_author_uid' => $this->update_author_uid,
             'create_time' => $this->create_time,

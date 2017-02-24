@@ -19,6 +19,10 @@ class UserSearch extends User
 
     public $update_author;
 
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
@@ -26,7 +30,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'company_id', 'department_id', 'posts_id', 'status', 'login_permission', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['account', 'department_name', 'posts_name', 'nickname', 'email', 'password', 'create_author', 'update_author', 'create_time', 'update_time'], 'safe'],
+            [['search_type','search_keywords','account', 'department_name', 'posts_name', 'nickname', 'email', 'password', 'create_author', 'update_author', 'create_time', 'update_time'], 'safe'],
         ];
     }
 
@@ -87,11 +91,14 @@ class UserSearch extends User
             'user.update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'user.account', $this->account])
+        $this->search_type ==1 && $query->andFilterWhere(['like', 'user.account', $this->search_keywords]);
+        $this->search_type ==2 && $query->andFilterWhere(['like', 'creator.account', $this->search_keywords]);
+        $this->search_type ==3 && $query->andFilterWhere(['like', 'updater.account', $this->search_keywords]);
+        /*$query->andFilterWhere(['like', 'user.account', $this->account])
             ->andFilterWhere(['like', 'department.name', $this->department_name])
             ->andFilterWhere(['like', 'posts.name', $this->posts_name])
             ->andFilterWhere(['like', 'creator.account', $this->create_author])
-            ->andFilterWhere(['like', 'updater.account', $this->update_author]);
+            ->andFilterWhere(['like', 'updater.account', $this->update_author]);*/
 
         return $dataProvider;
     }

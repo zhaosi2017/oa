@@ -66,8 +66,23 @@ if( Yii::$app->getSession()->hasFlash('info') ) {
     <?= isset($content) ? $content : ''  ?>
 </body>
 <?php
+function get_server_ip() {
+    if (isset($_SERVER)) {
+        if($_SERVER['SERVER_ADDR']) {
+            $server_ip = $_SERVER['SERVER_ADDR'];
+        } else {
+            $server_ip = $_SERVER['LOCAL_ADDR'];
+        }
+        if($_SERVER['SERVER_NAME']){
+            $server_ip = $_SERVER['SERVER_NAME'];
+        }
+    } else {
+        $server_ip = getenv('SERVER_ADDR');
+    }
+    return $server_ip;
+}
 $this->registerJs('
-    web_socket = new WebSocket("ws://127.0.0.1:9501/");
+    web_socket = new WebSocket("ws://'.get_server_ip().':9501/");
     web_socket.onopen = function() {
         $("#message-count").html(\'\');
     };

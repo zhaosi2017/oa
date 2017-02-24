@@ -17,6 +17,10 @@ class PostsSearch extends Posts
 
     public $department_name;
 
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
@@ -24,7 +28,7 @@ class PostsSearch extends Posts
     {
         return [
             [['id', 'department_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'company_name', 'department_name','create_time', 'update_time'], 'safe'],
+            [['name', 'company_name', 'company_id', 'department_id', 'department_name','create_time', 'update_time', 'search_type', 'search_keywords'], 'safe'],
         ];
     }
 
@@ -81,11 +85,11 @@ class PostsSearch extends Posts
             'update_author_uid' => $this->update_author_uid,
             'create_time' => $this->create_time,
             'update_time' => $this->update_time,
+            'posts.company_id' => $this->company_id,
+            'posts.department_id' => $this->department_id,
         ]);
 
-        $query->andFilterWhere(['like', 'posts.name', $this->name])
-            ->andFilterWhere(['like', 'company.name', $this->company_name])
-            ->andFilterWhere(['like', 'department.name', $this->department_name]);
+        $this->search_type ==1 && $query->andFilterWhere(['like', 'posts.name', $this->search_keywords]);
 
         return $dataProvider;
     }

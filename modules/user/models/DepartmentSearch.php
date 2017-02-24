@@ -18,6 +18,10 @@ class DepartmentSearch extends Department
 
     public $company_name;
 
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
@@ -25,7 +29,7 @@ class DepartmentSearch extends Department
     {
         return [
             [['id', 'superior_department_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'company_name', 'superior_name', 'create_time', 'update_time'], 'safe'],
+            [['name', 'company_name', 'company_id', 'superior_name', 'create_time', 'update_time', 'search_type', 'search_keywords'], 'safe'],
         ];
     }
 
@@ -78,15 +82,17 @@ class DepartmentSearch extends Department
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
+            'department.company_id' => $this->company_id,
+            'company.name' => $this->company_name,
             'create_author_uid' => $this->create_author_uid,
             'update_author_uid' => $this->update_author_uid,
             'create_time' => $this->create_time,
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'department.name', $this->name])
-            ->andFilterWhere(['like', 'company.name', $this->company_name])
-            ->andFilterWhere(['like', 'superior.name', $this->superior_name]);
+        $this->search_type ==1 && $query->andFilterWhere(['like', 'department.name', $this->search_keywords]);
+        $this->search_type ==2 && $query->andFilterWhere(['like', 'company.name', $this->search_keywords]);
+        $this->search_type ==3 && $query->andFilterWhere(['like', 'superior.name', $this->search_keywords]);
 
         return $dataProvider;
     }

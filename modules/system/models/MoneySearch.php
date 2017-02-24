@@ -12,13 +12,17 @@ use yii\data\ActiveDataProvider;
  */
 class MoneySearch extends Money
 {
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['name', 'create_time', 'update_time'], 'safe'],
+            [['name', 'create_time', 'update_time', 'search_type', 'search_keywords'], 'safe'],
             [['enable', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
         ];
     }
@@ -70,7 +74,7 @@ class MoneySearch extends Money
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $this->search_type==1 && $query->andFilterWhere(['like', 'money.name', $this->search_keywords]);
 
         return $dataProvider;
     }
