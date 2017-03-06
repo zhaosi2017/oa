@@ -26,7 +26,7 @@ use yii\widgets\ActiveForm;
         $sup_level = [0 => 0];
 
         $condition = $model->isNewRecord ? ['status'=>0] : ['and','status=0',['<', 'level', $model->level],['not in', 'id', $model->id]];
-        $company_list = \app\modules\user\models\Company::find()->select(['name','id','level'])->where($condition)->all();
+        $company_list = \app\modules\user\models\Company::find()->select(['name','id','level'])->where($condition)->orderBy(['id' => SORT_DESC])->all();
 
         if(!empty($company_list)){
             foreach ($company_list as $item){
@@ -43,8 +43,8 @@ use yii\widgets\ActiveForm;
         ['onchange' => '
             var sup_id = $(this).val();
             var sup_level_json = '.$sup_level_json.';
+            
             $("#sup_level").val(sup_level_json[sup_id] + "级");      
-            $("#company-level").val(sup_level_json[sup_id]+1);      
         ']) ?>
 
 
@@ -55,7 +55,6 @@ use yii\widgets\ActiveForm;
             <input class="form-control" id="sup_level" type="text" readonly="readonly" value="<?= $model->level ? $model->level-1 : 0 ?>级">
         </div>
     </div>
-    <?= $form->field($model, 'level')->hiddenInput(['value'=>1])->label(false) ?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

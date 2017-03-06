@@ -1,13 +1,14 @@
 <?php
 
 namespace app\modules\user\models;
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[LoginLogs]].
  *
  * @see LoginLogs
  */
-class LoginLogsQuery extends \yii\db\ActiveQuery
+class LoginLogsQuery extends ActiveQuery
 {
     /*public function active()
     {

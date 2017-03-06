@@ -3,7 +3,7 @@
 namespace app\modules\user\models;
 
 use app\models\CActiveRecord;
-//use Yii;
+use Yii;
 
 /**
  * This is the model class for table "company".
@@ -96,6 +96,23 @@ class Company extends CActiveRecord
         return $this->hasOne($this::className(), ['id' => 'sup_id'])->alias('superior');
     }
 
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+
+        if ($this->isNewRecord) {
+            $this->create_author_uid = $uid;
+            $this->update_author_uid = $uid;
+            $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        }else{
+            $this->update_author_uid = $uid;
+            $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $this->level = $this::findOne(['id'=>$this->sup_id])->getAttribute('level') + 1;
+        }
+        return true;
+    }
+
     public function getChildren($id)
     {
         $self = $this::findOne(['id'=>$id,'status'=>0]);
@@ -110,4 +127,53 @@ class Company extends CActiveRecord
 
         return $children;
     }
+
+
+   /* //总收入
+    public function getCompanyGross()
+    {
+
+        $gross = [];
+        //收款单
+        $query = TaskCollectionInfo::find()
+            ->select(['task_collection_info.company_id','task_collection_info.task_id','task_collection_info.id'])
+            ->where(['status'=>2]);
+
+        //流水的收入
+        $query_state = Statement::find()->where(['status'=>0,'direction'=>2])->andWhere(['money_id'=>$this->id]);
+
+
+        $task_ids = $query->indexBy('id')->column();
+        $gross[] = TaskDealPrice::find()
+            ->select(['price'])
+            ->where(['in','task_id',$task_ids])
+            ->andWhere(['money_id'=>$this->id])->sum('price');
+
+        $gross[] = $query_state->sum('amount');
+
+        $res = array_sum($gross)>0 ? array_sum($gross) : '0.00';
+        return $res;
+    }
+
+    //总支出
+    public function getCompanySpending()
+    {
+        $spending = [];
+        //付款单
+        $query = TaskPayInfo::find()->select(['task_id','id'])->where(['status'=>2]);
+
+        $query_state = Statement::find()->where(['status'=>0,'direction'=>1])->andWhere(['money_id'=>$this->id]);
+
+        $task_ids = $query->indexBy('id')->column();
+        $spending[] = TaskDealPrice::find()
+            ->select(['price'])
+            ->where(['in','task_id',$task_ids])
+            ->andWhere(['money_id'=>$this->id])->sum('price');
+
+        //流水的支出
+        $spending[] = $query_state->sum('amount');
+
+        $res = array_sum($spending) ? array_sum($spending) : '0.00';
+        return $res;
+    }*/
 }

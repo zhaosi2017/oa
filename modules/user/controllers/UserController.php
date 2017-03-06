@@ -147,8 +147,12 @@ class UserController extends GController
 
             if($posts['unlock']){
                 $loginLog = LoginLogs::find()->where(['uid' => $model->id])->orderBy(['id'=>SORT_DESC])->one();
-                $loginLog->status = 1;
-                $loginLog->save();
+                if(!empty($loginLog)){
+                    $loginLog->status = 1;
+                    $loginLog->unlock_time = date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME']);
+                    $loginLog->unlock_uid = Yii::$app->user->id;
+                    $loginLog->update();
+                }
             }
 
             if($model->email){

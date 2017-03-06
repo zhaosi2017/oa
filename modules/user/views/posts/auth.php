@@ -63,6 +63,28 @@ $data = [
 
     ],
     [
+        'module' => '财务模块',
+        'items' => [
+            [
+                'page_name' => '付款单',
+                'permission' => ['finance/payment/index'],
+            ],
+            [
+                'page_name' => '收款单',
+                'permission' => ['finance/receipt/index'],
+            ],
+            [
+                'page_name' => '公司账目汇总',
+                'permission' => ['finance/finance/summary'],
+            ],
+            [
+                'page_name' => '流水账',
+                'permission' => ['finance/statement/index'],
+            ],
+        ],
+
+    ],
+    [
         'module' => '用户模块',
         'items' => [
             [
@@ -80,6 +102,72 @@ $data = [
             [
                 'page_name' => '岗位管理',
                 'permission' => ['user/posts/index'],
+            ],
+        ],
+
+    ],
+    [
+        'module' => '系统模块',
+        'items' => [
+            [
+                'page_name' => '任务中心',
+                'permission' => ['system/task/index'],//注意顺序
+            ],
+            [
+                'page_name' => '付款中心',
+                'permission' => ['system/payment/index'], //顺序可指定
+            ],
+            [
+                'page_name' => '收款中心',
+                'permission' => ['system/receipt/index'],
+            ],
+            [
+                'page_name' => '根分类列表',
+                'permission' => ['system/root-category/index'],
+            ],
+            [
+                'page_name' => '产品分类中心',
+                'permission' => ['system/product-category/index'],
+            ],
+            [
+                'page_name' => '产品中心',
+                'permission' => ['system/product/index'],
+            ],
+            [
+                'page_name' => '集团公司级别表',
+                'permission' => ['system/group/rate'],
+            ],
+            [
+                'page_name' => '外部客户管理',
+                'permission' => ['system/customer/index'],
+            ],
+            [
+                'page_name' => '货币管理',
+                'permission' => ['system/money/index'],
+            ],
+            [
+                'page_name' => '财务科目管理',
+                'permission' => ['system/finance-subject/index'],
+            ],
+            [
+                'page_name' => '流水账中心',
+                'permission' => ['system/statement/index'],
+            ],
+            [
+                'page_name' => '公司账目中心',
+                'permission' => ['system/finance/summary'],
+            ],
+            [
+                'page_name' => '通知中心',
+                'permission' => ['system/notice/index'],
+            ],
+            [
+                'page_name' => '登录记录',
+                'permission' => ['system/login/record'],
+            ],
+            [
+                'page_name' => 'IP登录锁定',
+                'permission' => ['system/login/ip-lock'],
             ],
         ],
 

@@ -37,7 +37,9 @@ $actionId = Yii::$app->requestedAction->id;
 
             ['value'=>'requirement','label'=>'任务要求'],
             ['label'=>'上级任务', 'value'=>function($model){
-                return $model['superior']['name'];
+                $superior_name = $model['superior']['number'];
+                if(!$superior_name) return '';
+                return $superior_name;
             }],
             ['label'=>'客户', 'value'=>function($model){
                 switch ($model->customer_category){
@@ -110,12 +112,7 @@ $actionId = Yii::$app->requestedAction->id;
                 'template' => '{wait-detail}',
                 'buttons' => [
                     'wait-detail' => function($url){
-                        $btn_link = Html::a('详情',
-                            $url,
-                            [
-                                'data-method' => 'post'
-                            ]
-                        );
+                        $btn_link = Html::a('详情', $url);
                         return $btn_link;
                     },
 

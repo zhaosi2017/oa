@@ -80,7 +80,7 @@ $identity = (Object) Yii::$app->user->identity;
                 <tr>
                     <td class="text-left" colspan="8">
                         <p>
-                            。。。。。
+                            <?= $model->requirement ?>
                         </p>
                         附件：<a href="<?= Url::to(['/task/task/download','attachment' => $model->attachment]) ?>"><?= $model->attachment ?></a>
                     </td>
@@ -177,7 +177,8 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="1">执行价格</td>
                     <td colspan="3" class="text-left">
                         <?php
-                        $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
+                        $execute_price = $model['execute']->price;
+//                        $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
                         echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
                         /*foreach ($model['execute'] as $k => $v) {
                             $price = $model['product']['company_id'] != $identity->company_id ? '******' : $v->price;

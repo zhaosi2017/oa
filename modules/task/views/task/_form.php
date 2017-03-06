@@ -3,13 +3,15 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\task\models\Task */
 /* @var $form yii\widgets\ActiveForm */
 
 $identity = (Object) Yii::$app->user->identity;
-//var_dump($identity);
+
+$grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
 ?>
 
 <div class="task-form">
@@ -45,15 +47,33 @@ $identity = (Object) Yii::$app->user->identity;
                 });',
             ])->label(false) ?>
 
-            <?= $form->field($model, 'company_customer_id')->dropDownList([],[
+            <?php /*echo $form->field($model, 'company_customer_id')->dropDownList([],[
                 'prompt'=>'--请选择客户--',
                 'onchange'=>'
                 $.post("'.Url::to(['/task/task/grade']).'",{"customer_category": $("#task-customer_category").val(),"company_customer_id": $(this).val(),"_csrf":"'.Yii::$app->request->csrfToken.'"},function(data){
                     $("#task-customer_grate").val(data);
+                    var grade = ["未评级","A","B","C","D"];
+                    $("#display-grade").html(grade[data]);
                 });',
+            ])->label(false) */?>
+
+            <?php
+                echo $form->field($model, 'company_customer_id')->widget(Select2::className(),[
+                'data' => [],
+                'options' => ['placeholder' => '--请选择客户--','onchange'=>'
+                    $.post("'.Url::to(['/task/task/grade']).'",
+                        {"customer_category": $("#task-customer_category").val(),"company_customer_id": $(this).val(),"_csrf":"'.Yii::$app->request->csrfToken.'"},
+                        function(data){
+                            $("#task-customer_grate").val(data);
+                            var grade = ["未评级","A","B","C","D"];
+                            $("#display-grade").html(grade[data]);
+                    });
+                '],
             ])->label(false) ?>
 
-            <?= $form->field($model, 'customer_grate')->dropDownList([''=>'--级别--',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'],[
+            <span>(级别：<a id="display-grade">-</a>)</span>
+            <?= $form->field($model, 'customer_grate')->dropDownList($grade,[
+                'class'=>'hide',
                 'readonly'=>'readonly',
                 'onfocus'=>'this.defaultIndex=this.selectedIndex;',
                 'onchange'=>'this.selectedIndex=this.defaultIndex;'
@@ -104,7 +124,7 @@ $identity = (Object) Yii::$app->user->identity;
         </div>
     </div>
 
-    <?= $form->field($model, 'product_id')->hiddenInput()->label(' ') ?>
+    <?= $form->field($model, 'product_id')->hiddenInput()->label(false) ?>
 
     <?= $form->field($model, 'requirement')->textarea(['rows' => 6]) ?>
 

@@ -29,7 +29,7 @@ use app\modules\user\models\Department;
     $companyMap = Company::find()->downList();
     $departmentMap = [];
     if(!$model->isNewRecord){
-        $departmentMap = Department::find()->downList($model->company_id);
+        $departmentMap = Department::find()->downList($model->company_id)+[0=>'无'];
         //去掉自己及下级
         $departmentChildren = \yii\helpers\ArrayHelper::map(Department::find()->getChildren($model->id),'id','name');
         $departmentMap = array_diff($departmentMap, $departmentChildren);

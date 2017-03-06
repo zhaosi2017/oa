@@ -37,8 +37,10 @@ $actionId = Yii::$app->requestedAction->id;
             },'label'=>'任务名称'],
 
             ['value'=>'requirement','label'=>'任务要求'],
-            ['label'=>'上级任务', 'value'=>function($model){
-                return $model['superior']['name'];
+            ['label'=>'上级任务','value'=>function($model){
+                $superior_name = $model['superior']['number'];
+                if(!$superior_name) return '';
+                return $superior_name;
             }],
             ['label'=>'客户', 'value'=>function($model){
                 switch ($model->customer_category){
@@ -111,12 +113,7 @@ $actionId = Yii::$app->requestedAction->id;
                 'template' => '{received-detail}',
                 'buttons' => [
                     'received-detail' => function($url){
-                        $btn_link = Html::a('详情',
-                            $url,
-                            [
-                                'data-method' => 'post'
-                            ]
-                        );
+                        $btn_link = Html::a('详情', $url);
                         return $btn_link;
                     },
                 ],

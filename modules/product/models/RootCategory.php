@@ -4,6 +4,8 @@ namespace app\modules\product\models;
 
 //use Yii;
 use app\models\CActiveRecord;
+use app\modules\user\models\Company;
+use app\modules\user\models\User;
 
 /**
  * This is the model class for table "root_category".
@@ -65,4 +67,32 @@ class RootCategory extends CActiveRecord
     {
         return new RootCategoryQuery(get_called_class());
     }
+
+    /**
+     * 获取创建人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreator()
+    {
+        return $this->hasOne(User::className(), ['id' => 'create_author_uid']);
+    }
+
+    /**
+     * 获取最后修改人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdater()
+    {
+        return $this->hasOne(User::className(), ['id' => 'update_author_uid'])->alias('updater');
+    }
+
+    /**
+     * 获取公司
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCompany()
+    {
+        return $this->hasOne(Company::className(), ['id' => 'company_id'])->alias('company');
+    }
+
 }

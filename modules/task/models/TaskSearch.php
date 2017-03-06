@@ -54,24 +54,30 @@ class TaskSearch extends Task
     public function search($params)
     {
         $query = Task::find();
+        $identity = (Object) Yii::$app->user->identity;
 
+        //$productExecuteCompany = $query->where('find_in_set('.$execute_cid.',recipient_uid)');
         switch (Yii::$app->requestedAction->id){
             case 'sent-index':
                 $query->where(['!=', 'task.status', 1]);
+                $query->andWhere(['task.company_id' => $identity->company_id]);
                 break;
             case 'sent-trash':
+                $query->where(['=', 'task.status', 1]);
+                $query->andWhere(['task.company_id' => $identity->company_id]);
+                break;
+            case 'trash':
                 $query->where(['=', 'task.status', 1]);
                 break;
             case 'wait-index':
                 $query->where(['=', 'task.status', 3]);
+                $query->andWhere(['in','task.product_id',$this->whereExecuteProductIds($identity->company_id)]);
                 break;
             case 'received-index':
                 $query->where(['between', 'task.status', 4, 9]);
+                $query->andWhere(['in','task.product_id',$this->whereExecuteProductIds($identity->company_id)]);
                 break;
         }
-
-        $identity = (Object) Yii::$app->user->identity;
-        $query->andWhere(['task.company_id' => $identity->company_id]);
 
         $query->joinWith('product')
             ->joinWith('superior')
@@ -115,10 +121,6 @@ class TaskSearch extends Task
             'product.second_category_id' => $this->second_product_category,
             'task.superior_task_id' => $this->top_level_task,
         ]);
-
-        /*$query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'requirement', $this->requirement])
-            ->andFilterWhere(['like', 'attachment', $this->attachment]);*/
 
         $this->search_type == 1 && $query->andFilterWhere(['like', 'task.name', $this->search_keywords])->orFilterWhere(['like', 'task.number', $this->search_keywords]);
 

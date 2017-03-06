@@ -90,15 +90,15 @@ $module = $this->context->module->id;
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/task/index']) ?>">任务中心</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/payment/index']) ?>">付款中心</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/receipt/index']) ?>">收款中心</a></li>
-                            <li><a class="J_menuItem" href="<?= Url::to(['/system/root/category']) ?>">根分类列表</a></li>
-                            <li><a class="J_menuItem" href="<?= Url::to(['/system/product/category']) ?>">产品分类中心</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/system/root-category/index']) ?>">根分类列表</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/system/product-category/index']) ?>">产品分类中心</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/product/index']) ?>">产品中心</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/group/rate']) ?>">集团公司级别表</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/customer/index']) ?>">外部客户管理</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/money/index']) ?>">货币管理</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/finance-subject/index']) ?>">财务科目管理</a></li>
-                            <li><a class="J_menuItem" href="<?= Url::to(['/system/diary/index']) ?>">流水账中心</a></li>
-                            <li><a class="J_menuItem" href="<?= Url::to(['/system/item/index']) ?>">公司账目中心</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/system/statement/index']) ?>">流水账中心</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/system/finance/summary']) ?>">公司账目中心</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/notice/index']) ?>">通知中心</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/login/record']) ?>">登录记灵</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/system/login/ip-lock']) ?>">IP登录锁定</a></li>

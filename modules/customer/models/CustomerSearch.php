@@ -23,7 +23,7 @@ class CustomerSearch extends Customer
     public function rules()
     {
         return [
-            [['id', 'grade', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
+            [['id', 'grade', 'status', 'create_author_uid', 'update_author_uid', 'company_id'], 'integer'],
             [['name', 'remarks', 'create_time', 'update_time', 'search_type', 'search_keywords'], 'safe'],
         ];
     }
@@ -74,6 +74,7 @@ class CustomerSearch extends Customer
             'update_author_uid' => $this->update_author_uid,
             'create_time' => $this->create_time,
             'update_time' => $this->update_time,
+            'customer.company_id' => $this->company_id,
         ]);
 
         $this->search_type ==1 && $query->andFilterWhere(['like', 'customer.name', $this->search_keywords]);

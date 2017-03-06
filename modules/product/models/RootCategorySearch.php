@@ -12,6 +12,10 @@ use yii\data\ActiveDataProvider;
  */
 class RootCategorySearch extends RootCategory
 {
+    public $search_type;
+
+    public $search_keywords;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +23,7 @@ class RootCategorySearch extends RootCategory
     {
         return [
             [['id', 'company_id', 'create_author_uid', 'update_author_uid'], 'integer'],
-            [['name', 'visible', 'create_time', 'update_time'], 'safe'],
+            [['name', 'visible', 'create_time', 'update_time', 'search_type', 'search_keywords'], 'safe'],
         ];
     }
 
@@ -43,10 +47,19 @@ class RootCategorySearch extends RootCategory
     {
         $query = RootCategory::find();
 
+        $query->joinWith('creator')->joinWith('updater')->joinWith('company');
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'create_time' => SORT_DESC,
+                ]
+            ],
         ]);
 
         $this->load($params);
@@ -60,14 +73,20 @@ class RootCategorySearch extends RootCategory
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'root_category.company_id' => $this->company_id,
             'create_author_uid' => $this->create_author_uid,
             'update_author_uid' => $this->update_author_uid,
             'create_time' => $this->create_time,
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'visible', $this->visible]);
+        if(is_array($this->visible)){
+            $visible = (array) $this->visible;
+            $bit_num = array_sum($visible);
+            $query->andFilterWhere(['>=', 'root_category.visible', $bit_num]);
+        }
+
+        $this->search_type==1 && $query->andFilterWhere(['like', 'root_category.name', $this->search_keywords]);
 
         return $dataProvider;
     }

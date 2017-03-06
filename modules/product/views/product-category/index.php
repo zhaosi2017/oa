@@ -99,20 +99,24 @@ $actionId = Yii::$app->requestedAction->id;
                 'header' => '操作',
                 'template' => '{update} {switch}',
                 'buttons' => [
+                    'update' => function($url){
+                        return Html::a('编辑',$url);
+                    },
                     'switch' => function($url, $model){
                         $btn_link = '';
                         switch ($model->status){
                             case 0:
-                                $btn_link = Html::a('<i class="glyphicon glyphicon-ban-circle"></i>',
+                                $btn_link = Html::a('作废',
                                     $url . '&status=1',
                                     [
                                         'class' => 'btn btn-xs',
+                                        'style' => 'color:red',
                                         'data-method' => 'post',
                                         'data' => ['confirm' => '你确定要作废吗?']
                                     ]);
                                 break;
                             case 1:
-                                $btn_link = Html::a('<i class="glyphicon glyphicon-ok"></i>',
+                                $btn_link = Html::a('恢复',
                                     $url . '&status=0',
                                     [
                                         'class' => 'btn btn-xs',

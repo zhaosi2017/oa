@@ -34,7 +34,7 @@ $actionId = Yii::$app->requestedAction->id;
                     </div>
 
                     <?php
-                        $form = '<form action="'.\yii\helpers\Url::to(['/task/feedback/execute-received']).'" method="post">';
+                        $form = '<form action="'.\yii\helpers\Url::to(['/task/feedback/execute-received']).'" method="post" enctype="multipart/form-data">';
                         $form .= '<div class="form-group p-m">';
                         $form .= '<input type="hidden" name="_csrf" value="'.Yii::$app->request->csrfToken.'">';
                         $form .= '<input type="hidden" id="task_status" name="TaskStatus" value="">';
@@ -43,6 +43,7 @@ $actionId = Yii::$app->requestedAction->id;
                         $form .= '<input type="hidden" id="feedback_type" name="TaskFeedback[type]" value="0">';
                         $form .= '<label for="trash-content">当前操作不可逆转，请务必谨慎操作！(仅限输入500字，必填！)</label>';
                         $form .= '<textarea class="form-control" title="" name="TaskFeedback[content]" rows="5" required maxlength="500" id="trash-content"></textarea>';
+                        $form .= '<input name="TaskFeedback[file]" class="form-control" type="file" id="feedback-file">';
                         $form .= '<input type="submit" class="hidden" id="btn-submit" value="submit">';
                         $form .= '</div></form>';
                     ?>
@@ -51,7 +52,7 @@ $actionId = Yii::$app->requestedAction->id;
                             layer.open({
                             title: "新增执行",
                             type: 1,
-                            area: [\'35%\', \'35%\'], //宽高
+                            area: [\'39%\', \'39%\'], //宽高
                             content: \''.$form.'\',
                             btn: [\'提交\',\'取消\'],
                             btnAlign: \'c\',
@@ -111,16 +112,16 @@ $actionId = Yii::$app->requestedAction->id;
                                         $btn_link = '';
                                         switch ($model->status){
                                             case 0:
-                                                $btn_link = Html::a('<i class="glyphicon glyphicon-ban-circle"></i>',
+                                                $btn_link = Html::a('作废',
                                                     $url . '&status=1',
                                                     [
-                                                        'class' => 'btn btn-xs',
+                                                        'style' => 'color:red',
                                                         'data-method' => 'post',
                                                         'data' => ['confirm' => '你确定要作废吗?']
                                                     ]);
                                                 break;
                                             case 1:
-                                                $btn_link = Html::a('<i class="glyphicon glyphicon-ok"></i>',
+                                                $btn_link = Html::a('恢复',
                                                     $url . '&status=0',
                                                     [
                                                         'class' => 'btn btn-xs',

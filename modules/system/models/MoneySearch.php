@@ -5,7 +5,6 @@ namespace app\modules\system\models;
 //use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-//use app\modules\system\models\Money;
 
 /**
  * MoneySearch represents the model behind the search form about `app\modules\system\models\Money`.
@@ -16,13 +15,17 @@ class MoneySearch extends Money
 
     public $search_keywords;
 
+    public $start_date;
+
+    public $end_date;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['name', 'create_time', 'update_time', 'search_type', 'search_keywords'], 'safe'],
+            [['name', 'create_time', 'update_time', 'search_type', 'search_keywords', 'start_date', 'end_date'], 'safe'],
             [['enable', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
         ];
     }
@@ -45,9 +48,17 @@ class MoneySearch extends Money
      */
     public function search($params)
     {
-        $query = Money::find()->where([
-            'money.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
-        ]);
+        $query = Money::find();
+        /*if(empty(\Yii::$app->request->get('MoneySearch'))){
+            $query->where(['money.id'=>0]);
+        }*/
+
+        if(\Yii::$app->requestedAction->id == 'index'){
+            $query->andWhere(['money.status'=>0]);
+        }
+        if(\Yii::$app->requestedAction->id == 'trash'){
+            $query->andWhere(['money.status'=>1]);
+        }
 
         $query->joinWith('creator')->joinWith('updater');
         // add conditions that should always apply here

@@ -127,7 +127,7 @@ $identity = (Object) Yii::$app->user->identity;
                 <tr>
                     <td class="text-left" colspan="8">
                         <p>
-                            。。。。。
+                            <?= $model->requirement ?>
                         </p>
                         附件：<a href="<?= Url::to(['/task/task/download','attachment' => $model->attachment]) ?>"><?= $model->attachment ?></a>
                     </td>
@@ -144,9 +144,6 @@ $identity = (Object) Yii::$app->user->identity;
                         <div class="btn-group pull-left">
                             <a href="" class="btn btn-primary btn-xs">列表</a>
                             <a href="" class="btn btn-outline btn-default btn-xs">树形</a>
-                        </div>
-                        <div class="<?= $model->status==4 ? 'btn-group pull-right' : 'hide' ?>">
-                            <a href="<?= Url::to(['/task/task/create-child','task_id' => $model->id, 'number' => $model->number]) ?>" data-method="post" class="btn btn-primary btn-xs">新增子任务</a>
                         </div>
                     </td>
                 </tr>
@@ -219,7 +216,7 @@ $identity = (Object) Yii::$app->user->identity;
                 <tbody>
                 <tr>
                     <td colspan="1">执行公司</td>
-                    <td colspan="3" class="text-left"><?= $model['executeInfo']['company']['name'] ?></td>
+                    <td colspan="3" class="text-left"><?= $model['execute']['company']['name'] ?></td>
                     <td colspan="1">操作人 / 时间</td>
                     <td colspan="3" class="text-left"><?= $model['executeInfo']['updater']['account'] . '/' . $model['executeInfo']['update_time'] ?></td>
                 </tr>
@@ -227,7 +224,8 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="1">执行价格</td>
                     <td colspan="3" class="text-left">
                         <?php
-                            $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
+                            $execute_price = $model['execute']->price;
+//                            $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
                             echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
                         ?>
                     </td>

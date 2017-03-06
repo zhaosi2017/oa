@@ -14,7 +14,7 @@ $identity = (Object) Yii::$app->user->identity;
 ?>
 <div class="task-view">
     <p class="btn-group hidden-xs">
-        <?= Html::a('任务信息', ['received-detail','id'=>$model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('任务信息', ['／task/task/received-detail','id'=>$model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('执行反馈', ['/task/feedback/index-received','id'=>$model->id], ['class' =>  'btn btn-outline btn-default']) ?>
         <?= Html::a('收付款信息', ['/task/pay/index-received','id'=>$model->id], ['class' =>  'btn btn-outline btn-default']) ?>
     </p>
@@ -73,50 +73,7 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="7" class="text-left"><?= $model['product']['description'] ?></td>
                 </tr>
                 </tbody>
-                <thead>
-                <tr>
-                    <th colspan="8">客户信息</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td colspan="1">客户</td>
-                    <td colspan="3" class="text-left"><?= $model->customer_category==1 ? '(外)'.$model['customer']['name'] : '(集)'.$model['group']['name'] ?></td>
-                    <td colspan="1">级别</td>
-                    <td colspan="3" class="text-left"><?php
-                        $grade = [
-                            0 => '未评级',
-                            1 => 'A',
-                            2 => 'B',
-                            3 => 'C',
-                            4 => 'D',
-                        ];
-                        echo $grade[$model->customer_grate];
-                        ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-center text-nowrap">产品价格</td>
-                    <td colspan="7" class="text-left">
-                        <table class="table table-bordered text-center">
-                            <tr>
-                                <td>货币</td>
-                                <td>购买价格</td>
-                                <td>成交价格</td>
-                            </tr>
-                            <?php foreach ($model['deal'] as $item){ ?>
-                            <tr>
-                                <td><?= $model['money'][$item->money_id] ?></td>
-                                <td>
-                                    <?= $item->purchase_price ?>
-                                </td>
-                                <td><?= $item->price ?></td>
-                            </tr>
-                            <?php } ?>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
+
                 <thead>
                 <tr>
                     <th colspan="8">任务要求</th>
@@ -126,7 +83,7 @@ $identity = (Object) Yii::$app->user->identity;
                 <tr>
                     <td class="text-left" colspan="8">
                         <p>
-                            。。。。。
+                            <?= $model->requirement ?>
                         </p>
                         附件：<a href="<?= Url::to(['/task/task/download','attachment' => $model->attachment]) ?>"><?= $model->attachment ?></a>
                     </td>
@@ -218,7 +175,7 @@ $identity = (Object) Yii::$app->user->identity;
                 <tbody>
                 <tr>
                     <td colspan="1">执行公司</td>
-                    <td colspan="3" class="text-left"></td>
+                    <td colspan="3" class="text-left"><?= $model['execute']['company']['name'] ?></td>
                     <td colspan="1">操作人 / 时间</td>
                     <td colspan="3" class="text-left"></td>
                 </tr>
@@ -226,7 +183,8 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="1">执行价格</td>
                     <td colspan="3" class="text-left">
                         <?php
-                            $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
+                            $execute_price = $model['execute']->price;
+                            //  $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
                             echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
                             /*foreach ($model['execute'] as $k => $v) {
                                 $price = $model['product']['company_id'] != $identity->company_id ? '******' : $v->price;

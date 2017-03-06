@@ -7,6 +7,7 @@ use app\modules\product\models\Product;
 use app\modules\product\models\ProductExecutePrice;
 use app\modules\product\models\ProductPurchasePrice;
 use app\modules\system\models\Money;
+use app\modules\system\models\SerialNumber;
 use app\modules\user\models\Company;
 use app\modules\user\models\User;
 use Yii;
@@ -39,6 +40,8 @@ class Task extends CActiveRecord
 {
 
     public $file;
+
+    public $company_customer_input;
 
     /**
      * @inheritdoc
@@ -89,6 +92,7 @@ class Task extends CActiveRecord
             'update_author_uid' => 'Update Author Uid',
             'create_time' => 'Create Time',
             'update_time' => 'Update Time',
+            'file' => '附件',
         ];
     }
 
@@ -124,12 +128,14 @@ class Task extends CActiveRecord
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $time_stamp = $_SERVER['REQUEST_TIME'];
+                $model = new SerialNumber();
+                $serial = $model->generalSerial('task');
                 $this->create_author_uid = $uid;
                 $this->update_author_uid = $uid;
                 $this->create_time = $time_stamp;
                 $this->update_time = $time_stamp;
                 $this->status = 2;
-                $this->number = date('ymd', $time_stamp) . uniqid(); //年月日加随机数加序列号
+                $this->number = date('ymd', $time_stamp) . $serial; //年月日加随机数加序列号
             }else{
                 $this->update_author_uid = $uid;
                 $this->update_time = $_SERVER['REQUEST_TIME'];
@@ -216,6 +222,13 @@ class Task extends CActiveRecord
     public function getExecute()
     {
         return $this->hasOne(ProductExecutePrice::className(), ['product_id' => 'product_id'])->alias('execute');
+    }
+
+    public function whereExecuteProductIds($company_id)
+    {
+        $executeProductIds = ProductExecutePrice::find()->distinct('product_id')->select('product_id')
+            ->where(['company_id'=>$company_id])->column();
+        return $executeProductIds;
     }
 
     public function getMoney()

@@ -2,8 +2,12 @@
 
 namespace app\modules\system\models;
 
-//use Yii;
+use Yii;
 use app\models\CActiveRecord;
+use app\modules\finance\models\Statement;
+use app\modules\task\models\TaskCollectionInfo;
+use app\modules\task\models\TaskDealPrice;
+use app\modules\task\models\TaskPayInfo;
 use app\modules\user\models\User;
 
 /**
@@ -83,6 +87,68 @@ class Money extends CActiveRecord
     public function getUpdater()
     {
         return $this->hasOne(User::className(), ['id' => 'update_author_uid'])->alias('updater');
+    }
+
+    //总收入
+    public function getGross()
+    {
+        $identity = (Object) Yii::$app->user->identity;
+        $gross = [];
+        //收款单
+        $query = TaskCollectionInfo::find()->select(['task_id','id'])->where(['status'=>2]);
+        $query->andWhere(['company_id'=>$identity->company_id]);
+
+        //流水的收入
+        $query_state = Statement::find()->where(['status'=>0,'direction'=>2])->andWhere(['money_id'=>$this->id]);
+        $query_state->andWhere(['company_id'=>$identity->company_id]);
+
+        $gets = Yii::$app->request->get('MoneySearch');
+        if(!empty($gets) && $gets['start_date']){
+            $query->andWhere(['between','update_time',$gets['start_date'],$gets['end_date']]);
+            $query_state->andWhere(['between','update_time',$gets['start_date'],$gets['end_date']]);
+        }
+
+        $task_ids = $query->indexBy('id')->column();
+        $gross[] = TaskDealPrice::find()
+            ->select(['price'])
+            ->where(['in','task_id',$task_ids])
+            ->andWhere(['money_id'=>$this->id])->sum('price');
+
+        $gross[] = $query_state->sum('amount');
+
+        $res = array_sum($gross)>0 ? array_sum($gross) : '0.00';
+        return $res;
+    }
+
+    //总支出
+    public function getSpending()
+    {
+        $identity = (Object) Yii::$app->user->identity;
+        $spending = [];
+        //付款单
+        $query = TaskPayInfo::find()->select(['task_id','id'])->where(['status'=>2]);
+        $query->andWhere(['pay_company_id'=>$identity->company_id]);
+
+        $query_state = Statement::find()->where(['status'=>0,'direction'=>1])->andWhere(['money_id'=>$this->id]);
+        $query_state->andWhere(['company_id'=>$identity->company_id]);
+
+        $gets = Yii::$app->request->get('MoneySearch');
+        if(!empty($gets) && $gets['start_date']){
+            $query->andWhere(['between','update_time',$gets['start_date'],$gets['end_date']]);
+            $query_state->andWhere(['between','update_time',$gets['start_date'],$gets['end_date']]);
+        }
+
+        $task_ids = $query->indexBy('id')->column();
+        $spending[] = TaskDealPrice::find()
+            ->select(['price'])
+            ->where(['in','task_id',$task_ids])
+            ->andWhere(['money_id'=>$this->id])->sum('price');
+
+        //流水的支出
+        $spending[] = $query_state->sum('amount');
+
+        $res = array_sum($spending) ? array_sum($spending) : '0.00';
+        return $res;
     }
 
 }
