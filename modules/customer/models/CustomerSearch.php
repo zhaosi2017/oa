@@ -2,7 +2,7 @@
 
 namespace app\modules\customer\models;
 
-//use Yii;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 //use app\modules\customer\models\Customer;
@@ -47,8 +47,13 @@ class CustomerSearch extends Customer
     public function search($params)
     {
         $query = Customer::find()->where([
-            'customer.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
+            'customer.status'=>Yii::$app->requestedAction->id == 'index' ? 0 : 1,
         ]);
+
+        if(Yii::$app->controller->module->id!='system'){
+            $identity = (Object) Yii::$app->user->identity;
+            $query->andWhere(['customer.company_id'=>$identity->company_id]);
+        }
 
         $query->joinWith('company')->joinWith('creator')->joinWith('updater');
         // add conditions that should always apply here

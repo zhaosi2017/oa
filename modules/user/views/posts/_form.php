@@ -29,6 +29,7 @@ use app\modules\user\models\Department;
         $departmentMap = [];
 
         if(!$model->isNewRecord){
+            $companyMap = [$model->company_id => $model['company']['name']];
             $departmentMap = Department::find()->downList($model->company_id);
         }
 

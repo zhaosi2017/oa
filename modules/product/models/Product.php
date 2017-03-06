@@ -13,6 +13,7 @@ use app\modules\user\models\User;
  *
  * @property integer $id
  * @property string $name
+ * @property integer $company_id
  * @property integer $first_category_id
  * @property integer $second_category_id
  * @property string $number

@@ -41,8 +41,6 @@ class Task extends CActiveRecord
 
     public $file;
 
-    public $company_customer_input;
-
     /**
      * @inheritdoc
      */

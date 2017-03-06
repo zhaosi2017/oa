@@ -2,10 +2,9 @@
 
 namespace app\modules\product\models;
 
-//use Yii;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-//use app\modules\product\models\Product;
 
 /**
  * ProductSearch represents the model behind the search form about `app\modules\product\models\Product`.
@@ -50,8 +49,13 @@ class ProductSearch extends Product
     public function search($params)
     {
         $query = Product::find()->where([
-            'product.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
+            'product.status'=>Yii::$app->requestedAction->id == 'index' ? 0 : 1,
         ]);
+
+        if(Yii::$app->controller->module->id!='system'){
+            $identity = (Object) Yii::$app->user->identity;
+            $query->andWhere(['product.company_id'=>$identity->company_id]);
+        }
 
         $query->joinWith('creator')->joinWith('updater')->joinWith('company')->joinWith('category');
         // add conditions that should always apply here
