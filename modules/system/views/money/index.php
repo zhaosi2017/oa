@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '货币管理';
+$this->params['breadcrumbs'][] = ['label'=>'系统','url'=>''];
 $this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 ?>

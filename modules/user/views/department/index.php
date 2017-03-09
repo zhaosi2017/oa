@@ -9,6 +9,7 @@ use yii\widgets\Pjax;
 
 
 $this->title = '部门管理';
+$this->params['breadcrumbs'][] = ['label'=>'用户','url'=>''];
 $this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 ?>
@@ -42,7 +43,13 @@ $actionId = Yii::$app->requestedAction->id;
 
             ['value'=>'company.name','attribute'=>'company_name', 'label'=>'所属公司'],
 
-            ['label' => '上级部门', 'attribute'=>'superior_name', 'value' => 'superior.name'],
+            ['label' => '上级部门', 'value' => function($model){
+                $superior = $model['superior']['name'];
+                if(!$superior){
+                    return '无';
+                }
+                return $superior;
+            }],
 
             [
                 'class' => 'yii\grid\DataColumn', //由于是默认类型，可以省略

@@ -45,7 +45,7 @@ class Product extends CActiveRecord
         return [
             [['name', 'second_category_id', 'number'], 'required'],
             [['first_category_id', 'second_category_id', 'enable', 'status', 'create_author_uid', 'update_author_uid', 'company_id'], 'integer'],
-            [['description'], 'string'],
+            [['description'], 'string', 'max' => 200],
             [['create_time', 'update_time'], 'safe'],
             [['name', 'number'], 'string', 'max' => 10],
             [['name', 'number'], 'unique'],

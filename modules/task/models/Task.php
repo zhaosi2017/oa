@@ -57,7 +57,7 @@ class Task extends CActiveRecord
         return [
             [['name', 'product_id','customer_category', 'company_customer_id', 'customer_grate', 'requirement'], 'required'],
             [['company_id','execute_company_id', 'company_customer_id','execute_type', 'fee_settlement', 'customer_category', 'customer_grate', 'product_id', 'status', 'superior_task_id', 'create_author_uid', 'update_author_uid', 'create_time', 'update_time'], 'integer'],
-            [['requirement'], 'string'],
+            [['requirement'], 'string', 'max' => 500],
             [['name'], 'string', 'max' => 20],
             [['execute_type', 'fee_settlement'], 'default', 'value' => 0],
             [['attachment','number'], 'string', 'max' => 64],
@@ -219,7 +219,8 @@ class Task extends CActiveRecord
 
     public function getExecute()
     {
-        return $this->hasOne(ProductExecutePrice::className(), ['product_id' => 'product_id'])->alias('execute');
+        $identity = (Object) Yii::$app->user->identity;
+        return $this->hasOne(ProductExecutePrice::className(), ['product_id' => 'product_id'])->where(['company_id'=>$identity->company_id])->alias('execute');
     }
 
     public function whereExecuteProductIds($company_id)

@@ -175,7 +175,13 @@ $identity = (Object) Yii::$app->user->identity;
                 <tbody>
                 <tr>
                     <td colspan="1">执行公司</td>
-                    <td colspan="3" class="text-left"><?= $model['execute']['company']['name'] ?></td>
+                    <td colspan="3" class="text-left">
+                        <?php
+                        if($model['execute']) {
+                            echo $model['execute']['company']['name'];
+                        }
+                        ?>
+                    </td>
                     <td colspan="1">操作人 / 时间</td>
                     <td colspan="3" class="text-left"></td>
                 </tr>
@@ -183,13 +189,11 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="1">执行价格</td>
                     <td colspan="3" class="text-left">
                         <?php
-                            $execute_price = $model['execute']->price;
-                            //  $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
-                            echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
-                            /*foreach ($model['execute'] as $k => $v) {
-                                $price = $model['product']['company_id'] != $identity->company_id ? '******' : $v->price;
-                                echo $model['money'][$v->money_id] . ': ' . $price;
-                            }*/
+                            if($model['execute']){
+                                $execute_price = $model['execute']->price;
+                                // $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
+                                echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
+                            }
                         ?>
                     </td>
                     <td colspan="1">预计完成时间</td>

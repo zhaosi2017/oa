@@ -307,7 +307,7 @@ class TaskController extends GController
                     $model += Task::find()->customerDownList($company_id);
                     break;
                 case 2:
-                    $model += Task::find()->companyDownList();
+                    $model += Task::find()->getRatedCompany($company_id);
                     break;
             }
             foreach($model as $value=>$name)

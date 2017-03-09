@@ -112,6 +112,7 @@ $config = [
         'system'=>[
             'class' => 'app\modules\system\Module'
         ],
+        'redactor' => 'yii\redactor\RedactorModule',
     ],
 
 ];

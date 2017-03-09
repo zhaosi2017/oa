@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
+use yii\redactor\widgets\Redactor;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\task\models\Task */
@@ -96,9 +97,9 @@ $grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
         </div>
     </div>
     <div class="form-group hide" id="product-requirement">
-        <label class="col-sm-2 control-label" for="product-requirement">产品说明</label>
+        <label class="col-sm-2 control-label" for="product_requirement">产品说明</label>
         <div class="col-sm-10">
-            <textarea title="" class="form-control" rows="6"></textarea>
+            <div id="product_requirement" style="padding: 6px 12px"></div>
         </div>
     </div>
     <div class="form-group hide" id="product_price_table">
@@ -126,7 +127,19 @@ $grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
 
     <?= $form->field($model, 'product_id')->hiddenInput()->label(false) ?>
 
-    <?= $form->field($model, 'requirement')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'requirement')->widget(Redactor::className(),[
+        'clientOptions' => [
+            'lang' => 'zh_cn',
+            'imageUpload' => false,
+            'fileUpload' => false,
+            'plugins' => [
+                'clips',
+                'fontcolor'
+            ],
+            'placeholder'=>'限500个字',
+            'maxlength'=>500
+        ]
+    ]) ?>
 
     <?= $form->field($model, 'file',
         [

@@ -4,9 +4,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\user\models\Posts */
 
-$this->title = '公司评级' ;
-$this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
-$this->params['breadcrumbs'][] = 'rate';
+$this->title = '集团公司评级' ;
+$this->params['breadcrumbs'][] = ['label' => '客户', 'url' => ''];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="posts-grid">
 

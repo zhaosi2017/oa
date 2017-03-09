@@ -40,7 +40,7 @@ $module = $this->context->module->id;
                     </li>
 
                     <li class="<?= $module=='home' ? 'active' : '' ?>">
-                        <a class="J_menuItem" href="<?= Url::to(['/home/main/index']) ?>"><i class="fa fa-home"></i> <span class="nav-label">主页</span></a>
+                        <a class="J_menuItem" href="<?= Url::to(['/home/default/index']) ?>"><i class="fa fa-home"></i> <span class="nav-label">主页</span></a>
                     </li>
 
                     <li class="<?= $module=='task' ? 'active' : '' ?>">
@@ -138,6 +138,24 @@ $module = $this->context->module->id;
                 </nav>
             </div>
             <div class="row content-tabs">
+                <span class="pull-left m-l-xs">当前位置：</span>
+                <a>
+                    <?php
+                        echo \yii\widgets\Breadcrumbs::widget([
+                            //'tag'=>'h2',
+                            // 'homeLink'=>[
+                            //    'label'=>'后台首页>>', 修改默认的Home
+                            //    'url'=>Url::to(['index/index']), 修改默认的Home指向的url地址
+                            // ],
+
+                            'homeLink'=>false, // 若设置false 则 可以隐藏Home按钮
+                            //'homeLink'=>['label' => '主 页','url' => Yii::$app->homeUrl.'home/'], // 若设置false 则 可以隐藏Home按钮
+                            'itemTemplate'=>"<span>{link} > </span>",
+                            'activeItemTemplate'=>"<span>{link}</span>",
+                            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                        ])
+                    ?>
+                </a>
                 <a data-method="post" href="<?= Url::to(['/login/default/logout']) ?>" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
             </div>
             <div class="row J_mainContent" id="content-main" style="overflow: auto">

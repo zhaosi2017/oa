@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\redactor\widgets\Redactor;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\product\models\Product */
@@ -81,12 +82,21 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 6, 'maxlength' => 200,'placeholder' => '限200字']) ?>
-
-    <?= $form->field($model, 'enable')->radioList([
-            0 => '可用',
-            1 => '停用',
+    <?php echo $form->field($model, 'description')->widget(Redactor::className(),[
+        'clientOptions' => [
+            'lang' => 'zh_cn',
+            'imageUpload' => false,
+            'fileUpload' => false,
+            'plugins' => [
+                'clips',
+                'fontcolor'
+            ],
+            'placeholder'=>'限200个字',
+            'maxlength'=>200
+        ]
     ]) ?>
+
+    <?= $form->field($model, 'enable')->radioList([0 => '可用', 1 => '停用']) ?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

@@ -24,8 +24,10 @@ use yii\widgets\ActiveForm;
     <div class="form-group">
         <label class="col-sm-3 control-label" for="subordinate_company">所属公司</label>
         <div class="col-sm-9">
-            <input class="form-control" id="subordinate_company" type="text" readonly="readonly" value="<?=
-                \app\modules\user\models\Company::findOne($identify->company_id)->getAttribute('name');
+            <input class="form-control" id="subordinate_company" type="text" readonly="readonly" value="<?php
+                if($identify->company_id){
+                    echo \app\modules\user\models\Company::findOne($identify->company_id)->getAttribute('name');
+                }
             ?>">
         </div>
     </div>

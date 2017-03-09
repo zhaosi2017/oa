@@ -51,8 +51,9 @@ class DepartmentSearch extends Department
      */
     public function search($params)
     {
-        $query = Department::find()->select([])
-            ->where([
+        $query = Department::find();
+
+        $query->where([
             'department.status'=>\Yii::$app->requestedAction->id == 'index' ? 0 : 1,
         ]);
         // add conditions that should always apply here

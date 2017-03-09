@@ -8,7 +8,8 @@ use yii\helpers\Url;
 /* @var $children */
 
 $this->title = '已发任务详情';
-$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label'=>'任务','url'=>'sent-index'];
+$this->params['breadcrumbs'][] = ['label' => '已发任务', 'url' => ['sent-index']];
 $this->params['breadcrumbs'][] = $this->title;
 $identity = (Object) Yii::$app->user->identity;
 ?>
@@ -216,7 +217,13 @@ $identity = (Object) Yii::$app->user->identity;
                 <tbody>
                 <tr>
                     <td colspan="1">执行公司</td>
-                    <td colspan="3" class="text-left"><?= $model['execute']['company']['name'] ?></td>
+                    <td colspan="3" class="text-left">
+                        <?php
+                            if($model['execute']) {
+                                echo $model['execute']['company']['name'];
+                            }
+                        ?>
+                    </td>
                     <td colspan="1">操作人 / 时间</td>
                     <td colspan="3" class="text-left"><?= $model['executeInfo']['updater']['account'] . '/' . $model['executeInfo']['update_time'] ?></td>
                 </tr>
@@ -224,9 +231,11 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="1">执行价格</td>
                     <td colspan="3" class="text-left">
                         <?php
-                            $execute_price = $model['execute']->price;
-//                            $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
-                            echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
+                            if($model['execute']){
+                                $execute_price = $model['execute']->price;
+                                // $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
+                                echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
+                            }
                         ?>
                     </td>
                     <td colspan="1">预计完成时间</td>

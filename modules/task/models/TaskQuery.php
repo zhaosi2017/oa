@@ -42,6 +42,12 @@ class TaskQuery extends ActiveQuery
         return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
     }
 
+    public function getRatedCompany($company_id)
+    {
+        $company_in_ids = GroupRate::find()->select('company_id')->where(['rate_company_id'=>$company_id])->column();
+        return Company::find()->select(['name','id'])->where(['status'=>0])->andWhere(['in','id',$company_in_ids])->indexBy('id')->column();
+    }
+
     public function customerDownList($company_id)
     {
         return Customer::find()->select(['name','id'])->where(['company_id'=>$company_id,'status'=>0])->indexBy('id')->column();

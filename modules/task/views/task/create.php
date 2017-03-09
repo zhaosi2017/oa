@@ -7,7 +7,8 @@
 /* @var $model app\modules\task\models\Task */
 
 $this->title = '创建任务';
-$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '任务', 'url' => ['sent-index']];
+$this->params['breadcrumbs'][] = ['label' => '已发任务', 'url' => ['sent-index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="task-create">

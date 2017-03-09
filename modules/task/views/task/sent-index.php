@@ -8,7 +8,8 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '已发任务列表';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label'=>'任务','url'=>''];
+$this->params['breadcrumbs'][] = '已发任务';
 $actionId = Yii::$app->requestedAction->id;
 ?>
 <div class="task-index">

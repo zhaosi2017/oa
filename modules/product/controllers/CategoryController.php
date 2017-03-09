@@ -7,28 +7,12 @@ use app\modules\product\models\RootCategory;
 use app\modules\product\models\RootCategorySearch;
 use app\controllers\GController;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CategoryController implements the CRUD actions for RootCategory model.
  */
 class CategoryController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     public function actionRootSet()
     {
         $model = new RootCategory();

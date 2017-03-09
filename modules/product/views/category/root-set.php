@@ -7,6 +7,7 @@
 /* @var $model app\modules\product\models\RootCategory */
 
 $this->title = '根分类设置';
+$this->params['breadcrumbs'][] = ['label'=>'产品','url'=>''];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="root-category-set">

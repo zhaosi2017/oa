@@ -7,7 +7,8 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\customer\models\CustomerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '客户管理';
+$this->title = '外部客户';
+$this->params['breadcrumbs'][] = ['label'=>'客户','url'=>''];
 $this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 

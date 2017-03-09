@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '产品管理';
+$this->params['breadcrumbs'][] = ['label'=>'产品','url'=>''];
 $this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 ?>
@@ -90,7 +91,7 @@ $actionId = Yii::$app->requestedAction->id;
                 },
             ],
             ['value' => 'company.name', 'label' => '所属公司'],
-            ['label' => '产品说明', 'value' => 'description'],
+            ['label' => '产品说明','format'=>'html', 'value' => 'description'],
             [
                 'class' => 'yii\grid\DataColumn',
                 'label' => '创建人／时间',

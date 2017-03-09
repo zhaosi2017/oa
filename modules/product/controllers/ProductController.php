@@ -11,28 +11,12 @@ use app\modules\product\models\ProductSearch;
 use app\controllers\GController;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ProductController implements the CRUD actions for Product model.
  */
 class ProductController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Product models.
      * @return mixed

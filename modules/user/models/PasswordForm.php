@@ -27,7 +27,7 @@ class PasswordForm extends Model
             // username and password are both required
             [['rePassword', 'password'], 'required'],
             [['rePassword', 'password'], 'string', 'length' => [8,15]],
-            ['password', 'compare', 'compareAttribute'=>'rePassword'],
+            ['rePassword', 'compare', 'compareAttribute'=>'password'],
             ['password', 'validatePassword']
         ];
     }

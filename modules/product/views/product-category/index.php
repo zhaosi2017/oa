@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '产品分类';
+$this->params['breadcrumbs'][] = ['label'=>'产品','url'=>''];
 $this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 ?>
@@ -35,7 +36,13 @@ $actionId = Yii::$app->requestedAction->id;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn','header' => '序号'],
             'name',
-            ['label' => '上级分类', 'value' => 'superior.name'],
+            ['label' => '上级分类', 'value' =>  function($model){
+                $superior = $model['superior']['name'];
+                if(!$superior){
+                    return '无';
+                }
+                return $superior;
+            }],
             [
                 'class' => 'yii\grid\DataColumn',
                 'header' => '可见',

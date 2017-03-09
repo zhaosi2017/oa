@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '公司管理 ';
+$this->params['breadcrumbs'][] = ['label'=>'用户','url'=>''];
 $this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 ?>
@@ -38,7 +39,13 @@ $actionId = Yii::$app->requestedAction->id;
             //['label' => '公司名称', 'attribute'=>'name', 'value' => 'name'],
             'name',
 //            'sup_id',
-            ['label' => '上级公司', 'attribute'=>'superior_name', 'value' => 'superior.name'],
+            ['label' => '上级公司', 'value' => function($model){
+                $superior = $model['superior']['name'];
+                if(!$superior){
+                    return '无';
+                }
+                return $superior;
+            }],
 
             [
                 'class' => 'yii\grid\DataColumn',

@@ -9,28 +9,12 @@ use app\modules\product\models\ProductCategorySearch;
 use app\controllers\GController;
 use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ProductCategoryController implements the CRUD actions for ProductCategory model.
  */
 class ProductCategoryController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all ProductCategory models.
      * @return mixed

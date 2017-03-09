@@ -5,13 +5,13 @@
 /* @var $message string */
 /* @var $exception Exception */
 
-use yii\helpers\Html;
+//use yii\helpers\Html;
 
 $this->title = '拒绝访问';
 ?>
 <div class="site-error">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<!--    <h1>--><?php //echo Html::encode($this->title) ?><!--</h1>-->
 
     <div class="alert alert-danger">
         <p>您无权使用该功能！</p>

@@ -2,12 +2,14 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use app\modules\user\models\Department;
-use app\modules\user\models\Posts;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\user\models\User */
 /* @var $form yii\widgets\ActiveForm */
+
+$this->title = '修改密码';
+$this->params['breadcrumbs'][] = ['label'=>'用户','url'=>''];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="user-form">

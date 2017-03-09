@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\user\models\Posts */
 
-$this->title = '编辑岗位: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = '编辑岗位';
+$this->params['breadcrumbs'][] = ['label'=>'用户','url'=>'index'];
+$this->params['breadcrumbs'][] = ['label' => '岗位管理', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 ?>
 <div class="posts-update">

@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $model app\modules\user\models\Posts */
 
 $this->title = '权限设置' ;
-$this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'auth';
+$this->params['breadcrumbs'][] = ['label'=>'用户','url'=>'index'];
+$this->params['breadcrumbs'][] = ['label' => '岗位管理', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 $auth = Yii::$app->authManager;
 $permissions = $auth->getPermissionsByRole($model->id);

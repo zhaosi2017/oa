@@ -106,10 +106,11 @@ $searchModel->grade = $grade;
                                 'onclick' => '
                                     var url = \''.$url.'\';
                                     var $body = parent.$("body");
+                                    var requirement = \''.$model->description.'\';
                                     $body.find("#task-product_id").val(\''.$model->id.'\');
                                     $body.find("#product-name-number").html(\''.$model->name.'\' + \'('.$model->number.')\');
                                     $body.find("#product-company").removeClass("hide").find("input").val(\''.$model['company']['name'].'\');
-                                    $body.find("#product-requirement").removeClass("hide").find("textarea").val(\''.$model->description.'\');
+                                    $body.find("#product-requirement").removeClass("hide").find("#product_requirement").html(requirement);
                                     $body.find("#product_price_table").removeClass("hide").find("table").html(\''.$product_price_html.'\');
                                     
                                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

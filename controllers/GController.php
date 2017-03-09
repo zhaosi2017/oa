@@ -21,8 +21,8 @@ class GController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-//                'only' => ['logout','index','create','update','switch','trash','rate'],
-                'only' => ['logout'],
+                'only' => ['logout','index','rate','sent-index','wait-index','received-index','root-set','summary','ip-lock','record'],
+//                'only' => ['logout'],
                 'rules' => [
                     [
                         'allow' => false,
@@ -39,9 +39,16 @@ class GController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index','rate','sent-index','wait-index','received-index','root-set','summary','ip-lock','record'],
                         'allow' => true,
                         'matchCallback' => function () {
+                            $identity = (Object) Yii::$app->user->identity;
+                            if($identity->account=='oaAdmin'){
+                                if(Yii::$app->controller->module->id=='user'){
+                                    return true;
+                                }
+                                return false;
+                            }
                             return Yii::$app->user->can(Yii::$app->requestedRoute);
                         }
                     ],

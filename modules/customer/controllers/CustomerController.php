@@ -7,28 +7,12 @@ use app\modules\customer\models\Customer;
 use app\modules\customer\models\CustomerSearch;
 use app\controllers\GController;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CustomerController implements the CRUD actions for Customer model.
  */
 class CustomerController extends GController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
 
     /**
      * Lists all Customer models.

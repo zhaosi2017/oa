@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\user\models\User */
 
-$this->title = '用户详情';
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = '基本信息';
+$this->params['breadcrumbs'][] = ['label' => '用户', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '用户管理', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 ?>
 <div class="user-update">

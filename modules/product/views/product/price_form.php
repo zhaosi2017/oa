@@ -7,7 +7,10 @@ use yii\widgets\ActiveForm;
 /* @var $model app\modules\product\models\Product */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = ' 编辑产品: ' . $model->name;
+$this->title = '产品价格';
+$this->params['breadcrumbs'][] = ['label'=>'产品','url'=>'index'];
+$this->params['breadcrumbs'][] = ['label'=>'产品管理','url'=>'index'];
+$this->params['breadcrumbs'][] = $this->title;
 $actionId = Yii::$app->requestedAction->id;
 
 ?>

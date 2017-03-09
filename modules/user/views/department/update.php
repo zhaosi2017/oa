@@ -10,10 +10,10 @@
 ]) . $model->name;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Departments'), 'url' => ['index']];*/
-$this->title = $this->title = '编辑部门: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Departments'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('app', 'Update');
+$this->title = $this->title = '编辑部门';
+$this->params['breadcrumbs'][] = ['label'=>'用户','url'=>'index'];
+$this->params['breadcrumbs'][] = ['label' => '部门管理', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="department-update">
 

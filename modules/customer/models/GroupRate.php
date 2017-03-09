@@ -73,4 +73,5 @@ class GroupRate extends CActiveRecord
         }
         return true;
     }
+
 }
