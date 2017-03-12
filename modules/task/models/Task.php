@@ -220,7 +220,19 @@ class Task extends CActiveRecord
     public function getExecute()
     {
         $identity = (Object) Yii::$app->user->identity;
-        return $this->hasOne(ProductExecutePrice::className(), ['product_id' => 'product_id'])->where(['company_id'=>$identity->company_id])->alias('execute');
+        return $this->hasOne(ProductExecutePrice::className(), ['product_id' => 'product_id'])
+            ->where(['company_id'=>$identity->company_id])->alias('execute');
+    }
+
+    public function getProductExecuteUser()
+    {
+        $productExecuteCompany = ProductExecutePrice::find()
+            ->select(['company_id'])
+            ->where(['product_id'=>$this->product_id])
+            ->column();
+        $user = User::find()->select(['id'])->where(['status'=>0])
+            ->andWhere(['in','company_id',$productExecuteCompany])->asArray()->all();
+        return $user;
     }
 
     public function whereExecuteProductIds($company_id)
@@ -262,5 +274,10 @@ class Task extends CActiveRecord
         //        array_unshift($children, $self);
 
         return $children;
+    }
+
+    public function getParentCompany()
+    {
+//        $company = $this::findOne(['id'=>$this->id])->getAttribute('company_id');
     }
 }

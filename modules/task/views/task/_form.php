@@ -148,7 +148,7 @@ $grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
         ])->fileInput(['class'=>'form-control']) ?>
 
     <div class="form-group">
-        <div class="col-sm-6 col-sm-offset-3">
+        <div class="col-sm-6 col-sm-offset-2">
             <?= Html::submitButton($model->isNewRecord ? '添加' : '更新', ['class' => 'btn btn-primary']) ?>
         </div>
     </div>

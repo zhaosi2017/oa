@@ -4,6 +4,11 @@ namespace app\modules\user\models;
 
 use app\models\CActiveRecord;
 use Yii;
+use app\modules\finance\models\Statement;
+use app\modules\task\models\TaskCollectionInfo;
+use app\modules\task\models\TaskDealPrice;
+use app\modules\task\models\TaskExecuteInfo;
+use app\modules\task\models\TaskPayInfo;
 
 /**
  * This is the model class for table "company".
@@ -108,8 +113,10 @@ class Company extends CActiveRecord
         }else{
             $this->update_author_uid = $uid;
             $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-            $this->level = $this::findOne(['id'=>$this->sup_id])->getAttribute('level') + 1;
         }
+
+        $query = $this::findOne(['id'=>$this->sup_id]);
+        $this->level = $query ? $query->getAttribute('level') + 1 : 1;
         return true;
     }
 
@@ -128,52 +135,45 @@ class Company extends CActiveRecord
         return $children;
     }
 
-
-   /* //总收入
-    public function getCompanyGross()
+    public function statistic()
     {
+        $statistic = [];
 
-        $gross = [];
-        //收款单
-        $query = TaskCollectionInfo::find()
-            ->select(['task_collection_info.company_id','task_collection_info.task_id','task_collection_info.id'])
-            ->where(['status'=>2]);
+        $company_tasks = TaskCollectionInfo::find()->select(['group_concat(task_id) as task_ids','company_id'])
+            ->where(['status'=>2])
+            ->groupBy('company_id')->indexBy('company_id')->column();
 
-        //流水的收入
-        $query_state = Statement::find()->where(['status'=>0,'direction'=>2])->andWhere(['money_id'=>$this->id]);
+        $pay_company_tasks = TaskPayInfo::find()->select(['group_concat(task_id) as task_ids','pay_company_id'])->where(['status'=>2])
+            ->groupBy('pay_company_id')->indexBy('pay_company_id')->column();
+
+        $deal_query = TaskDealPrice::find();
+
+        $execute_query = TaskExecuteInfo::find();
+
+        //收
+        foreach ($company_tasks as $company_id => $task_ids){
+            if($company_id==$this->id){
+                $statistic[$company_id]['collection'] = $deal_query->select(['sum(price) as sum_collection','money_id'])
+                    ->where(['in','task_id',$task_ids])->groupBy('money_id')->indexBy('money_id')->column();
+            }
+        }
+
+        //支
+        foreach ($pay_company_tasks as $cid => $tasks){
+            $statistic[$cid]['pay'] = $execute_query->select(['sum(price) as sum_collection','money_id'])
+                ->where(['in','task_id',$tasks])->groupBy('money_id')->indexBy('money_id')->column();
+        }
 
 
-        $task_ids = $query->indexBy('id')->column();
-        $gross[] = TaskDealPrice::find()
-            ->select(['price'])
-            ->where(['in','task_id',$task_ids])
-            ->andWhere(['money_id'=>$this->id])->sum('price');
+        $statement_query = Statement::find();
+        $statement = $statement_query->distinct('company_id')->select(['company_id'])->where(['status'=>0])->asArray()->all();
+        foreach ($statement as $item){
+            $statistic[$item['company_id']]['statement'] = Statement::find()->select([
+                'sum(case when direction=2 then amount end) as gross',
+                'sum(case when direction=1 then amount end) as spending','money_id'
+            ])->where(['company_id'=>$item['company_id']])->groupBy('money_id')->indexBy('money_id')->asArray()->all();
+        }
 
-        $gross[] = $query_state->sum('amount');
-
-        $res = array_sum($gross)>0 ? array_sum($gross) : '0.00';
-        return $res;
+        return $statistic;
     }
-
-    //总支出
-    public function getCompanySpending()
-    {
-        $spending = [];
-        //付款单
-        $query = TaskPayInfo::find()->select(['task_id','id'])->where(['status'=>2]);
-
-        $query_state = Statement::find()->where(['status'=>0,'direction'=>1])->andWhere(['money_id'=>$this->id]);
-
-        $task_ids = $query->indexBy('id')->column();
-        $spending[] = TaskDealPrice::find()
-            ->select(['price'])
-            ->where(['in','task_id',$task_ids])
-            ->andWhere(['money_id'=>$this->id])->sum('price');
-
-        //流水的支出
-        $spending[] = $query_state->sum('amount');
-
-        $res = array_sum($spending) ? array_sum($spending) : '0.00';
-        return $res;
-    }*/
 }

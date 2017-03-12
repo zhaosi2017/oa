@@ -96,7 +96,7 @@ class DefaultController extends GController
             $captcha = $this->createAction('captcha');
             if($captcha->validate($model->code, false)){
                 if($model->login()){
-                    $model->writeLoginLog(1);
+                    $model->writeLoginLog(0);
                     $homeUrl = Url::to(['/home/default/index']);
                     return $this->redirect($homeUrl);
                 }

@@ -2,6 +2,7 @@
 
 namespace app\modules\task\controllers;
 
+use app\modules\customer\models\GroupRate;
 use app\modules\product\models\ProductCategory;
 use app\modules\system\models\Notice;
 use app\modules\task\models\TaskDealPrice;
@@ -12,6 +13,7 @@ use app\modules\task\models\TaskSearch;
 use app\modules\task\models\ProductSearch;
 use app\controllers\GController;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
@@ -104,6 +106,9 @@ class TaskController extends GController
     public function actionWaitDetail($id)
     {
         $model = $this->findModel($id);
+        if(!$model['execute']){
+            return $this->redirect(Url::to(['/home/main/deny']));
+        }
         return $this->render('wait-detail', [
             'model' => $model,
             'children' => $model->getChildren($id),
@@ -168,7 +173,8 @@ class TaskController extends GController
     {
         $model = new Task();
 
-        $url = Yii::$app->request->referrer;
+//        $url = Yii::$app->request->referrer;
+        $gets = Yii::$app->request->get();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $model->file =  UploadedFile::getInstance($model, 'file');
@@ -197,12 +203,21 @@ class TaskController extends GController
                 }
             }
             $model->sendSuccess();
-            return $this->redirect($url);
-        } else {
+            return $this->redirect(['sent-detail','id'=>$model->id]);
+        }
+
+        if(!empty($gets)) {
+            $identity = (Object) Yii::$app->user->identity;
+            $parent_model = Task::findOne($gets['task_id']);
+            $rate_model = GroupRate::findOne(['company_id'=>$identity->company_id,'rate_company_id'=>$parent_model->company_id]);
             return $this->render('create-child', [
                 'model' => $model,
+                'parent_model' => $parent_model,
+                'rate_model' => $rate_model,
             ]);
         }
+
+        return null;
     }
 
     public function actionReceivedFeedback()

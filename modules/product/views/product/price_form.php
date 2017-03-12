@@ -32,24 +32,23 @@ $actionId = Yii::$app->requestedAction->id;
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr class="text-right">
                     <td colspan="8">
-                        <a class="btn btn-link pull-right" id="add_money">新增货币</a>
-                        <div class="form-inline form-group pull-right no-borders">
+                        <div class="form-inline no-borders">
                             <label for="money_list"></label>
                             <select class="form-control" name="money" id="money_list">
                                 <option value="">请选择货币</option>
                                 <?php
-                                    $moneyList = \app\modules\system\models\Money::findAll(['status'=>0,'enable'=>0]);
-                                    $money_column = [];
-                                    foreach ($moneyList as $item){
-                                        $money_column[$item->id] = $item->name;
-                                        echo '<option value="'.$item->id.'">'.$item->name.'</option>';
-                                    }
+                                $moneyList = \app\modules\system\models\Money::findAll(['status'=>0,'enable'=>0]);
+                                $money_column = [];
+                                foreach ($moneyList as $item){
+                                    $money_column[$item->id] = $item->name;
+                                    echo '<option value="'.$item->id.'">'.$item->name.'</option>';
+                                }
                                 ?>
                             </select>
+                            <a class="btn btn-primary" style="margin-bottom: 0" id="add_money">新增货币</a>
                         </div>
-
                     </td>
                 </tr>
                 <tr>
@@ -91,41 +90,35 @@ $actionId = Yii::$app->requestedAction->id;
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr class="text-right">
                     <td colspan="5">
-                        <a class="btn btn-link pull-right" id="add_company">新增公司</a>
-                        <div class="form-inline form-group no-borders pull-right">
-                            <label for="company_list"></label>
-                            <select class="form-control" name="company" id="company_list">
-                                <option value="">请选择公司</option>
-                                <?php
-                                    $company_column = [];
-                                    if(!empty($company)){
-                                        foreach ($company as $item){
-                                            $company_column[$item['id']] = $item['name'];
-                                            echo '<option value="'.$item['id'].'">'.$item['name'].'</option>';
-                                        }
-                                    }
-                                ?>
-                            </select>
-                        </div>
-
-                        <div class="form-inline form-group no-borders pull-right">
-                            <label for="preset_currency"></label>
-                            <select class="form-control" name="preset-currency" id="preset_currency">
+                        <div class="form-inline no-borders">
+                            <select title="" class="form-control" name="preset-currency" id="preset_currency">
                                 <option value="">选择预置货币</option>
                                 <?php
-                                    foreach ($moneyList as $item){
-                                        if($item->name == '欢乐豆'){
-                                            echo '<option selected="selected" value="'.$item->id.'">'.$item->name.'</option>';
-                                        }else{
-                                            echo '<option value="'.$item->id.'">'.$item->name.'</option>';
-                                        }
+                                foreach ($moneyList as $item){
+                                    if($item->name == '欢乐豆'){
+                                        echo '<option selected="selected" value="'.$item->id.'">'.$item->name.'</option>';
+                                    }else{
+                                        echo '<option value="'.$item->id.'">'.$item->name.'</option>';
                                     }
+                                }
                                 ?>
                             </select>
+                            <select title="" class="form-control" name="company" id="company_list">
+                                <option value="">请选择公司</option>
+                                <?php
+                                $company_column = [];
+                                if(!empty($company)){
+                                    foreach ($company as $item){
+                                        $company_column[$item['id']] = $item['name'];
+                                        echo '<option value="'.$item['id'].'">'.$item['name'].'</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <a class="btn btn-primary m-b-none" style="margin-bottom: 0" id="add_company">新增公司</a>
                         </div>
-
                     </td>
                 </tr>
                 <tr>
@@ -153,7 +146,7 @@ $actionId = Yii::$app->requestedAction->id;
             </table>
 
             <div class="form-group">
-                <div class="col-sm-offset-9">
+                <div class="text-right">
                     <?= Html::submitButton('提交', ['class' => 'btn btn-primary']) ?>
                 </div>
             </div>

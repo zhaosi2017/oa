@@ -133,7 +133,7 @@ class DepartmentController extends GController
         }
 
         $model->status = $status;
-        if($model->save()){
+        if($model->update()){
             Yii::$app->getSession()->setFlash('success', '操作成功');
         }else{
             Yii::$app->getSession()->setFlash('error', '操作失败');

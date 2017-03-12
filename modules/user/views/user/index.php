@@ -41,9 +41,6 @@ $actionId = Yii::$app->requestedAction->id;
 
             [
                 'label' => '所属公司',
-                'filter'=>Html::activeDropDownList($searchModel,
-                    'company_id',$searchModel->filterCompany(),
-                    ['prompt'=>'全部公司','class' => 'form-control']),
                 'attribute' => 'company_id',
                 'value' => 'company.name'
             ],

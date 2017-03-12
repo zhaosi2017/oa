@@ -41,7 +41,7 @@ $actionId = Yii::$app->requestedAction->id;
                 return $model->name .'('.$model->number.')';
             },'label'=>'任务名称'],
 
-            ['value'=>'requirement','label'=>'任务要求'],
+            ['value'=>'requirement','label'=>'任务要求','format'=>'html'],
             ['label'=>'上级任务', 'value'=>function($model){
                 $superior_name = $model['superior']['number'];
                 if(!$superior_name) return '';

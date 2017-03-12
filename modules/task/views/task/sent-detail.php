@@ -12,6 +12,7 @@ $this->params['breadcrumbs'][] = ['label'=>'任务','url'=>'sent-index'];
 $this->params['breadcrumbs'][] = ['label' => '已发任务', 'url' => ['sent-index']];
 $this->params['breadcrumbs'][] = $this->title;
 $identity = (Object) Yii::$app->user->identity;
+
 ?>
 <div class="task-view">
     <p class="<?= $model->status!=2 && $model->status!=3 ? 'btn-group hidden-xs' : 'hide' ?>">
@@ -146,6 +147,9 @@ $identity = (Object) Yii::$app->user->identity;
                             <a href="" class="btn btn-primary btn-xs">列表</a>
                             <a href="" class="btn btn-outline btn-default btn-xs">树形</a>
                         </div>
+                        <div class="<?= $model->status==4 ? 'btn-group pull-right' : 'hide' ?>">
+                            <a href="<?= Url::to(['/task/task/create-child','task_id' => $model->id, 'number' => $model->number]) ?>" data-method="post" class="btn btn-primary btn-xs">新增子任务</a>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -171,43 +175,19 @@ $identity = (Object) Yii::$app->user->identity;
                             .'<td>'.$child['company_name'].'</td>'
                             .'<td>'.$child['u_account'].' <br>'.date('Y-m-d H:i:s',$child['update_time']).'</td>';
 
-                            if($child['status']>=4){
+                            $res .= '<td><a href="'.Url::to(['/task/task/sent-detail','id'=>$child['id']]).'">详情</a></td></tr>';
+                            /*if($child['status']>=4){
                                 $res .= '<td><a href="'.Url::to(['/task/task/received-detail','id'=>$child['id']]).'">详情</a></td></tr>';
                             }elseif ($child['status']==3){
                                 $res .= '<td><a href="'.Url::to(['/task/task/wait-detail','id'=>$child['id']]).'">详情</a></td></tr>';
                             }else{
                                 $res .= '<td><a href="'.Url::to(['/task/task/sent-detail','id'=>$child['id']]).'">详情</a></td></tr>';
-                            }
+                            }*/
                             echo $res;
                         }
                     }
                 ?>
-                <!--<tr>
-                    <td>1</td>
-                    <td>任务名称(编号)</td>
-                    <td>。。。。</td>
-                    <td>编号</td>
-                    <td>无法执行</td>
-                    <td>公司名称</td>
-                    <td>
-                        张三 <br>
-                        2016-12-12 12:12:12
-                    </td>
-                    <td><a href="">详情</a></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>任务名称(编号)</td>
-                    <td>。。。。</td>
-                    <td>编号</td>
-                    <td>无法执行</td>
-                    <td>公司名称</td>
-                    <td>
-                        张三 <br>
-                        2016-12-12 12:12:12
-                    </td>
-                    <td><a href="">详情</a></td>
-                </tr>-->
+
                 </tbody>
                 <thead>
                 <tr>
@@ -219,8 +199,12 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="1">执行公司</td>
                     <td colspan="3" class="text-left">
                         <?php
-                            if($model['execute']) {
-                                echo $model['execute']['company']['name'];
+                            if($model->status>3){
+                                echo $model['executeInfo']['company']['name'];
+                            }else{
+                                if($model['execute']) {
+                                    echo $model['execute']['company']['name'];
+                                }
                             }
                         ?>
                     </td>
@@ -231,10 +215,14 @@ $identity = (Object) Yii::$app->user->identity;
                     <td colspan="1">执行价格</td>
                     <td colspan="3" class="text-left">
                         <?php
-                            if($model['execute']){
-                                $execute_price = $model['execute']->price;
-                                // $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
-                                echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
+                            if($model->status>3){
+                                echo $model['executeInfo']['price'];
+                            }else{
+                                if($model['execute']){
+                                    $execute_price = $model['execute']->price;
+                                    // $execute_price = $identity->company_id != $model['product']['company_id'] ? '******' : $model['execute']->price;
+                                    echo $model['money'][$model['execute']->money_id] . ': ' . $execute_price;
+                                }
                             }
                         ?>
                     </td>

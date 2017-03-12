@@ -78,6 +78,7 @@ class ProductExecutePrice extends CActiveRecord
 
     public function getUser()
     {
-        return $this->hasMany(User::className(),['company_id' => 'company_id'])->alias('user');
+        return $this->hasMany(User::className(),['company_id' => 'company_id'])->select(['id','account','company_id'])->alias('user');
     }
+
 }

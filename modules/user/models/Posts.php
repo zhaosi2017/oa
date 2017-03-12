@@ -37,7 +37,9 @@ class Posts extends CActiveRecord
             [['name', 'department_id', 'company_id'], 'required'],
             [['id', 'department_id', 'company_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name'], 'string', 'max' => 40],
+            [['name'], 'string', 'max' => 20],
+            //同一部门下不能有相同岗位
+            [['name'], 'unique', 'targetAttribute'=>['name','department_id'],'message'=>'同一部门下不能有相同岗位。'],
         ];
     }
 

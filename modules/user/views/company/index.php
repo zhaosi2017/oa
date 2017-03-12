@@ -38,7 +38,6 @@ $actionId = Yii::$app->requestedAction->id;
             ['class' => 'yii\grid\SerialColumn','header' => '序号'],
             //['label' => '公司名称', 'attribute'=>'name', 'value' => 'name'],
             'name',
-//            'sup_id',
             ['label' => '上级公司', 'value' => function($model){
                 $superior = $model['superior']['name'];
                 if(!$superior){

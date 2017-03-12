@@ -62,6 +62,7 @@ class CustomerController extends GController
         $model = new Customer();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->sendSuccess();
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -113,9 +114,9 @@ class CustomerController extends GController
 
         $model->status = $status;
         if($model->save()){
-            Yii::$app->getSession()->setFlash('success', '操作成功');
+            $model->sendSuccess();
         }else{
-            Yii::$app->getSession()->setFlash('error', '操作失败');
+            $model->sendError();
         }
         return $this->redirect(['index']);
     }

@@ -11,6 +11,7 @@ $this->title = '待接收任务详情';
 $this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $identity = (Object) Yii::$app->user->identity;
+
 ?>
 <div class="task-view">
     <div class="table-responsive">
@@ -134,32 +135,7 @@ $identity = (Object) Yii::$app->user->identity;
                     }
                 }
                 ?>
-                <!--<tr>
-                    <td>1</td>
-                    <td>任务名称(编号)</td>
-                    <td>。。。。</td>
-                    <td>编号</td>
-                    <td>无法执行</td>
-                    <td>公司名称</td>
-                    <td>
-                        张三 <br>
-                        2016-12-12 12:12:12
-                    </td>
-                    <td><a href="">详情</a></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>任务名称(编号)</td>
-                    <td>。。。。</td>
-                    <td>编号</td>
-                    <td>无法执行</td>
-                    <td>公司名称</td>
-                    <td>
-                        张三 <br>
-                        2016-12-12 12:12:12
-                    </td>
-                    <td><a href="">详情</a></td>
-                </tr>-->
+
                 </tbody>
                 <thead>
                 <tr>

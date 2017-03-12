@@ -2,7 +2,6 @@
 
 namespace app\modules\user\models;
 
-//use Yii;
 use app\models\CActiveRecord;
 /**
  * This is the model class for table "department".
@@ -37,6 +36,8 @@ class Department extends CActiveRecord
             [['superior_department_id', 'company_id','status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 20],
+            //同一公司下不能有相同部门.
+            [['name'], 'unique', 'targetAttribute'=>['name','company_id'],'message'=>'同一公司下不能有相同部门。'],
         ];
     }
 

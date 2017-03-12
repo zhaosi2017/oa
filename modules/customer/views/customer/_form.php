@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\redactor\widgets\Redactor;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\customer\models\Customer */
@@ -34,7 +35,19 @@ $companyName = \app\modules\user\models\Company::findOne($identity->company_id)-
 
     <?= $form->field($model, 'grade')->dropDownList([1=>'A',2=>'B',3=>'C',4=>'D']) ?>
 
-    <?= $form->field($model, 'remarks')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'remarks')->widget(Redactor::className(),[
+        'clientOptions' => [
+            'lang' => 'zh_cn',
+            'imageUpload' => false,
+            'fileUpload' => false,
+            'plugins' => [
+                'clips',
+                'fontcolor'
+            ],
+            'placeholder'=>'限100个字',
+            'maxlength'=>100
+        ]
+    ]) ?>
 
 
     <div class="form-group">
