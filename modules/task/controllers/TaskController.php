@@ -256,7 +256,9 @@ class TaskController extends GController
             $task_model->status = 4;
             $task_model->execute_company_id = $model->company_id;
             $task_model->update();
-            //todo 发送通知
+            // 发送通知
+            $notice_model = new Notice();
+            $notice_model->notify($task_model);
             $model->sendSuccess();
             $this->redirect(['wait-index']);
         }
@@ -396,7 +398,7 @@ class TaskController extends GController
                 $notice_model = new Notice();
                 $notice_model->notify($model);
                 $model->sendSuccess();
-                $this->redirect(['wait-index']);
+                $this->redirect(['sent-index']);
             }
         }
         return false;

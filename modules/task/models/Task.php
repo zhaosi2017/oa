@@ -276,8 +276,4 @@ class Task extends CActiveRecord
         return $children;
     }
 
-    public function getParentCompany()
-    {
-//        $company = $this::findOne(['id'=>$this->id])->getAttribute('company_id');
-    }
 }

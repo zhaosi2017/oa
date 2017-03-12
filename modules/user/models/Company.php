@@ -120,6 +120,11 @@ class Company extends CActiveRecord
         return true;
     }
 
+    public function getUserIds()
+    {
+        return $this->hasMany(User::className(),['company_id'=>'id'])->select(['id'])->alias('userIds');
+    }
+
     public function getChildren($id)
     {
         $self = $this::findOne(['id'=>$id,'status'=>0]);
@@ -135,44 +140,52 @@ class Company extends CActiveRecord
         return $children;
     }
 
-    public function statistic()
+    public function getStatistic()
     {
         $statistic = [];
 
-        $company_tasks = TaskCollectionInfo::find()->select(['group_concat(task_id) as task_ids','company_id'])
-            ->where(['status'=>2])
-            ->groupBy('company_id')->indexBy('company_id')->column();
+        $collection_query = TaskCollectionInfo::find()->select(['group_concat(task_id) as task_ids','company_id']);
 
-        $pay_company_tasks = TaskPayInfo::find()->select(['group_concat(task_id) as task_ids','pay_company_id'])->where(['status'=>2])
-            ->groupBy('pay_company_id')->indexBy('pay_company_id')->column();
+        $pay_query = TaskPayInfo::find()->select(['group_concat(task_id) as task_ids','pay_company_id']);
 
         $deal_query = TaskDealPrice::find();
 
         $execute_query = TaskExecuteInfo::find();
 
         //收
-        foreach ($company_tasks as $company_id => $task_ids){
-            if($company_id==$this->id){
-                $statistic[$company_id]['collection'] = $deal_query->select(['sum(price) as sum_collection','money_id'])
-                    ->where(['in','task_id',$task_ids])->groupBy('money_id')->indexBy('money_id')->column();
-            }
-        }
+        $company_tasks = $collection_query
+            ->where(['status'=>2,'company_id'=>$this->id])
+            ->groupBy('company_id')->indexBy('company_id')->column();
+        $statistic['collection'] = $deal_query->select(['sum(price) as sum_collection','money_id'])
+            ->where(['in','task_id',$company_tasks])->groupBy('money_id')->indexBy('money_id')->column();
 
         //支
-        foreach ($pay_company_tasks as $cid => $tasks){
-            $statistic[$cid]['pay'] = $execute_query->select(['sum(price) as sum_collection','money_id'])
-                ->where(['in','task_id',$tasks])->groupBy('money_id')->indexBy('money_id')->column();
-        }
+        $company_tasks = $collection_query
+            ->where(['status'=>2,'customer_category'=>2,'company_customer_id'=>$this->id])
+            ->groupBy('company_id')->indexBy('company_id')->column();
+        $statistic['un_collection'] = $deal_query->select(['sum(price) as sum_collection','money_id'])
+            ->where(['in','task_id',$company_tasks])->groupBy('money_id')->indexBy('money_id')->column();
+
+        //收
+        $company_tasks = $pay_query
+            ->where(['status'=>2,'execute_company_id'=>$this->id])
+            ->groupBy('pay_company_id')->indexBy('pay_company_id')->column();
+        $statistic['un_pay'] = $execute_query->select(['sum(price) as sum_collection','money_id'])
+            ->where(['in','task_id',$company_tasks])->groupBy('money_id')->indexBy('money_id')->column();
+
+        //支
+        $company_tasks = $pay_query
+            ->where(['status'=>2,'pay_company_id'=>$this->id])
+            ->groupBy('pay_company_id')->indexBy('pay_company_id')->column();
+        $statistic['pay'] = $execute_query->select(['sum(price) as sum_collection','money_id'])
+            ->where(['in','task_id',$company_tasks])->groupBy('money_id')->indexBy('money_id')->column();
 
 
         $statement_query = Statement::find();
-        $statement = $statement_query->distinct('company_id')->select(['company_id'])->where(['status'=>0])->asArray()->all();
-        foreach ($statement as $item){
-            $statistic[$item['company_id']]['statement'] = Statement::find()->select([
-                'sum(case when direction=2 then amount end) as gross',
-                'sum(case when direction=1 then amount end) as spending','money_id'
-            ])->where(['company_id'=>$item['company_id']])->groupBy('money_id')->indexBy('money_id')->asArray()->all();
-        }
+        $statistic['statement'] = $statement_query->select([
+            'sum(case when direction=2 then amount end) as gross',
+            'sum(case when direction=1 then amount end) as spending','money_id'
+        ])->where(['company_id'=>$this->id])->groupBy('money_id')->indexBy('money_id')->asArray()->all();
 
         return $statistic;
     }
