@@ -8,7 +8,8 @@ use yii\helpers\Url;
 /* @var $children */
 
 $this->title = '待接收任务详情';
-$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '任务', 'url' => ['wait-index']];
+$this->params['breadcrumbs'][] = ['label' => '待接收任务', 'url' => ['wait-index']];
 $this->params['breadcrumbs'][] = $this->title;
 $identity = (Object) Yii::$app->user->identity;
 

@@ -31,37 +31,12 @@ GlobalAsset::register($this);
 </head>
 
 <body class="fixed-sidebar full-height-layout gray-bg pace-done" style="overflow:hidden">
-<?php
-/*if( Yii::$app->getSession()->hasFlash('success') ) {
-    echo Alert::widget([
-        'options' => [
-            'class' => 'alert-success no-margins', //这里是提示框的class
-            // 'style' => 'z-index:9999;position:fixed;width:100%',
-        ],
-        'body' => Yii::$app->getSession()->getFlash('success'), //消息体
-    ]);
-}
-if( Yii::$app->getSession()->hasFlash('error') ) {
-    echo Alert::widget([
-        'options' => [
-            'class' => 'alert-warning no-margins',
-        ],
-        'body' => Yii::$app->getSession()->getFlash('error'),
-    ]);
-}
-if( Yii::$app->getSession()->hasFlash('info') ) {
-    echo Alert::widget([
-        'options' => [
-            'class' => 'alert-info no-margins',
-        ],
-        'body' => Yii::$app->getSession()->getFlash('info'),
-    ]);
-}*/
-?>
+<audio class="hide" id="notice-ysp" src="<?= Yii::$app->homeUrl.'/media/yisell_sound_2014040216575424653_88366.mp3' ?>" preload="auto" controls="true"></audio>
 <?php $this->beginBody() ?>
     <?= isset($content) ? $content : ''  ?>
 </body>
 <?php
+
 function get_server_ip() {
     if (isset($_SERVER)) {
         if($_SERVER['SERVER_ADDR']) {
@@ -77,6 +52,7 @@ function get_server_ip() {
     }
     return $server_ip;
 }
+
 $this->registerJs('
     web_socket = new WebSocket("ws://'.get_server_ip().':9501/");
     web_socket.onopen = function() {
@@ -93,7 +69,14 @@ $this->registerJs('
         var r = JSON.parse(e.data);
         if(r.length!=0){
             var uid = $("#login-user-id").val();
-            $("#message-count").html(r[uid]);
+            if(typeof r[uid] != "undefined"){
+                $("#message-count").html(r[uid]);
+                var myVideo=document.getElementById("notice-ysp");
+                if(typeof r.q[uid] != "undefined"){
+                    myVideo.play();
+                    $.post("'.\yii\helpers\Url::to(['/system/notice/received']).'",{"uid": uid,"_csrf":"'.Yii::$app->request->csrfToken.'"});
+                }
+            }
         }
     };
 

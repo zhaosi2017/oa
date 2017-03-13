@@ -7,7 +7,6 @@ $identity = (Object) $identity;
 
 $account_info = \app\modules\user\models\User::findOne($identity->id);
 $username = isset($identity->account) ? $identity->account : 'Guest';
-
 $module = $this->context->module->id;
 ?>
 <?php $this->beginContent('@app/views/layouts/global.php'); ?>
