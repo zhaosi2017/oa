@@ -108,30 +108,17 @@ $module = $this->context->module->id;
         </nav>
         <!--左侧导航结束-->
         <!--右侧部分开始-->
-        <div id="page-wrapper" class="gray-bg dashbard-1">
-            <div class="row border-bottom">
-                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-                    <div class="navbar-header">
-
-                    </div>
-                    <ul class="nav navbar-top-links navbar-right">
-                        <li class="dropdown">
-                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                                <?= $identity->account; ?>(<?= $account_info['company']['name'].'、'.$account_info['department']['name'].'、'.$account_info['posts']['name'] ?>)
-                            </a>
-                        </li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle count-info" href="<?= Url::to(['/user/default/password']) ?>">密码修改</a>
-                        </li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle count-info" href="<?= Url::to(['/system/notice/user-index']) ?>">
-                                <i class="fa fa-bell"></i> <span class="label label-primary" id="message-count"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+        <div id="page-wrapper" class="gray-bg">
             <div class="row content-tabs">
+                <div class="pull-right m-r-xs">
+                    <span><?= $identity->account; ?>(<?= $account_info['company']['name'].'、'.$account_info['department']['name'].'、'.$account_info['posts']['name'] ?>)</span>
+                    <span>|</span>
+                    <a href="<?= Url::to(['/system/notice/user-index']) ?>">
+                        通知(<span id="message-count">..</span>)
+                    </a>
+                    <span>|</span>
+                    <a href="<?= Url::to(['/login/default/logout']) ?>">退出</a>
+                </div>
                 <span class="pull-left m-l-xs">当前位置：</span>
                 <a>
                     <?php
@@ -141,7 +128,6 @@ $module = $this->context->module->id;
                             //    'label'=>'后台首页>>', 修改默认的Home
                             //    'url'=>Url::to(['index/index']), 修改默认的Home指向的url地址
                             // ],
-
                             'homeLink'=>false, // 若设置false 则 可以隐藏Home按钮
                             //'homeLink'=>['label' => '主 页','url' => Yii::$app->homeUrl.'home/'], // 若设置false 则 可以隐藏Home按钮
                             'itemTemplate'=>"<span>{link} > </span>",
@@ -150,15 +136,15 @@ $module = $this->context->module->id;
                         ])
                     ?>
                 </a>
-                <a data-method="post" href="<?= Url::to(['/login/default/logout']) ?>" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
             </div>
-            <div class="row J_mainContent" id="content-main" style="overflow: auto">
+            <div class="row" id="content-main" style="overflow: auto; height: calc(100% - 50px)">
                 <?= isset($content) ? $content : '' ?>
             </div>
-            <div class="footer">
-                <div class="pull-right">Yii: <?= Yii::getVersion() ?> &copy; 2016-2017 <a href="#" target="_blank">oa-system</a>
+            <!--<div class="footer">
+                <div class="text-left">
+                    <a href="#">V 1.0.0</a>
                 </div>
-            </div>
+            </div>-->
         </div>
         <!--右侧部分结束-->
         <!--右侧边栏开始-->

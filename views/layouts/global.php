@@ -56,7 +56,7 @@ function get_server_ip() {
 $this->registerJs('
     web_socket = new WebSocket("ws://'.get_server_ip().':9501/");
     web_socket.onopen = function() {
-        $("#message-count").html(\'\');
+        $("#message-count").html(\'.\');
         web_socket.send(1);
     };
 
