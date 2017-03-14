@@ -31,7 +31,7 @@ GlobalAsset::register($this);
 </head>
 
 <body class="fixed-sidebar full-height-layout gray-bg pace-done" style="overflow:hidden">
-<audio class="hide" id="notice-ysp" src="<?= Yii::$app->homeUrl.'/media/yisell_sound_2014040216575424653_88366.mp3' ?>" preload="auto" controls="true"></audio>
+<audio class="hide" id="notice-ysp" src="<?= Yii::$app->homeUrl.'/media/yisell_sound_2014040216575424653_88366.mp3' ?>" preload="auto"></audio>
 <?php $this->beginBody() ?>
     <?= isset($content) ? $content : ''  ?>
 </body>
@@ -86,30 +86,6 @@ $this->registerJs('
     };
 ');
 ?>
-<!--<script>
-    web_socket = new WebSocket("ws://0.0.0.0:9501/");
-    web_socket.onopen = function() {
-        $("#message-count").html('');
-    };
-
-    web_socket.onerror = function (e) {
-        $("#message-count").addClass('red-bg');
-        $("#message-count").html(e.data);
-    };
-
-    web_socket.onmessage = function(e){
-        var r = JSON.parse(e.data);
-        if(r.length!=0){
-            var uid = $("#login-user-id").val();
-            $("#message-count").html(r[uid]);
-        }
-    };
-
-    web_socket.onclose = function () {
-        $("#message-count").addClass('red-bg');
-        $("#message-count").html('N');
-    };
-</script>-->
 <?php $this->endBody() ?>
 </html>
 <?php $this->endPage() ?>

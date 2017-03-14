@@ -110,7 +110,7 @@ $module = $this->context->module->id;
         <!--右侧部分开始-->
         <div id="page-wrapper" class="gray-bg">
             <div class="row content-tabs">
-                <div class="pull-right m-r-xs">
+                <div class="pull-right m-r-md">
                     <span><?= $identity->account; ?>(<?= $account_info['company']['name'].'、'.$account_info['department']['name'].'、'.$account_info['posts']['name'] ?>)</span>
                     <span>|</span>
                     <a href="<?= Url::to(['/system/notice/user-index']) ?>">
@@ -119,7 +119,7 @@ $module = $this->context->module->id;
                     <span>|</span>
                     <a href="<?= Url::to(['/login/default/logout']) ?>">退出</a>
                 </div>
-                <span class="pull-left m-l-xs">当前位置：</span>
+                <span class="pull-left m-l-md">当前位置：</span>
                 <a>
                     <?php
                         echo \yii\widgets\Breadcrumbs::widget([
