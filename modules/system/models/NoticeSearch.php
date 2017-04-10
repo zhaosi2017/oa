@@ -82,8 +82,23 @@ class NoticeSearch extends Notice
             'send_time' => $this->send_time,
         ]);
 
-        $this->search_type == 1 && $query->andFilterWhere(['like', 'content', $this->search_keywords]);
+        $this->search_type == 1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'id', $this->searchIds($this->search_keywords)]);
 
         return $dataProvider;
     }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['content','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['content'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
+    }
+
 }

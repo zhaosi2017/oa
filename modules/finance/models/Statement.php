@@ -89,11 +89,20 @@ class Statement extends CActiveRecord
         return new StatementQuery(get_called_class());
     }
 
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->remark = Yii::$app->security->decryptByKey(base64_decode($this->remark), Yii::$app->params['inputKey']);
+    }
+
     public function getFirstSubject()
     {
         $query = FinanceSubject::find()
             ->select(['subject_name','id'])
             ->where(['status'=>0,'superior_subject_id'=>0])->indexBy('id')->column();
+        foreach ($query as $id => $name){
+            $query[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
         return $query;
     }
 
@@ -110,33 +119,43 @@ class Statement extends CActiveRecord
             ->select(['subject_name','id'])
             ->where(['status'=>0, 'superior_subject_id'=>$this->first_subject_id])
             ->indexBy('id')->column();
-
+        foreach ($query as $id => $name){
+            $query[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
         return $query;
     }
 
     public function getAssociateCompanyTask()
     {
+        $res = false;
         if($this->isNewRecord){
-            return [];
+            $res = [];
         }
         if($this->type==1){
-            return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+            $res = Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
         }
         if($this->type==2){
             $identity = (Object) Yii::$app->user->identity;
-            return Task::find()->select(['name','id'])->where([
+            $res = Task::find()->select(['name','id'])->where([
                 'company_id'=>$identity->company_id
             ])
             ->andWhere(['status'=>6])
             ->orWhere(['status'=>7])
             ->indexBy('id')->column();
         }
-        return null;
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
     public function getMoney()
     {
-        return Money::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+        $query = Money::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+        foreach ($query as $id => $name){
+            $query[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return $query;
     }
 
     /**
@@ -189,9 +208,11 @@ class Statement extends CActiveRecord
                 $this->update_author_uid = $uid;
                 $this->create_time = date('Y-m-d',$time_stamp);
                 $this->update_time = date('Y-m-d',$time_stamp);
-                $this->status = 2;
+                $this->status = 0;
                 $this->statement_no= date('ymd', $time_stamp) . $serial; //年月日加随机数加序列号
+                $this->remark = base64_encode(Yii::$app->security->encryptByKey($this->remark,Yii::$app->params['inputKey']));
             }else{
+                $this->remark = base64_encode(Yii::$app->security->encryptByKey($this->remark,Yii::$app->params['inputKey']));
                 $this->update_author_uid = $uid;
                 $this->update_time = date('Y-m-d',$time_stamp);
             }

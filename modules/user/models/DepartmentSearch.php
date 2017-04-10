@@ -91,11 +91,24 @@ class DepartmentSearch extends Department
             'update_time' => $this->update_time,
         ]);
 
-        $this->search_type ==1 && $query->andFilterWhere(['like', 'department.name', $this->search_keywords]);
-        $this->search_type ==2 && $query->andFilterWhere(['like', 'company.name', $this->search_keywords]);
-        $this->search_type ==3 && $query->andFilterWhere(['like', 'superior.name', $this->search_keywords]);
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'department.id', $this->searchIds($this->search_keywords)]);
+        $this->search_type ==2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'company.id', (new CompanySearch)->searchIds($this->search_keywords)]);
+        $this->search_type ==3 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'superior.id', $this->searchIds($this->search_keywords)]);
 
         return $dataProvider;
     }
 
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['name','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['name'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
+    }
 }

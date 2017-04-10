@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\redactor\widgets\Redactor;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\task\models\TaskRemark */
@@ -12,20 +13,25 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'task_id')->textInput() ?>
+    <?= $form->field($model, 'task_id')->hiddenInput(['value'=>Yii::$app->request->get('task_id')])->label(false) ?>
 
-    <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'content')->widget(Redactor::className(),[
+        'clientOptions' => [
+            'lang' => 'zh_cn',
+            'imageUpload' => false,
+            'fileUpload' => false,
+            'plugins' => [
+                'clips',
+                'fontcolor'
+            ],
+            'placeholder'=>'限500个字',
+            'maxlength'=>500,
+            'required'=>'required',
+        ]
+    ])->label(false) ?>
 
-    <?= $form->field($model, 'create_author_uid')->textInput() ?>
-
-    <?= $form->field($model, 'create_time')->textInput() ?>
-
-    <?= $form->field($model, 'type')->textInput() ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <div class="text-right">
+        <?= Html::submitButton('提交', ['class' => 'btn btn-sm btn-primary','id'=>'submit-btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

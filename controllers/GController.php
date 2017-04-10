@@ -21,29 +21,44 @@ class GController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout','index','rate','sent-index','wait-index','received-index','root-set','summary','ip-lock','record'],
-//                'only' => ['logout'],
+//                'only' => ['logout','index','rate','sent-index','wait-index','received-index','root-set','summary','ip-lock','record'],
                 'rules' => [
                     [
-                        'allow' => false,
                         'actions' => ['delete'],
+                        'allow' => false,
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['entry'],
+                        'actions' => ['entry','captcha','code','get-push-data'],
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+//                        'actions' => ['logout',],
+                        'actions' => [
+                            'logout','password','deny','sent-detail','wait-detail','received-detail','trash','sent-trash',
+                            'execute','execute-received','index-received','switch','create','update','price',
+                            'view','create-child','received-feedback','received-handle','receive','customer',
+                            'grade','second-category','product-search','product-tree','release','download',
+                            'get-second-category','remark','get-second-subject','get-company-task','read','user-read',
+                            'received','set','feedback','feedback-trash','pay-receipt-info','remark-trash','superior',
+                            'department','auth','posts','permission','user-index'
+                        ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+
+                    //作RBAC权限控制的操作
                     [
-                        'actions' => ['index','rate','sent-index','wait-index','received-index','root-set','summary','ip-lock','record'],
+                        'actions' => [
+                            'index','rate','sent-index','wait-index','received-index','root-set','summary','ip-lock','record',
+                        ],
                         'allow' => true,
                         'matchCallback' => function () {
+                            if(Yii::$app->user->isGuest){
+                                return false;
+                            }
                             $identity = (Object) Yii::$app->user->identity;
-                            if($identity->account=='oaAdmin'){
+                            if($identity->username=='oaAdmin'){
                                 if(Yii::$app->controller->module->id=='user'){
                                     return true;
                                 }
@@ -54,6 +69,9 @@ class GController extends Controller
                     ],
                 ],
                 'denyCallback' => function () { //have two params $rule , $action
+                    if(Yii::$app->user->isGuest){
+                        return $this->redirect(Url::to(['/login/default/entry']));
+                    }
                     return $this->redirect(Url::to(['/home/main/deny']));
                 },
             ],

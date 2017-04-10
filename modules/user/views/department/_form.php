@@ -21,23 +21,21 @@ use app\modules\user\models\Department;
         ],
     ]) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 20]) ?>
 
     <?php
+        $companyMap = Company::find()->downList();
+        $departmentMap = [];
+        if(!$model->isNewRecord){
+            $query = Department::find();
 
-    $companyMap = Company::find()->downList();
-    $departmentMap = [];
-    if(!$model->isNewRecord){
-        $query = Department::find();
+            $companyMap = [$model->company_id => $model['company']['name']];
 
-        $companyMap = [$model->company_id => $model['company']['name']];
-
-        $departmentMap = $query->downList($model->company_id)+[0=>'无'];
-        //去掉自己及下级
-        $departmentChildren = \yii\helpers\ArrayHelper::map($query->getChildren($model->id),'id','name');
-        $departmentMap = array_diff($departmentMap, $departmentChildren);
-    }
+            $departmentMap = $query->downList($model->company_id)+[0=>'无'];
+            //去掉自己及下级
+            $departmentChildren = \yii\helpers\ArrayHelper::map($model['children'],'id','name');
+            $departmentMap = array_diff($departmentMap, $departmentChildren);
+        }
     ?>
 
     <?= $form->field($model, 'company_id')->dropDownList($companyMap,
@@ -51,7 +49,7 @@ use app\modules\user\models\Department;
     ) ?>
 
 
-    <?= $form->field($model, 'superior_department_id')->dropDownList($departmentMap, ['prompt'=>'--请选择--'])?>
+    <?= $form->field($model, 'superior_department_id')->dropDownList($departmentMap, ['prompt'=>'--请选择--']) ?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

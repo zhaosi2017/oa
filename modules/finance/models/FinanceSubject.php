@@ -2,7 +2,7 @@
 
 namespace app\modules\finance\models;
 
-//use Yii;
+use Yii;
 use app\models\CActiveRecord;
 use app\modules\user\models\User;
 
@@ -71,6 +71,32 @@ class FinanceSubject extends CActiveRecord
         return new FinanceSubjectQuery(get_called_class());
     }
 
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->subject_name = Yii::$app->security->decryptByKey(base64_decode($this->subject_name), Yii::$app->params['inputKey']);
+    }
+
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->create_author_uid = $uid;
+                $this->update_author_uid = $uid;
+                $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->subject_name = base64_encode(Yii::$app->security->encryptByKey($this->subject_name,Yii::$app->params['inputKey']));
+            }else{
+                $this->subject_name = base64_encode(Yii::$app->security->encryptByKey($this->subject_name,Yii::$app->params['inputKey']));
+                $this->update_author_uid = $uid;
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            }
+            return true;
+        }
+        return false;
+    }
+
     public function getSuperiorSubject()
     {
         $query = FinanceSubject::find()
@@ -79,7 +105,11 @@ class FinanceSubject extends CActiveRecord
         if(!$this->isNewRecord){
             $query->andWhere(['!=','id',$this->id]);
         }
-        return [0=>'无']+$query->indexBy('id')->column();
+        $res = $query->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return [0=>'无']+$res;
     }
 
     public function getSuperior()

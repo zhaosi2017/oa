@@ -102,9 +102,22 @@ class TaskFeedbackSearch extends TaskFeedback
             'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'content', $this->content])
-            ->andFilterWhere(['like', 'attachment', $this->attachment]);
+        strlen($this->content)>0 && $query->andFilterWhere(['in', 'id', $this->searchIds($this->content)]);
 
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['content','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['content'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace app\modules\product\models;
 
-//use Yii;
+use Yii;
 use app\modules\user\models\Company;
 use app\modules\user\models\User;
 use app\models\CActiveRecord;
@@ -41,7 +41,39 @@ class ProductCategory extends CActiveRecord
             [['superior_id', 'company_id', 'avisible', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 20],
+            [['name'], 'checkName'],
+//            [['name'], 'unique', 'targetAttribute'=>['name','company_id'],'message'=>'同一公司下不能有相同分类。'],
         ];
+    }
+
+    /**
+     * @param null $update_name
+     * @return array ['id'=>'name_cid']
+     */
+    public function allNameCid($update_name = null)
+    {
+        $lists = ProductCategory::find()
+            ->select(['name','company_id','id'])
+            ->where(['company_id'=>$this->company_id])
+            ->indexBy('id')->asArray()->all();
+        foreach ($lists as $id => $list){
+            $dec_name = Yii::$app->security->decryptByKey(base64_decode($list['name']), Yii::$app->params['inputKey']);
+            $update_name !=  $dec_name && $lists[$id] = $dec_name . '_' . $list['company_id'];
+        }
+        return $lists;
+    }
+
+    public function checkName($attribute)
+    {
+        if($this->isNewRecord){
+            if(in_array($this->name .'_' . $this->company_id, $this->allNameCid())){
+                $this->addError($attribute, '同一公司下不能有相同分类。');
+            }
+        }else{
+            if(in_array($this->name .'_' . $this->company_id, $this->allNameCid($this->name))){
+                $this->addError($attribute, '同一公司下不能有相同分类。');
+            }
+        }
     }
 
     /**
@@ -70,6 +102,41 @@ class ProductCategory extends CActiveRecord
     public static function find()
     {
         return new ProductCategoryQuery(get_called_class());
+    }
+
+    public function categoryList(){
+        $condition = $this->isNewRecord ? ['status'=>0,'superior_id'=>0] : ['and','status=0','superior_id=0', ['not in', 'id',$this->id]];
+        $res = $this::find()->select(['name','id'])->where($condition)->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+        }
+        return $res;
+    }
+
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->create_author_uid = $uid;
+                $this->update_author_uid = $uid;
+                $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+            }else{
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+                $this->update_author_uid = $uid;
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->name = Yii::$app->security->decryptByKey(base64_decode($this->name), Yii::$app->params['inputKey']);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace app\modules\user\models;
 
-use app\modules\login\models\User;
 use yii\base\Model;
 use Yii;
 
@@ -56,9 +55,9 @@ class PasswordForm extends Model
     {
         if($this->validate(['password'])){
             if(Yii::$app->user->id){
-                $user = User::findIdentity(Yii::$app->user->id);
-                $user->password = Yii::$app->getSecurity()->generatePasswordHash($this->password);
-                return $user->save();
+                $user = User::findOne(Yii::$app->user->id);
+                $user->password = $this->password;
+                return $user->update();
             }
             Yii::$app->getSession()->setFlash('error', '操作失败');
         }

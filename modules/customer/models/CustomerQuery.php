@@ -1,13 +1,14 @@
 <?php
 
 namespace app\modules\customer\models;
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[Customer]].
  *
  * @see Customer
  */
-class CustomerQuery extends \yii\db\ActiveQuery
+class CustomerQuery extends ActiveQuery
 {
     /*public function active()
     {

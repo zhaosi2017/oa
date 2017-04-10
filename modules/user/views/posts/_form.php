@@ -21,7 +21,7 @@ use app\modules\user\models\Department;
         ],
     ]) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 20]) ?>
 
     <?php
 

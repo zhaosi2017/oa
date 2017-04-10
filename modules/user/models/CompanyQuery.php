@@ -2,6 +2,7 @@
 
 namespace app\modules\user\models;
 use yii\db\ActiveQuery;
+use Yii;
 
 /**
  * This is the ActiveQuery class for [[Company]].
@@ -35,7 +36,12 @@ class CompanyQuery extends ActiveQuery
 
     public function downList()
     {
-        return Company::find()->select(['name','id'])->where(['status' => 0])->indexBy('id')->column();
+        $res = Company::find()->select(['name','id'])->where(['status' => 0])->indexBy('id')->column();
+
+        foreach ($res as $i=>$d){
+            $res[$i] = Yii::$app->security->decryptByKey(base64_decode($d), Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
 }

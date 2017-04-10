@@ -2,6 +2,7 @@
 
 namespace app\modules\task\models;
 
+use app\modules\user\models\CompanySearch;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -88,10 +89,11 @@ class TaskPayInfoSearch extends TaskPayInfo
             'update_time' => $this->update_time,
         ]);
 
-        $this->search_type == 1 && $query->andFilterWhere(['like', 'task_pay_info.pay_bill_no', $this->search_keywords]);
-        $this->search_type == 2 && $query->andFilterWhere(['like', 'task.number', $this->search_keywords]);
-        $this->search_type == 3 && $query->andFilterWhere(['like', 'executeCompany.name', $this->search_keywords]);
-        $this->search_type == 4 && $query->andFilterWhere(['like', 'payCompany.name', $this->search_keywords]);
+        $searchCompany = new CompanySearch();
+        $this->search_type == 1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['like', 'task_pay_info.pay_bill_no', $this->search_keywords]);
+        $this->search_type == 2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['like', 'task.number', $this->search_keywords]);
+        $this->search_type == 3 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'executeCompany.id', $searchCompany->searchIds($this->search_keywords)]);
+        $this->search_type == 4 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'payCompany.id', $searchCompany->searchIds($this->search_keywords)]);
 
         return $dataProvider;
     }

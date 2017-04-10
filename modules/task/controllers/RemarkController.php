@@ -29,7 +29,7 @@ class RemarkController extends GController
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index','create','trash','switch'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -51,8 +51,10 @@ class RemarkController extends GController
         $searchModel = new TaskRemarkSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = Task::findOne($id);
+        $remark_model = new TaskRemark();
         return $this->render('index', [
             'model' => $model,
+            'remark_model' => $remark_model,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -90,7 +92,6 @@ class RemarkController extends GController
     public function actionCreate()
     {
         $model = new TaskRemark();
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index', 'id' => $model->task_id]);
         } else {

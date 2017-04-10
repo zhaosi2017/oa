@@ -13,7 +13,7 @@ class FinanceController extends GController
         $query = Company::find();
 
         $model = $query->where(['status'=>0])->all();
-        $money = Money::find()->where(['status'=>0])->asArray()->all();
+        $money = Money::find()->where(['status'=>0])->all();
 
         return $this->render('summary', [
             'model' => $model,

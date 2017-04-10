@@ -65,6 +65,11 @@ class MoneySearch extends Money
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'create_time' => SORT_DESC,
+                ]
+            ],
         ]);
 
         $this->load($params);
@@ -85,8 +90,22 @@ class MoneySearch extends Money
             'update_time' => $this->update_time,
         ]);
 
-        $this->search_type==1 && $query->andFilterWhere(['like', 'money.name', $this->search_keywords]);
+        $this->search_type==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'money.id', $this->searchIds($this->search_keywords)]);
 
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['name','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['name'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 }

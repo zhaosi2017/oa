@@ -37,7 +37,7 @@ $actionId = Yii::$app->requestedAction->id;
                     </div>
 
                     <?php
-                        $form = '<form action="'.\yii\helpers\Url::to(['/task/feedback/execute']).'" method="post" enctype="multipart/form-data" >';
+                        /*$form = '<form action="'.\yii\helpers\Url::to(['/task/feedback/execute']).'" method="post" enctype="multipart/form-data" >';
                         $form .= '<div class="form-group p-m">';
                         $form .= '<input type="hidden" name="_csrf" value="'.Yii::$app->request->csrfToken.'">';
                         $form .= '<input type="hidden" id="task_status" name="TaskStatus" value="">';
@@ -48,25 +48,28 @@ $actionId = Yii::$app->requestedAction->id;
                         $form .= '<textarea class="form-control" title="" name="TaskFeedback[content]" rows="5" required maxlength="500" id="trash-content"></textarea>';
                         $form .= '<input name="TaskFeedback[file]" class="form-control" type="file" id="feedback-file">';
                         $form .= '<input type="submit" class="hidden" id="btn-submit" value="submit">';
-                        $form .= '</div></form>';
+                        $form .= '</div></form>';*/
                     ?>
                     <div class="form-group pull-right">
-                        <?= Html::a('新增执行反馈',null, ['class'=>'btn btn-primary','onclick'=>'
-                            layer.open({
-                            title: "新增执行",
-                            type: 1,
-                            area: [\'39%\', \'39%\'], //宽高
-                            content: \''.$form.'\',
-                            btn: [\'提交\',\'取消\'],
-                            btnAlign: \'c\',
-                            yes: function(index, layer_o){
-                                $("#btn-submit").click();
-                            },
-                            cancel: function(index){
-                                layer.close(index)
-                            }
-                        });
-                        ']) ?>
+                        <?php
+                            /*echo Html::a('新增执行反馈',null, ['class'=>'btn btn-primary','onclick'=>'
+                                layer.open({
+                                title: "新增执行反馈",
+                                type: 1,
+                                area: [\'39%\', \'39%\'], //宽高
+                                content: \''.$form.'\',
+                                btn: [\'提交\',\'取消\'],
+                                btnAlign: \'c\',
+                                yes: function(index, layer_o){
+                                    $("#btn-submit").click();
+                                },
+                                cancel: function(index){
+                                    layer.close(index)
+                                }
+                            });
+                            ']) */
+                            echo Html::a('新增执行反馈',\yii\helpers\Url::to(['/task/feedback/create','id'=>$model->id]),['class'=>'btn btn-primary']);
+                        ?>
                     </div>
 
                 </td>

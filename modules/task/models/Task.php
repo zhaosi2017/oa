@@ -12,6 +12,7 @@ use app\modules\user\models\Company;
 use app\modules\user\models\User;
 use Yii;
 use app\models\CActiveRecord;
+use yii\db\Query;
 
 /**
  * This is the model class for table "task".
@@ -103,6 +104,13 @@ class Task extends CActiveRecord
         return new TaskQuery(get_called_class());
     }
 
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->name = Yii::$app->security->decryptByKey(base64_decode($this->name), Yii::$app->params['inputKey']);
+        $this->requirement = Yii::$app->security->decryptByKey(base64_decode($this->requirement), Yii::$app->params['inputKey']);
+    }
+
     public function getStatuses()
     {
         return [
@@ -134,7 +142,11 @@ class Task extends CActiveRecord
                 $this->update_time = $time_stamp;
                 $this->status = 2;
                 $this->number = date('ymd', $time_stamp) . $serial; //年月日加随机数加序列号
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+                $this->requirement = base64_encode(Yii::$app->security->encryptByKey($this->requirement,Yii::$app->params['inputKey']));
             }else{
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+                $this->requirement = base64_encode(Yii::$app->security->encryptByKey($this->requirement,Yii::$app->params['inputKey']));
                 $this->update_author_uid = $uid;
                 $this->update_time = $_SERVER['REQUEST_TIME'];
             }
@@ -244,7 +256,11 @@ class Task extends CActiveRecord
 
     public function getMoney()
     {
-        return Money::find()->select(['name', 'id'])->where(['status' => 0])->indexBy('id')->column();
+        $res = Money::find()->select(['name', 'id'])->where(['status' => 0])->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
     public function getExecuteInfo()
@@ -252,12 +268,13 @@ class Task extends CActiveRecord
         return $this->hasOne(TaskExecuteInfo::className(),['task_id'=>'id']);
     }
 
-    public function getChildren($id)
+    public function getChildren()
     {
         //        $self = $this::findOne(['id'=>$id,'status'=>0]);
 
-        $sql = 'select id,superior_task_id,name,number,requirement,company_id,status,update_author_uid,update_time from 
-                  (select * from '.$this::tableName().' where superior_task_id>0 order by id desc) realname_sorted, 
+        $id = $this->id;
+        /*$sql = 'select id,superior_task_id,name,number,requirement,company_id,status,update_author_uid,update_time from
+                  (select * from '.$this::tableName().' where superior_task_id>0 order by id desc) real_name_sorted, 
                   (select @pv :='.$id.') initialisation 
                   where (find_in_set(superior_task_id,@pv)>0 and @pv := concat(@pv,",",id))';
 
@@ -268,11 +285,31 @@ class Task extends CActiveRecord
                 left join task s on c.superior_task_id=s.id 
                 left join user u on c.update_author_uid=u.id 
                 left join company on c.company_id=company.id';
+        $children = $this::getDb()->createCommand($sql)->queryAll();*/
 
-        $children = $this::getDb()->createCommand($sql)->queryAll();
+        $real_name_sorted = $this::find()->where(['>','superior_task_id',0])->orderBy(['id'=>SORT_DESC]);
+
+        $subQuery = $this::find()->select(['id','superior_task_id','name','number','requirement','company_id','status','update_author_uid','update_time'])
+                ->from(['real_name_sorted'=>$real_name_sorted,'initialisation'=>'(select @pv :='.$id.')'])
+                ->where(['>','find_in_set(superior_task_id,@pv)',0])
+                ->andWhere('@pv :=concat(@pv,",",id)');
+        $children = (new Query())->from(['c'=>$subQuery])->select([
+            's.number as sup_number','u.account as u_account','company.name as company_name',
+            'c.id','c.superior_task_id','c.name','c.number','c.requirement','c.company_id','c.status','c.update_time'])
+        ->leftJoin(['s'=>$this::tableName()],'c.superior_task_id=s.id')
+        ->leftJoin(['u'=>User::tableName()],'c.update_author_uid=u.id')
+        ->leftJoin(Company::tableName(),'c.company_id=company.id')->all();
+
+
 
         //        array_unshift($children, $self);
 
+        foreach ($children as $i => $data){
+            $children[$i]['name'] = Yii::$app->security->decryptByKey(base64_decode($data['name']),Yii::$app->params['inputKey']);
+            $children[$i]['requirement'] = Yii::$app->security->decryptByKey(base64_decode($data['requirement']),Yii::$app->params['inputKey']);
+            $children[$i]['u_account'] = Yii::$app->security->decryptByKey(base64_decode($data['u_account']),Yii::$app->params['inputKey']);
+            $children[$i]['company_name'] = Yii::$app->security->decryptByKey(base64_decode($data['company_name']),Yii::$app->params['inputKey']);
+        }
         return $children;
     }
 

@@ -27,18 +27,38 @@ $actionId = Yii::$app->requestedAction->id;
             ],
         ]) ?>
 
-        <?php $email = $model->email ? explode('@',$model->email)[0] : '' ?>
-        <?= $form->field($model, 'email',[
-            'template' => "{label}\n<div class=\"col-sm-3\">{input}</div>
-            <div class=\"col-sm-2\">
-                <select name='email-postfix' class='form-control'>
-                    <option value='@gmail.com'>@gmail.com</option>
-                    <option value='@697.com'>@697.com</option>
-                </select>
-                <span class=\"help-block m-b-none\">{error}</span>
-            </div>",
-        ])->textInput(['maxlength' => true,'value' =>$email]) ?>
+        <?php
+            $email_suffix = '';
+            if($model->email){
+                $email_handle = explode('@', $model->email);
+                $model->email = $email_handle[0];
+                $email_suffix = $email_handle[1];
+            }else{
+                $model->email = '';
+            }
+        ?>
 
+        <div class="row form-inline">
+            <div class="col-lg-3 text-right">
+                <div class="form-group">
+                    <label for="task-customer-category" class="col-sm-12 control-label">验证邮箱</label>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <?= $form->field($model, 'email')->textInput(['maxlength' => 30])->label(false) ?>
+
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <select title="" name='email-postfix' class='form-control'>
+                            <option <?= $email_suffix=='gmail.com' ? 'selected="selected"' : '' ?> value='@gmail.com'>@gmail.com</option>
+                            <option <?= $email_suffix=='697.com' ? 'selected="selected"' : '' ?> value='@697.com'>@697.com</option>
+                        </select>
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
 
         <?= $form->field($model, 'login_permission')->radioList([
             '1' => '禁止',

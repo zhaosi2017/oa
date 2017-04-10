@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -96,7 +96,7 @@ DROP TABLE IF EXISTS `company`;
 CREATE TABLE `company` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `sup_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `name` char(20) COLLATE utf8_bin NOT NULL DEFAULT '',
+  `name` longtext COLLATE utf8_bin,
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'çŠ¶æ€:0æ­£å¸¸,1ä½œåºŸ ',
   `level` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT 'å±‚çº§ ',
   `create_author_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'åˆ›å»ºäººç”¨æˆ·ç¼–å·',
@@ -104,7 +104,7 @@ CREATE TABLE `company` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'åˆ›å»ºæ—¶é—´',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'ä¿®æ”¹æ—¶é—´',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,17 +116,16 @@ DROP TABLE IF EXISTS `customer`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `customer` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(20) NOT NULL,
+  `name` longtext,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
   `grade` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT 'çº§åˆ«:1A2B3C4D',
-  `remarks` text,
+  `remarks` longtext,
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '0æ­£å¸¸1ä½œåºŸ',
   `create_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `update_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='å®¢æˆ·è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -139,7 +138,7 @@ DROP TABLE IF EXISTS `department`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `department` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(40) NOT NULL COMMENT 'éƒ¨é—¨',
+  `name` longtext,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
   `superior_department_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上级部门编号',
   `status` tinyint(11) unsigned NOT NULL DEFAULT '0' COMMENT 'çŠ¶æ€:0æ­£å¸¸1ä½œåºŸ',
@@ -148,7 +147,7 @@ CREATE TABLE `department` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'åˆ›å»ºæ—¶é—´',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'ä¿®æ”¹æ—¶é—´',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='éƒ¨é—¨è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='éƒ¨é—¨è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +159,7 @@ DROP TABLE IF EXISTS `finance_subject`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `finance_subject` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `subject_name` char(20) NOT NULL,
+  `subject_name` longtext,
   `superior_subject_id` int(10) unsigned NOT NULL DEFAULT '0',
   `enable` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '0å¯ç”¨1åœç”¨',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '0æ­£å¸¸1ä½œåºŸ',
@@ -169,7 +168,7 @@ CREATE TABLE `finance_subject` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='è´¢åŠ¡ç§‘ç›®è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='è´¢åŠ¡ç§‘ç›®è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,7 +204,7 @@ CREATE TABLE `login_logs` (
   `unlock_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `unlock_uid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,7 +230,7 @@ DROP TABLE IF EXISTS `money`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `money` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(20) NOT NULL,
+  `name` longtext,
   `enable` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(2) unsigned DEFAULT '0',
   `create_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -239,7 +238,7 @@ CREATE TABLE `money` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,15 +251,15 @@ DROP TABLE IF EXISTS `notice`;
 CREATE TABLE `notice` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '0æœªè¯»1å·²è¯»',
-  `title` varchar(64) NOT NULL DEFAULT '',
-  `content` text,
+  `title` longtext,
+  `content` longtext,
   `recipient_uid` text,
   `sender_uid` int(10) unsigned DEFAULT '0' COMMENT 'å‘ä»¶äºº:0ç³»ç»Ÿ!0ç”¨æˆ·',
   `receive_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `send_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `read_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +273,7 @@ CREATE TABLE `notice_queue_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -286,7 +285,7 @@ DROP TABLE IF EXISTS `posts`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `posts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(40) NOT NULL COMMENT 'å²—ä½åç§°',
+  `name` longtext,
   `department_id` int(10) unsigned NOT NULL COMMENT '部门编号',
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
   `status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'çŠ¶æ€:0æ­£å¸¸1ä½œåºŸ',
@@ -295,7 +294,7 @@ CREATE TABLE `posts` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'åˆ›å»ºæ—¶é—´',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'ä¿®æ”¹æ—¶é—´',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='å²—ä½è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='å²—ä½è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -307,21 +306,20 @@ DROP TABLE IF EXISTS `product`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(20) NOT NULL,
+  `name` longtext,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
   `first_category_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '产品一级分类',
   `second_category_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '产品二级分类',
   `number` char(20) NOT NULL COMMENT 'ç¼–å·',
-  `description` text COMMENT 'è¯´æ˜Ž',
+  `description` longtext,
   `enable` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT 'çŠ¶æ€:0æ­£å¸¸1ä½œåºŸ',
   `create_author_uid` int(10) unsigned NOT NULL,
   `update_author_uid` int(10) unsigned DEFAULT NULL,
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='äº§å“è¡¨';
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='äº§å“è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -333,7 +331,7 @@ DROP TABLE IF EXISTS `product_category`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `product_category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(20) DEFAULT NULL,
+  `name` longtext,
   `superior_id` int(10) unsigned NOT NULL COMMENT 'ä¸Šçº§åˆ†ç±»ç¼–å·',
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
   `avisible` int(11) NOT NULL DEFAULT '0' COMMENT '位运算计算是否选中状态',
@@ -343,7 +341,7 @@ CREATE TABLE `product_category` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'ä¿®æ”¹æ—¶é—´',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='äº§å“åˆ†ç±»è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='äº§å“åˆ†ç±»è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -400,7 +398,7 @@ DROP TABLE IF EXISTS `root_category`;
 CREATE TABLE `root_category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `name` char(20) NOT NULL,
+  `name` longtext,
   `visible` int(11) NOT NULL DEFAULT '0' COMMENT '位运算记录选中状态值',
   `create_author_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'åˆ›å»ºäººç”¨æˆ·ç¼–å·',
   `update_author_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'ä¿®æ”¹äººç”¨æˆ·ç¼–å·',
@@ -423,7 +421,7 @@ CREATE TABLE `serial_number` (
   `type` varchar(64) NOT NULL DEFAULT '',
   `create_at` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -446,13 +444,13 @@ CREATE TABLE `statement` (
   `money_id` int(10) unsigned NOT NULL DEFAULT '0',
   `amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `accounting_date` date DEFAULT NULL,
-  `remark` text,
+  `remark` longtext,
   `create_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `update_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -465,7 +463,7 @@ DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `number` varchar(64) NOT NULL DEFAULT '',
-  `name` char(40) NOT NULL DEFAULT '',
+  `name` longtext,
   `company_id` int(10) unsigned NOT NULL DEFAULT '0',
   `execute_company_id` int(10) unsigned NOT NULL DEFAULT '0',
   `execute_type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '1:一次性,2:重复',
@@ -474,7 +472,7 @@ CREATE TABLE `task` (
   `customer_grate` tinyint(3) unsigned DEFAULT '0' COMMENT '客户级别：1A2B3C4D',
   `company_customer_id` int(10) unsigned NOT NULL DEFAULT '0',
   `product_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `requirement` text NOT NULL COMMENT '任务要求',
+  `requirement` longtext,
   `attachment` varchar(64) NOT NULL DEFAULT '',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '0正常，1作废，2待发布，3待接收，4处理中，5待验收，6结算中，7已完成，8撤销，9无法执行',
   `superior_task_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -483,7 +481,7 @@ CREATE TABLE `task` (
   `create_time` int(10) unsigned NOT NULL DEFAULT '0',
   `update_time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -506,9 +504,9 @@ CREATE TABLE `task_collection_info` (
   `update_author_uid` int(10) unsigned NOT NULL,
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `remark` text,
+  `remark` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='æ”¶æ¬¾ä¿¡æ¯';
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='æ”¶æ¬¾ä¿¡æ¯';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -526,7 +524,7 @@ CREATE TABLE `task_deal_price` (
   `price` decimal(12,2) NOT NULL DEFAULT '0.00',
   `purchase_price` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COMMENT='ä»»åŠ¡æˆäº¤ä»·æ ¼è¡¨';
+) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 COMMENT='ä»»åŠ¡æˆäº¤ä»·æ ¼è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -548,7 +546,7 @@ CREATE TABLE `task_execute_info` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -561,14 +559,14 @@ DROP TABLE IF EXISTS `task_feedback`;
 CREATE TABLE `task_feedback` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` int(10) unsigned NOT NULL,
-  `content` text,
+  `content` longtext,
   `attachment` varchar(64) DEFAULT NULL,
   `create_author_uid` int(11) NOT NULL,
   `create_time` int(10) unsigned NOT NULL DEFAULT '0',
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(2) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='ä»»åŠ¡åé¦ˆè¡¨ ';
+) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='ä»»åŠ¡åé¦ˆè¡¨ ';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -591,7 +589,7 @@ CREATE TABLE `task_pay_info` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='ä»˜æ¬¾ä¿¡æ¯';
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='ä»˜æ¬¾ä¿¡æ¯';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -604,7 +602,7 @@ DROP TABLE IF EXISTS `task_remark`;
 CREATE TABLE `task_remark` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` int(10) unsigned NOT NULL,
-  `content` text,
+  `content` longtext,
   `create_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `update_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -612,7 +610,7 @@ CREATE TABLE `task_remark` (
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='ä»»åŠ¡åé¦ˆè¡¨ ';
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='ä»»åŠ¡åé¦ˆè¡¨ ';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -624,11 +622,11 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `account` char(20) NOT NULL DEFAULT '' COMMENT '用户名',
-  `nickname` varchar(64) NOT NULL DEFAULT '' COMMENT '用户昵称',
-  `email` varchar(64) NOT NULL DEFAULT '',
-  `password` varchar(64) NOT NULL DEFAULT '',
-  `auth_key` varchar(64) DEFAULT NULL,
+  `account` longtext COLLATE utf8mb4_unicode_ci,
+  `nickname` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户昵称',
+  `email` longtext COLLATE utf8mb4_unicode_ci,
+  `password` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `auth_key` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `company_id` int(10) unsigned DEFAULT '0',
   `department_id` int(10) unsigned NOT NULL DEFAULT '0',
   `posts_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -638,9 +636,8 @@ CREATE TABLE `user` (
   `update_author_uid` int(10) unsigned NOT NULL DEFAULT '0',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `account` (`account`) USING HASH
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='ç”¨æˆ·è¡¨';
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ç”¨æˆ·è¡¨';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -652,4 +649,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-13 16:53:49
+-- Dump completed on 2017-03-26 13:40:11

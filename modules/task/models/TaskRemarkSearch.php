@@ -64,6 +64,14 @@ class TaskRemarkSearch extends TaskRemark
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'create_time' => SORT_DESC,
+                ]
+            ],
         ]);
 
         $this->load($params);
@@ -84,8 +92,22 @@ class TaskRemarkSearch extends TaskRemark
             'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'content', $this->content]);
+        strlen($this->content)>0 && $query->andFilterWhere(['in', 'id', $this->searchIds($this->content)]);
 
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['content','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['content'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 }

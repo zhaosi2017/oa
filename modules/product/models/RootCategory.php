@@ -2,7 +2,7 @@
 
 namespace app\modules\product\models;
 
-//use Yii;
+use Yii;
 use app\models\CActiveRecord;
 use app\modules\user\models\Company;
 use app\modules\user\models\User;
@@ -66,6 +66,32 @@ class RootCategory extends CActiveRecord
     public static function find()
     {
         return new RootCategoryQuery(get_called_class());
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->name = Yii::$app->security->decryptByKey(base64_decode($this->name), Yii::$app->params['inputKey']);
+    }
+
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->create_author_uid = $uid;
+                $this->update_author_uid = $uid;
+                $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+            }else{
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+                $this->update_author_uid = $uid;
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

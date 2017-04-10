@@ -37,24 +37,32 @@ $actionId = Yii::$app->requestedAction->id;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn','header' => '序号'],
 
-            'account',
+            ['label'=>'用户名称','value'=>function($model){
+                return $model->account;
+            }],
 
             [
                 'label' => '所属公司',
                 'attribute' => 'company_id',
-                'value' => 'company.name'
+                'value' => function($model){
+                    return $model['company']['name'] ? $model['company']['name'] : '';
+                }
             ],
 
             [
                 'label' => '所属部门',
                 'attribute' => 'department_name',
-                'value' => 'department.name'
+                'value' => function($model){
+                    return $model['department']['name'] ? $model['department']['name'] : '';
+                }
             ],
 
             [
                 'label' => '所属岗位',
                 'attribute' => 'posts_name',
-                'value' => 'posts.name'
+                'value' => function($model){
+                    return $model['posts']['name'] ? $model['posts']['name'] : '';
+                }
             ],
 
             [
@@ -109,7 +117,7 @@ $actionId = Yii::$app->requestedAction->id;
                                 $btn_link = Html::a('作废',
                                     $url . '&status=1',
                                     [
-                                        'class' => 'btn btn-xs',
+//                                        'class' => 'btn btn-xs',
                                         'style' => 'color:red',
                                         'data-method' => 'post',
                                         'data' => ['confirm' => '你确定要作废吗?']
@@ -119,7 +127,7 @@ $actionId = Yii::$app->requestedAction->id;
                                 $btn_link = Html::a('恢复',
                                     $url . '&status=0',
                                     [
-                                        'class' => 'btn btn-xs',
+//                                        'class' => 'btn btn-xs',
                                         'data-method' => 'post',
                                         'data' => ['confirm' => '你确定要恢复吗?']
                                     ]);

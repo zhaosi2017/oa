@@ -2,6 +2,7 @@
 
 namespace app\modules\user\models;
 
+use Yii;
 use yii\db\ActiveQuery;
 
 /**
@@ -40,7 +41,13 @@ class DepartmentQuery extends ActiveQuery
      */
     public function downList($company_id)
     {
-        return Department::find()->select(['name', 'id'])->where(['status'=>0,'company_id'=>$company_id])->indexBy('id')->column();
+        $res = Department::find()->select(['name', 'id'])->where(['status'=>0,'company_id'=>$company_id])->indexBy('id')->column();
+
+        //decrypt
+        foreach ($res as $id=>$name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
     /**
@@ -51,11 +58,17 @@ class DepartmentQuery extends ActiveQuery
     {
         $self = Department::findOne(['id'=>$id,'status'=>0]);
 
-        $sql = 'select id,superior_department_id,name from 
-                  (select * from '.Department::tableName().' where superior_department_id>0 order by id desc) realname_sorted, 
+        /*$sql = 'select id,superior_department_id,name from
+                  (select * from '.Department::tableName().' where superior_department_id>0 order by id desc) real_name_sorted,
                   (select @pv :='.$id.') initialisation 
                   where (find_in_set(superior_department_id,@pv)>0 and @pv := concat(@pv,",",id))';
-        $children = [] + Department::getDb()->createCommand($sql)->queryAll();
+        $children = [] + Department::getDb()->createCommand($sql)->queryAll();*/
+
+        $real_name_sorted = Department::find()->where(['>','superior_department_id',0])->orderBy(['id'=>SORT_DESC]);
+        $initialisation = Department::find()->select('@pv :='.$id);
+        $children = [] + Department::find()->select(['id','superior_department_id','name'])
+                ->from(['real_name_sorted'=>$real_name_sorted,'initialisation'=>$initialisation])
+                ->where('find_in_set(superior_department_id,@pv)>0 and @pv := concat(@pv,",",id)');
 
         array_unshift($children, $self);
 

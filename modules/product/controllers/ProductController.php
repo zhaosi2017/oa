@@ -65,7 +65,7 @@ class ProductController extends GController
         $model = new Product();
         $model->loadDefaultValues();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->insert()) {
             $model->sendSuccess();
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
@@ -85,8 +85,16 @@ class ProductController extends GController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if(!$model->update()){
+                return $this->render('update', [
+                    'model' => $model,
+                ]);
+            }else{
+                $model->sendSuccess();
+                return $this->redirect(['index', 'id' => $model->id]);
+            }
+
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -142,9 +150,9 @@ class ProductController extends GController
         } else {
             $identity = (Object) Yii::$app->user->identity;
             $company_id = $identity->company_id;
-            $company = new Company();
+            $company = Company::findOne($company_id);
             //获取公司列表
-            $companyList = $company->getChildren($company_id);
+            $companyList = $company->getChildren();
             return $this->render('price_form', [
                 'model' => $model,
                 'company' => $companyList,

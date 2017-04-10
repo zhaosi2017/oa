@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
         ],
     ]) ?>
 
-    <?= $form->field($model, 'subject_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'subject_name')->textInput(['maxlength' => 20]) ?>
 
     <?= $form->field($model, 'superior_subject_id')->dropDownList($model->getSuperiorSubject()) ?>
 

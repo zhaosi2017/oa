@@ -84,9 +84,8 @@ class CompanyController extends GController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->sendSuccess();
+        if ($model->load(Yii::$app->request->post())) {
+            $model->update() && $model->sendSuccess();
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
             return $this->render('update', [

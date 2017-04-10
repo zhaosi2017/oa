@@ -75,7 +75,7 @@ $actionId = Yii::$app->requestedAction->id;
                 }
             ],
             'accounting_date',
-            'remark',
+            ['value'=>'remark','format'=>'html'],
             [
                 'label'=>'最后修改人',
                 'format'=>'html',

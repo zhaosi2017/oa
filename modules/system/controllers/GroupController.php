@@ -14,7 +14,7 @@ class GroupController extends GController
             ->select(['grade','CONCAT(company_id,"-",rate_company_id) AS company_key'])
             ->indexBy('company_key')->column();
 
-        $company = Company::find()->select(['id','name'])->where(['status'=>0])->asArray()->all();
+        $company = Company::find()->select(['id','name'])->where(['status'=>0])->all();
         return $this->render('rate',['model'=>$model,'company'=>$company]);
     }
 

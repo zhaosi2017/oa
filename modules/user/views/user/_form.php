@@ -23,8 +23,7 @@ use app\modules\user\models\Company;
         ],
     ]) ?>
 
-    <?= $form->field($model, 'account')->textInput(['maxlength' => true]) ?>
-
+    <?= $form->field($model, 'account')->textInput(['maxlength' => 10]) ?>
 
     <?php
 

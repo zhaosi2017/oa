@@ -2,6 +2,7 @@
 
 namespace app\modules\task\models;
 
+use Yii;
 use app\modules\user\models\Company;
 use app\modules\user\models\User;
 use app\models\CActiveRecord;
@@ -35,7 +36,7 @@ class TaskRemark extends CActiveRecord
     public function rules()
     {
         return [
-            [['task_id'], 'required'],
+            [['task_id','content'], 'required'],
             [['task_id', 'create_author_uid', 'update_author_uid', 'type', 'status'], 'integer'],
             [['content'], 'string'],
             [['create_time'], 'safe'],
@@ -65,6 +66,32 @@ class TaskRemark extends CActiveRecord
     public static function find()
     {
         return new TaskRemarkQuery(get_called_class());
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->content = Yii::$app->security->decryptByKey(base64_decode($this->content), Yii::$app->params['inputKey']);
+    }
+
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->create_author_uid = $uid;
+                $this->update_author_uid = $uid;
+                $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->content = base64_encode(Yii::$app->security->encryptByKey($this->content,Yii::$app->params['inputKey']));
+            }else{
+                $this->content = base64_encode(Yii::$app->security->encryptByKey($this->content,Yii::$app->params['inputKey']));
+                $this->update_author_uid = $uid;
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

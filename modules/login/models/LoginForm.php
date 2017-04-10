@@ -50,7 +50,6 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $identity = $this->getIdentity();
-
             if(!$identity){
                 $this->addError($attribute, '用户名不存在。');
             }else{
@@ -211,8 +210,12 @@ class LoginForm extends Model
     public function getIdentity()
     {
         if($this->identity === false){
-
-            $this->identity = User::findOne(['account' => $this->username]);
+            $accounts = User::find()->select(['id','account'])->indexBy('account')->column();
+            foreach ($accounts as $account => $id){
+                $this->username == Yii::$app->security->decryptByKey(base64_decode($account),Yii::$app->params['inputKey'])
+                && $this->identity = User::findOne(['id'=>$id]);
+            }
+            //$this->identity = User::findOne(['account' => $this->username]);
         }
 
         return $this->identity;

@@ -35,57 +35,7 @@ GlobalAsset::register($this);
 <?php $this->beginBody() ?>
     <?= isset($content) ? $content : ''  ?>
 </body>
-<?php
 
-function get_server_ip() {
-    if (isset($_SERVER)) {
-        if($_SERVER['SERVER_ADDR']) {
-            $server_ip = $_SERVER['SERVER_ADDR'];
-        } else {
-            $server_ip = $_SERVER['LOCAL_ADDR'];
-        }
-        if($_SERVER['SERVER_NAME']){
-            $server_ip = $_SERVER['SERVER_NAME'];
-        }
-    } else {
-        $server_ip = getenv('SERVER_ADDR');
-    }
-    return $server_ip;
-}
-
-$this->registerJs('
-    web_socket = new WebSocket("ws://'.get_server_ip().':9501/");
-    web_socket.onopen = function() {
-        $("#message-count").html(\'.\');
-        web_socket.send(1);
-    };
-
-    web_socket.onerror = function (e) {
-        $("#message-count").addClass(\'red-bg\');
-        $("#message-count").html(e.data);
-    };
-
-    web_socket.onmessage = function(e){
-        var r = JSON.parse(e.data);
-        if(r.length!=0){
-            var uid = $("#login-user-id").val();
-            if(typeof r[uid] != "undefined"){
-                $("#message-count").html(r[uid]);
-                var myVideo=document.getElementById("notice-ysp");
-                if(typeof r.q[uid] != "undefined"){
-                    myVideo.play();
-                    $.post("'.\yii\helpers\Url::to(['/system/notice/received']).'",{"uid": uid,"_csrf":"'.Yii::$app->request->csrfToken.'"});
-                }
-            }
-        }
-    };
-
-    web_socket.onclose = function () {
-        $("#message-count").addClass(\'red-bg\');
-        $("#message-count").html(\'N\');
-    };
-');
-?>
 <?php $this->endBody() ?>
 </html>
 <?php $this->endPage() ?>

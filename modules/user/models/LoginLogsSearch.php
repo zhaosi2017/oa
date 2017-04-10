@@ -81,9 +81,22 @@ class LoginLogsSearch extends LoginLogs
             'login_time' => $this->login_time,
         ]);
 
-        $this->search_type==1 && $query->andFilterWhere(['like', 'user.account', $this->search_keywords]);
-        $this->search_type==2 && $query->andFilterWhere(['like', 'login_logs.login_ip', $this->search_keywords]);
-
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'user.id', (new UserSearch())->searchIds($this->search_keywords)]);
+        $this->search_type ==2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'login_logs.id', $this->searchIds($this->search_keywords)]);
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['name','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['name'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 }

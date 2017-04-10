@@ -65,8 +65,15 @@ class MoneyController extends GController
     {
         $model = new Money();
         $model->loadDefaultValues();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->name]);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->insert()){
+                $model->sendSuccess();
+                return $this->redirect(['index']);
+            }else{
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,

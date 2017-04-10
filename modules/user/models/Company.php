@@ -9,6 +9,7 @@ use app\modules\task\models\TaskCollectionInfo;
 use app\modules\task\models\TaskDealPrice;
 use app\modules\task\models\TaskExecuteInfo;
 use app\modules\task\models\TaskPayInfo;
+use yii\db\Query;
 
 /**
  * This is the model class for table "company".
@@ -41,9 +42,10 @@ class Company extends CActiveRecord
         return [
             [['status', 'sup_id', 'level', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name'], 'string', 'max' => 20],
+//            [['name'], 'string', 'max' => 20],
             [['name'], 'required'],
-            [['name'], 'unique'],
+//            [['name'], 'unique'],
+            [['name'], 'checkCompany'],
         ];
     }
 
@@ -74,6 +76,31 @@ class Company extends CActiveRecord
         return new CompanyQuery(get_called_class());
     }
 
+    public function decryptCompany($update_company=null)
+    {
+        $model = $this::find()->select(['name','id']);
+        $names = $model->indexBy('id')->column();
+        foreach ($names as $id => $name)
+        {
+            $dec_name = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+            $update_company!=$dec_name && $names[$id] = $dec_name;
+        }
+        return $names;
+    }
+
+    public function checkCompany($attribute)
+    {
+        if($this->isNewRecord){
+            if (in_array($this->name,$this->decryptCompany())) {
+                $this->addError($attribute, '公司名称已存在。');
+            }
+        }else{
+            if (in_array($this->name,$this->decryptCompany($this->name))) {
+                $this->addError($attribute, '公司名称已存在。');
+            }
+        }
+    }
+
     /**
      * 获取创建人
      * @return \yii\db\ActiveQuery
@@ -101,6 +128,12 @@ class Company extends CActiveRecord
         return $this->hasOne($this::className(), ['id' => 'sup_id'])->alias('superior');
     }
 
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->name = Yii::$app->security->decryptByKey(base64_decode($this->name), Yii::$app->params['inputKey']);
+    }
+
     public function beforeSave($insert)
     {
         $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
@@ -110,7 +143,9 @@ class Company extends CActiveRecord
             $this->update_author_uid = $uid;
             $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
             $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
         }else{
+            $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
             $this->update_author_uid = $uid;
             $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
         }
@@ -125,18 +160,31 @@ class Company extends CActiveRecord
         return $this->hasMany(User::className(),['company_id'=>'id'])->select(['id'])->alias('userIds');
     }
 
-    public function getChildren($id)
+    public function getChildren()
     {
+        $id = $this->id;
         $self = $this::findOne(['id'=>$id,'status'=>0]);
 
-        $sql = 'select id,sup_id,name from 
-                  (select * from '.$this::tableName().' where sup_id>0 order by id desc) realname_sorted, 
+        /*$sql = 'select id,sup_id,name from
+                  (select * from '.$this::tableName().' where sup_id>0 order by id desc) real_name_sorted,
                   (select @pv :='.$id.') initialisation 
                   where (find_in_set(sup_id,@pv)>0 and @pv := concat(@pv,",",id))';
-        $children = [] + $this::getDb()->createCommand($sql)->queryAll();
+        $children = [] + $this::getDb()->createCommand($sql)->queryAll();*/
+
+        $real_name_sorted = $this::find()->where(['>','sup_id',0])->orderBy(['id'=>SORT_DESC]);
+        $initialisation = '(select @pv :='.$id.')';
+        $children = [] + (new Query())->select(['id','sup_id','name'])
+                ->from(['real_name_sorted'=>$real_name_sorted,'initialisation'=>$initialisation])
+                ->where(['>','find_in_set(sup_id,@pv)',0])
+                ->andWhere('@pv :=concat(@pv,",",id)')->all();
+
+
+
+        foreach ($children as $id => $data){
+            $children[$id]['name'] = Yii::$app->security->decryptByKey(base64_decode($data['name']),Yii::$app->params['inputKey']);
+        }
 
         array_unshift($children, $self);
-
         return $children;
     }
 

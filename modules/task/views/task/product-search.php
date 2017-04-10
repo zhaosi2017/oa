@@ -16,8 +16,8 @@ $searchModel->grade = $grade;
 <div class="product-index">
 
     <p class="btn-group hidden-xs">
-        <?= Html::a('搜索查找', ['product-search','grade'=>$grade], ['class' => $actionId=='product-search' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
-        <?= Html::a('目录查找', ['product-tree','grade'=>$grade], ['class' => $actionId=='product-tree' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('搜索查找', ['product-search','grade'=>$grade], ['class' => $actionId=='product-tree' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
+        <?= Html::a('目录查找', ['product-tree','grade'=>$grade], ['class' => $actionId=='product-search' ? 'btn btn-outline btn-default' : 'btn btn-primary']) ?>
     </p>
 
     <?php  echo $this->render('_search-product', ['model' => $searchModel]); ?>

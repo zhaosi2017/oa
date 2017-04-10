@@ -5,7 +5,6 @@ namespace app\modules\home\controllers;
 use app\controllers\GController;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
-//use yii\web\Controller;
 
 /**
  * Default controller for the `home` module

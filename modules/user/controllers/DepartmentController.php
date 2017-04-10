@@ -93,8 +93,8 @@ class DepartmentController extends GController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->getSession()->setFlash('success', '修改部门成功');
+        if ($model->load(Yii::$app->request->post())) {
+            $model->update() && $model->sendSuccess();
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
             return $this->render('update', [

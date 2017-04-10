@@ -2,10 +2,6 @@
 use yii\helpers\Html;
 use yii\bootstrap\Alert;
 
-//use yii\bootstrap\Nav;
-//use yii\bootstrap\NavBar;
-//use yii\widgets\Breadcrumbs;
-
 ?>
 <?php $this->beginContent('@app/views/layouts/public.php'); ?>
 <?php
@@ -43,24 +39,6 @@ if( Yii::$app->getSession()->hasFlash('info') ) {
                         <h5>
                             <?= Html::encode($this->title) ?>
                         </h5>
-                        <!--                    <h5>所有表单元素 <small>包括自定义样式的复选和单选按钮</small></h5>-->
-                        <!--<div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-wrench"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-user">
-                                <li><a href="#">选项1</a>
-                                </li>
-                                <li><a href="#">选项2</a>
-                                </li>
-                            </ul>
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>-->
                     </div>
 
                     <div class="ibox-content">

@@ -76,10 +76,14 @@ class ProductCategoryController extends GController
                 if($model->save()){
                     $model->sendSuccess();
                     $model->avisible = !empty($visible) ? $visible : false;
+                    return $this->redirect('index');
                 }else{
                     $model->sendError();
+                    return $this->render('create', [
+                        'model' => $model,
+                    ]);
                 }
-                return $this->redirect('index');
+
             } else {
                 return $this->render('create', [
                     'model' => $model,

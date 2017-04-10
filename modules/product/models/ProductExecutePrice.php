@@ -6,8 +6,6 @@ use app\modules\user\models\Company;
 use app\models\CActiveRecord;
 use app\modules\user\models\User;
 
-//use Yii;
-
 /**
  * This is the model class for table "product_execute_price".
  *

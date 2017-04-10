@@ -33,7 +33,6 @@ class NoticeController extends GController
     {
         $searchModel = new NoticeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('user-index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -150,7 +149,7 @@ class NoticeController extends GController
             $model = Notice::findOne($id);
             $model->status = 1;
             $model->read_time = date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME']);
-            $model->save();
+            $model->update();
             $this->redirect(['/system/notice/user-index']);
         }
         return false;
@@ -184,5 +183,6 @@ class NoticeController extends GController
             $uid = Yii::$app->request->post('uid');
             return NoticeQueueUser::deleteAll(['uid'=>$uid]);
         }
+        return false;
     }
 }

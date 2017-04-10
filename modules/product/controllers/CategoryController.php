@@ -36,6 +36,7 @@ class CategoryController extends GController
             if($model->save()){
                 $model->sendSuccess();
                 $model->visible = !empty($visible) ? $visible : false;
+                $model->name = Yii::$app->security->decryptByKey(base64_decode($model->name), Yii::$app->params['inputKey']);
             }else{
                 $model->sendError();
             }

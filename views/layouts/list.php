@@ -75,9 +75,9 @@ if( Yii::$app->getSession()->hasFlash('info') ) {
                     </h5>
                     <!--                    <h5>所有表单元素 <small>包括自定义样式的复选和单选按钮</small></h5>-->
                     <div class="ibox-tools">
-                        <a class="collapse-link">
+                        <!--<a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
-                        </a>
+                        </a>-->
                         <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-wrench"></i>
                         </a>
@@ -87,9 +87,9 @@ if( Yii::$app->getSession()->hasFlash('info') ) {
                             <li><a href="#">选项2</a>
                             </li>
                         </ul>-->
-                        <a class="close-link">
+                        <!--<a class="close-link">
                             <i class="fa fa-times"></i>
-                        </a>
+                        </a>-->
                     </div>
                 </div>
 

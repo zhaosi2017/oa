@@ -91,7 +91,7 @@ $actionId = Yii::$app->requestedAction->id;
                 },
             ],
             ['value' => 'company.name', 'label' => '所属公司'],
-            ['label' => '产品说明', 'value' => 'description'],
+            ['label' => '产品说明', 'value' => 'description', 'format'=>'html'],
             [
                 'class' => 'yii\grid\DataColumn',
                 'label' => '创建人／时间',

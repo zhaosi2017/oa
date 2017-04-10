@@ -5,7 +5,6 @@ namespace app\modules\product\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-//use app\modules\product\models\ProductCategory;
 
 /**
  * ProductCategorySearch represents the model behind the search form about `app\modules\product\models\ProductCategory`.
@@ -97,8 +96,22 @@ class ProductCategorySearch extends ProductCategory
             $bit_num = array_sum($visible);
             $query->andFilterWhere(['>=', 'product_category.avisible', $bit_num]);
         }
-        $this->search_type==1 && $query->andFilterWhere(['like', 'product_category.name', $this->search_keywords]);
 
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'product_category.id', $this->searchIds($this->search_keywords)]);
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['name','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['name'], $searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 }

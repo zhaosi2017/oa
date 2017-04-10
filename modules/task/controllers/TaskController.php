@@ -99,7 +99,7 @@ class TaskController extends GController
         $model = $this->findModel($id);
         return $this->render('sent-detail', [
             'model' => $model,
-            'children' => $model->getChildren($id),
+            'children' => $model->getChildren(),
         ]);
     }
 
@@ -111,7 +111,7 @@ class TaskController extends GController
         }
         return $this->render('wait-detail', [
             'model' => $model,
-            'children' => $model->getChildren($id),
+            'children' => $model->getChildren(),
         ]);
     }
 
@@ -120,7 +120,7 @@ class TaskController extends GController
         $model = $this->findModel($id);
         return $this->render('received-detail', [
             'model' => $model,
-            'children' => $model->getChildren($id),
+            'children' => $model->getChildren(),
         ]);
     }
 
@@ -160,8 +160,7 @@ class TaskController extends GController
                 }
             }
             $model->sendSuccess();
-
-            return $this->redirect(['sent-index', 'id' => $model->id]);
+            return $this->redirect(['sent-detail', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,

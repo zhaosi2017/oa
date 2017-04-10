@@ -2,7 +2,10 @@
 
 namespace app\modules\task\models;
 
+use app\modules\customer\models\CustomerSearch;
 use app\modules\product\models\ProductCategory;
+use app\modules\user\models\CompanySearch;
+use app\modules\user\models\UserSearch;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -76,6 +79,8 @@ class TaskSearch extends Task
             case 'received-index':
                 $query->where(['between', 'task.status', 4, 9]);
                 $query->andWhere(['in','task.product_id',$this->whereExecuteProductIds($identity->company_id)]);
+                //执行人=当前ID所属公司的数据
+                $query->andWhere(['task.execute_company_id'=>$identity->company_id]);
                 break;
         }
 
@@ -127,29 +132,48 @@ class TaskSearch extends Task
             'task.superior_task_id' => $this->top_level_task,
         ]);
 
-        $this->search_type == 1 && $query->andFilterWhere(['like', 'task.name', $this->search_keywords])->orFilterWhere(['like', 'task.number', $this->search_keywords]);
+        $searchCompany = new CompanySearch();
+        $searchUser = new UserSearch();
 
-        $this->search_type == 2 && $query->andFilterWhere(['like', 'task.requirement', $this->search_keywords]);
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'task.id', $this->searchIds($this->search_keywords)])->orFilterWhere(['in', 'task.id', $this->searchIds($this->search_keywords,'number')]);
 
-        $this->search_type == 3 && $query->andFilterWhere(['like', 'superior.name', $this->search_keywords])->orFilterWhere(['like', 'superior.number', $this->search_keywords]);
+        $this->search_type ==2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'task.id', $this->searchIds($this->search_keywords,'requirement')]);
 
-        $this->search_type == 4 && $query->andFilterWhere(['like', 'customer.name', $this->search_keywords])->orFilterWhere(['like', 'group.name', $this->search_keywords]);
+        $this->search_type ==3 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'task.id', $this->searchIds($this->search_keywords)])->orFilterWhere(['in', 'task.id', $this->searchIds($this->search_keywords,'number')]);
 
-        $this->search_type == 5 && $query->andFilterWhere(['like', 'executeCompany.name', $this->search_keywords]);
+        $this->search_type ==4 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'customer.id', (new CustomerSearch())->searchIds($this->search_keywords)])->orFilterWhere(['in', 'group.id', $searchCompany->searchIds($this->search_keywords)]);
 
-        $this->search_type == 6 && $query->andFilterWhere(['like', 'creator.account', $this->search_keywords]);
+        $this->search_type ==5 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'executeCompany.id', $searchCompany->searchIds($this->search_keywords)]);
 
-        $this->search_type == 7 && $query->andFilterWhere(['like', 'updater.account', $this->search_keywords]);
+        $this->search_type ==6 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'creator.id', $searchUser->searchIds($this->search_keywords)]);
+
+        $this->search_type ==7 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'updater.id', $searchUser->searchIds($this->search_keywords)]);
 
         return $dataProvider;
     }
 
     public function getFirstProductCategory()
     {
-        return
-        ProductCategory::find()
+        $res = ProductCategory::find()
             ->select(['name','id'])
             ->where(['status'=>0,'superior_id'=>0])->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
+    public function searchIds($searchWords, $field='name')
+    {
+        $ids = [0];
+        $query = $this::find()->select([$field,'id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row[$field],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
+    }
 }

@@ -25,7 +25,6 @@ class StatementController extends GController
     {
         $searchModel = new StatementSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -149,6 +148,7 @@ class StatementController extends GController
             }
             foreach($model as $value=>$name)
             {
+                $name = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
                 echo Html::tag('option',Html::encode($name),array('value'=>$value));
             }
         }
@@ -179,6 +179,7 @@ class StatementController extends GController
             }
             foreach($model as $value=>$name)
             {
+                $value && $name = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
                 echo Html::tag('option',Html::encode($name),array('value'=>$value));
             }
         }

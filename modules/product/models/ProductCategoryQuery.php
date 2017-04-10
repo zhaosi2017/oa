@@ -2,6 +2,7 @@
 
 namespace app\modules\product\models;
 
+use Yii;
 use yii\db\ActiveQuery;
 
 /**
@@ -43,10 +44,14 @@ class ProductCategoryQuery extends ActiveQuery
         if(!$first_category_id){
             return [];
         }
-        return ProductCategory::find()
+        $res = ProductCategory::find()
             ->select(['name','id'])
             ->where(['superior_id'=>$first_category_id])
             ->indexBy('id')
             ->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 }

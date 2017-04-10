@@ -32,55 +32,23 @@ use yii\redactor\widgets\Redactor;
     </div>
     <?= $form->field($model, 'company_id')->hiddenInput(['value'=>$identify->company_id])->label(false) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
-    <?php
-        $product_category = \app\modules\product\models\ProductCategory::find();
-        $categoryList = $product_category->select(['name','id','superior_id'])->where(['status' => 0])->all();
-        $one_category = $product_category->select(['name','id'])->where(['status' => 0, 'superior_id' => 0])->indexBy('id')->column();
-
-        $child_category = [];
-        $option_arr = [];
-
-        foreach ($categoryList as $item){
-            if($item->superior_id != 0){
-
-                if($model->second_category_id == $item->id){
-                    $model->first_category_id = $item->superior_id;
-                }
-
-                $child_category[$item->superior_id][$item->id] = $item->name;
-                $option_arr[$item->superior_id][] = '<option value="'.$item->id.'">'.$item->name.'</option>';
-            }
-        }
-
-        $second_category = !empty($child_category) && !empty($one_category)
-            ? $child_category[$model->isNewRecord ? key($one_category) : $model->first_category_id]
-            : [];
-
-        //js json
-        foreach ($option_arr as $k => $v){
-            $option_arr[$k] = implode(',', $v);
-        }
-
-        $option_json = json_encode($option_arr, JSON_UNESCAPED_UNICODE);
-
-    ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 10]) ?>
 
     <?= $form->field($model, 'first_category_id')->dropDownList(
-        $one_category,
+        $model['firstCategory'],
         [
+            'prompt' => '--产品一级分类--',
             'onchange' => '
-                var one_level = $(this).val();
-                var option_json = '.$option_json.';
-                $("#product-second_category_id").html(option_json[one_level]);
+                $.post("'.\yii\helpers\Url::to(['/product/product-category/get-second-category']).'",{"first_category_id": $(this).val(),"_csrf":"'.Yii::$app->request->csrfToken.'"},function(data){
+                    $("#product-second_category_id").html(data);
+                });
             ',
         ]
     )->label('产品分类') ?>
 
-    <?= $form->field($model, 'second_category_id')->dropDownList($second_category)->label('') ?>
+    <?= $form->field($model, 'second_category_id')->dropDownList($model->isNewRecord ? [] : $model->getSecondCategory(),['prompt'=>'--产品二级分类--'])->label('') ?>
 
-    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'number')->textInput(['maxlength' => 10]) ?>
 
     <?php echo $form->field($model, 'description')->widget(Redactor::className(),[
         'clientOptions' => [

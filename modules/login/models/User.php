@@ -2,6 +2,7 @@
 
 namespace app\modules\login\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -40,6 +41,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getUsername()
+    {
+        return Yii::$app->security->decryptByKey(base64_decode($this->account),Yii::$app->params['inputKey']);
     }
 
 

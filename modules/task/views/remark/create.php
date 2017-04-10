@@ -1,19 +1,13 @@
 <?php
 
-use yii\helpers\Html;
-
-
 /* @var $this yii\web\View */
 /* @var $model app\modules\task\models\TaskRemark */
 
-$this->title = 'Create Task Remark';
-$this->params['breadcrumbs'][] = ['label' => 'Task Remarks', 'url' => ['index']];
+$this->title = '新增备注';
+$this->params['breadcrumbs'][] = ['label' => '任务备注', 'url' => ['/task/remark/index','id'=>Yii::$app->request->get('task_id')]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="task-remark-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

@@ -1,5 +1,7 @@
 <?php
 
+use yii\redactor\widgets\Redactor;
+
 /* @var $this yii\web\View */
 /* @var $model app\modules\task\models\TaskCollectionInfo */
 
@@ -91,23 +93,42 @@ $this->params['breadcrumbs'][] = $this->title;
             <tbody>
                 <tr>
                     <td colspan="8" class="text-left">
-                        <?php if($model->status==0){ ?>
-                        <p>当前操作不可逆转，请务必谨慎操作！(仅限输入500字，必填！)</p>
-                        <form action="<?= \yii\helpers\Url::to(['/finance/receipt/remark','id'=>$model->id]) ?>" method="post">
-                            <label for="">收款方式：</label>
-                            <input type="hidden" name="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
-                            <input type="hidden" name="TaskCollectionInfo[status]" value="2">
-                            <label for="type_one"><input type="radio" checked id="type_one" name="TaskCollectionInfo[type]" value="1">现金收取</label>
-                            <label for="type_two"><input type="radio" id="type_two" name="TaskCollectionInfo[type]" value="2">集团托收</label>
-                            <br>
-                            <textarea title="remark" required class="full-width fa-text-height" rows="10" name="TaskCollectionInfo[remark]"></textarea>
-                            <br>
-                            <div class="text-right">
-                                <input class="btn btn-primary btn-sm" type="submit" value="确认收款">
-                            </div>
-                        </form>
-                        <?php }
-                            if($model->status==2){
+                        <?php
+                            if($model->status==0) {
+                                ?>
+                                <p>当前操作不可逆转，请务必谨慎操作！(仅限输入500字，必填！)</p>
+                                <?php $form = \yii\bootstrap\ActiveForm::begin(['action' => \yii\helpers\Url::to(['/finance/receipt/remark', 'id' => $model->id])]) ?>
+                                <label for="">收款方式：</label>
+                                <input type="hidden" name="TaskCollectionInfo[status]" value="2">
+                                <label for="type_one"><input type="radio" checked id="type_one"
+                                                             name="TaskCollectionInfo[type]" value="1">现金收取</label>
+                                <label for="type_two"><input type="radio" id="type_two" name="TaskCollectionInfo[type]"
+                                                             value="2">集团托收</label>
+                                <br>
+                                <?php
+                                echo
+                                $form->field($model, 'remark')->widget(Redactor::className(), [
+                                    'clientOptions' => [
+                                        'lang' => 'zh_cn',
+                                        'imageUpload' => false,
+                                        'fileUpload' => false,
+                                        'plugins' => [
+                                            'clips',
+                                            'fontcolor'
+                                        ],
+                                        'placeholder' => '限500个字',
+                                        'name' => 'TaskCollectionInfo[remark]',
+                                        'required' => 'required',
+                                        'maxlength' => 500
+                                    ]
+                                ])->label(false);
+                                ?>
+                                <div class="text-right">
+                                    <input class="btn btn-primary btn-sm" type="submit" value="确认收款">
+                                </div>
+                                <?php $form::end(); ?>
+                                <?php
+                            }else{
                                 echo $model->remark;
                             }
                         ?>

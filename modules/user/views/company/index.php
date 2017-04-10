@@ -36,8 +36,11 @@ $actionId = Yii::$app->requestedAction->id;
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn','header' => '序号'],
-            //['label' => '公司名称', 'attribute'=>'name', 'value' => 'name'],
-            'name',
+
+            ['label' => '公司名称', 'attribute'=>'name', 'value' => function($model){
+                return $model->name;
+            }],
+
             ['label' => '上级公司', 'value' => function($model){
                 $superior = $model['superior']['name'];
                 if(!$superior){
@@ -107,7 +110,7 @@ $actionId = Yii::$app->requestedAction->id;
                                 $btn_link = Html::a('作废',
                                     $url . '&status=1',
                                     [
-                                        'class' => 'btn btn-xs',
+//                                        'class' => 'btn btn-xs',
                                         'style' => 'color:red',
                                         'data-method' => 'post',
                                         'data' => ['confirm' => '你确定要作废吗?']
@@ -117,7 +120,7 @@ $actionId = Yii::$app->requestedAction->id;
                                 $btn_link = Html::a('恢复',
                                     $url . '&status=0',
                                     [
-                                        'class' => 'btn btn-xs',
+//                                        'class' => 'btn btn-xs',
                                         'data-method' => 'post',
                                         'data' => ['confirm' => '你确定要恢复吗?']
                                     ]);

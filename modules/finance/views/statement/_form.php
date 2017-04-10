@@ -77,7 +77,19 @@ $company_name = \app\modules\user\models\Company::findOne($identity->company_id)
 
     <?= $form->field($model,'accounting_date')->input('date',['value'=> $model->isNewRecord ? date('Y-m-d',$_SERVER['REQUEST_TIME']) : $model->accounting_date]) ?>
 
-    <?= $form->field($model,'remark')->textarea() ?>
+    <?php echo $form->field($model, 'remark')->widget(\yii\redactor\widgets\Redactor::className(),[
+        'clientOptions' => [
+            'lang' => 'zh_cn',
+            'imageUpload' => false,
+            'fileUpload' => false,
+            'plugins' => [
+                'clips',
+                'fontcolor'
+            ],
+            'placeholder'=>'限200个字',
+            'maxlength'=>200
+        ]
+    ]) ?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

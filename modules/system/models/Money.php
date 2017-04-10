@@ -40,7 +40,7 @@ class Money extends CActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['name'], 'unique'],
+            [['name'], 'uniqueValidate'],
             [['id', 'enable', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 10],
@@ -70,6 +70,51 @@ class Money extends CActiveRecord
     public static function find()
     {
         return new MoneyQuery(get_called_class());
+    }
+
+    public function uniqueValidate($attribute)
+    {
+        $model = $this::find()->select(['name','id']);
+        $list = $model->indexBy('id')->column();
+        foreach ($list as $id => $name)
+        {
+            $dec_value = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+            if($this->isNewRecord){
+                if($this->name == $dec_value){
+                    $this->addError($attribute, '该名称已被占用。');
+                }
+            }else{
+                if($this->name == $dec_value && $this->id != $id){
+                    $this->addError($attribute, '该名称已被占用。');
+                }
+            }
+        }
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->name = Yii::$app->security->decryptByKey(base64_decode($this->name), Yii::$app->params['inputKey']);
+    }
+
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->create_author_uid = $uid;
+                $this->update_author_uid = $uid;
+                $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+            }else{
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name,Yii::$app->params['inputKey']));
+                $this->update_author_uid = $uid;
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

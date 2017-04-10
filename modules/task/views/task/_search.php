@@ -33,9 +33,7 @@ use yii\widgets\ActiveForm;
         'options' => ['class'=>'form-inline'],
     ]); ?>
     <div class="row">
-
         <div class="col-lg-6">
-
             <?= $form->field($model, 'first_product_category')->dropDownList($model->getFirstProductCategory(),['prompt'=>'--产品一级分类--',
                 'onchange' => '
                     var first_category_id = $(this).val();

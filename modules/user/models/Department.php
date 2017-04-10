@@ -2,6 +2,7 @@
 
 namespace app\modules\user\models;
 
+use Yii;
 use app\models\CActiveRecord;
 /**
  * This is the model class for table "department".
@@ -37,7 +38,8 @@ class Department extends CActiveRecord
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 20],
             //同一公司下不能有相同部门.
-            [['name'], 'unique', 'targetAttribute'=>['name','company_id'],'message'=>'同一公司下不能有相同部门。'],
+//            [['name'], 'unique', 'targetAttribute'=>['name','company_id'],'message'=>'同一公司下不能有相同部门。'],
+            [['name'], 'checkDepartment']
         ];
     }
 
@@ -66,6 +68,81 @@ class Department extends CActiveRecord
     public static function find()
     {
         return new DepartmentQuery(get_called_class());
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->name = Yii::$app->security->decryptByKey(base64_decode($this->name), Yii::$app->params['inputKey']);
+    }
+
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->create_author_uid = $uid;
+                $this->update_author_uid = $uid;
+                $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name, Yii::$app->params['inputKey']));
+            }else{
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name, Yii::$app->params['inputKey']));
+                $this->update_author_uid = $uid;
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /*public function decryptDepartment($update_department = null)
+    {
+        $departments = Department::find()->select(['name','id'])->indexBy('id')->column();
+        foreach ($departments as $id => $name)
+        {
+            $decryptName = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+            $update_department!=$decryptName && $departments[$id] = $decryptName;
+        }
+        return $departments;
+    }*/
+
+    /**
+     * @param null $update_department
+     * @return Department[]|array ['id'=>'name_cid']
+     */
+    public function uniqueDepartment($update_department = null)
+    {
+        $lists = Department::find()
+            ->select(['name','company_id','id'])
+            ->where(['company_id'=>$this->company_id])
+            ->indexBy('id')->asArray()->all();
+        foreach ($lists as $id => $list){
+            $dec_department = Yii::$app->security->decryptByKey(base64_decode($list['name']), Yii::$app->params['inputKey']);
+            $update_department !=  $dec_department && $lists[$id] = $dec_department . '_' . $list['company_id'];
+        }
+        return $lists;
+    }
+
+    public function checkDepartment($attribute)
+    {
+        if($this->isNewRecord){
+            /*if(in_array($this->name, $this->decryptDepartment())){
+                $this->addError($attribute, '部门名称已存在。');
+            }*/
+            //同一公司下不能有相同部门.
+            if(in_array($this->name .'_' . $this->company_id, $this->uniqueDepartment())){
+                $this->addError($attribute, '同一公司下不能有相同部门。');
+            }
+        }else{
+            /*if(in_array($this->name, $this->decryptDepartment($this->name))){
+                $this->addError($attribute, '部门名称已存在。');
+            }*/
+            if(in_array($this->name .'_' . $this->company_id, $this->uniqueDepartment($this->name))){
+                $this->addError($attribute, '同一公司下不能有相同部门。');
+            }
+        }
+
     }
 
     /**
@@ -106,6 +183,35 @@ class Department extends CActiveRecord
 
     public function getCompanyList()
     {
-        return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+        $list = Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+        foreach ($list as $id=>$name){
+            $list[$id] = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+        }
+        return $list;
+    }
+
+    /**
+     * @return array
+     */
+    public function getChildren()
+    {
+        $id = $this->id;
+        $self = $this::findOne(['id'=>$id,'status'=>0]);
+
+        /*$sql = 'select id,superior_department_id,name from
+                  (select * from '.Department::tableName().' where superior_department_id>0 order by id desc) real_name_sorted,
+                  (select @pv :='.$id.') initialisation
+                  where (find_in_set(superior_department_id,@pv)>0 and @pv := concat(@pv,",",id))';
+        $children = [] + Department::getDb()->createCommand($sql)->queryAll();*/
+
+        $real_name_sorted = $this::find()->where(['>','superior_department_id',0])->orderBy(['id'=>SORT_DESC]);
+        $children = [] + $this::find()->select(['id','superior_department_id','name'])
+                ->from(['real_name_sorted'=>$real_name_sorted,'initialisation'=>'(select @pv :='.$id.')'])
+                ->where(['>','find_in_set(superior_department_id,@pv)',0])
+                ->andWhere('@pv :=concat(@pv,",",id)')->all();
+
+        array_unshift($children, $self);
+
+        return $children;
     }
 }

@@ -27,7 +27,7 @@ $grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
 
     <?= $form->field($model, 'company_id')->hiddenInput(['value' => $identity->company_id])->label(false) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 20]) ?>
 
     <?= $form->field($model, 'execute_type')->radioList([1=>'一次性',2=>'重复'],['value'=>1]) ?>
 
@@ -93,7 +93,7 @@ $grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
     <div class="form-group hide" id="product-company">
         <label class="col-sm-2 control-label" for="product-company">产品所属公司</label>
         <div class="col-sm-10">
-            <input title="" type="text" class="form-control" value="公司名称">
+            <input title="" type="text" readonly="readonly" class="form-control" value="公司名称">
         </div>
     </div>
     <div class="form-group hide" id="product-requirement">
@@ -125,7 +125,7 @@ $grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
         </div>
     </div>
 
-    <?= $form->field($model, 'product_id')->hiddenInput()->label(false) ?>
+    <?= $form->field($model, 'product_id')->hiddenInput(['class'=>'text-right'])->label(false) ?>
 
     <?= $form->field($model, 'requirement')->widget(Redactor::className(),[
         'clientOptions' => [
@@ -144,7 +144,7 @@ $grade = [''=>'未设置',0=>'未评级', 1=>'A',2=>'B',3=>'C',4=>'D'];
     <?= $form->field($model, 'file',
         [
             'template' => "{label}\n<div class=\"col-sm-10\">{input}
-            \n<span class=\"help-block m-b-none\"><i class=\"fa fa-info-circle\"></i>(由于安全原因，当前附件仅允许上传zip、rar、7z格式的压缩包，且仅限上传一个附件！)</span></div>"
+            \n<span class=\"help-block m-b-none\">(由于安全原因，当前附件仅允许上传zip、rar、7z格式的压缩包，且仅限上传一个附件！)</span></div>"
         ])->fileInput(['class'=>'form-control']) ?>
 
     <div class="form-group">

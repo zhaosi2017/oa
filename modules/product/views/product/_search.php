@@ -6,6 +6,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\modules\product\models\ProductSearch */
 /* @var $form yii\widgets\ActiveForm */
+
+$secondCategory = Yii::$app->request->get('ProductSearch') ? $model->getSecondCategory() : [];
 ?>
 
 <div class="product-search">
@@ -21,7 +23,7 @@ use yii\widgets\ActiveForm;
                 $("#search_hide").click();
             '])->label('筛选：') ?>
 
-            <?= $form->field($model,'second_category_id')->dropDownList($model->getSecondCategory(),['prompt'=>'产品二级分类','onchange'=>'
+            <?= $form->field($model,'second_category_id')->dropDownList($secondCategory,['prompt'=>'产品二级分类','onchange'=>'
                 $("#search_hide").click();
             '])->label(false) ?>
 

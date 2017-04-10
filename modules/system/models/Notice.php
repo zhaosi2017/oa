@@ -68,6 +68,13 @@ class Notice extends CActiveRecord
         return new NoticeQuery(get_called_class());
     }
 
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->title = Yii::$app->security->decryptByKey(base64_decode($this->title), Yii::$app->params['inputKey']);
+        $this->content = Yii::$app->security->decryptByKey(base64_decode($this->content), Yii::$app->params['inputKey']);
+    }
+
     public function getStatuses()
     {
         return [
@@ -82,7 +89,12 @@ class Notice extends CActiveRecord
         if ($this->isNewRecord) {
             $this->sender_uid = $uid;
             $this->send_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-            return true;
+            $this->title = base64_encode(Yii::$app->security->encryptByKey($this->title,Yii::$app->params['inputKey']));
+            $this->content = base64_encode(Yii::$app->security->encryptByKey($this->content,Yii::$app->params['inputKey']));
+        }else{
+            $this->send_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $this->title = base64_encode(Yii::$app->security->encryptByKey($this->title,Yii::$app->params['inputKey']));
+            $this->content = base64_encode(Yii::$app->security->encryptByKey($this->content,Yii::$app->params['inputKey']));
         }
         return true;
     }
@@ -123,12 +135,12 @@ class Notice extends CActiveRecord
                     }
                 }
                 break;
-            case 8:
-                $this->title = '任务撤销';
-                $this->content = '任务('.$task_model->number.')已被撤销，请注意查看！';
-                //发送系统通知和邮件给任务执行公司中的用户,拥有“已接收任务”页面进入权限的用户！
-                foreach ($task_model['executeInfo']['user'] as $item){
-                    if($auth->checkAccess($item['id'],'task/task/received-index')){
+            case 5:
+                $this->title = '任务待验收';
+                $this->content = '任务('.$task_model->number.')待验收，请注意查看！';
+                //发送系统通知和邮件给任务所属公司中，拥有“已发任务”页面进入权限的用户！
+                foreach ($task_model['company']['userIds'] as $item){
+                    if($auth->checkAccess($item['id'],'task/task/sent-index')){
                         $users .= $item['id'].',' ;
                         $queueUsers[] = [$item['id']];
                     }
@@ -145,6 +157,18 @@ class Notice extends CActiveRecord
                     }
                 }
                 break;
+            case 8:
+                $this->title = '任务撤销';
+                $this->content = '任务('.$task_model->number.')已被撤销，请注意查看！';
+                //发送系统通知和邮件给任务执行公司中的用户,拥有“已接收任务”页面进入权限的用户！
+                foreach ($task_model['executeInfo']['user'] as $item){
+                    if($auth->checkAccess($item['id'],'task/task/received-index')){
+                        $users .= $item['id'].',' ;
+                        $queueUsers[] = [$item['id']];
+                    }
+                }
+                break;
+
             case 10:
                 $this->title = '任务验收不通过';
                 $this->content = '任务('.$task_model->number.')验收不通过，需要继续处理，请注意查看！';
@@ -159,7 +183,7 @@ class Notice extends CActiveRecord
         }
 
         $this->recipient_uid = $users;
-        $this->save();
+        $this->insert();
         // 保存消息队列接收用户
         Yii::$app->db->createCommand()->batchInsert(NoticeQueueUser::tableName(),['uid'],$queueUsers)->execute();
         return false;

@@ -74,9 +74,22 @@ class FinanceSubjectSearch extends FinanceSubject
             'update_time' => $this->update_time,
         ]);
 
-        $this->search_type==1 && $query->andFilterWhere(['like', 'finance_subject.subject_name', $this->search_keywords]);
-        $this->search_type==2 && $query->andFilterWhere(['like', 'superior.subject_name', $this->search_keywords]);
-
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'finance_subject.id', $this->searchIds($this->search_keywords)]);
+        $this->search_type ==2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'superior.id', $this->searchIds($this->search_keywords)]);
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['subject_name','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['subject_name'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 }

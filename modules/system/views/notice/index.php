@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'title',
                 'content',
                 ['label'=>'收件人/时间','value'=>function($model){
-                    return $model['identity']['account'].'<br>'.$model->receive_time;
+                    return $model['identity']['username'].'<br>'.$model->receive_time;
                 },'format'=>'html'],
                 ['label'=>'发件人/时间','value'=>function($model){
                     return '系统<br>'.$model->send_time;

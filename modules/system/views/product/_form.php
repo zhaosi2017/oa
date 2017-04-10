@@ -31,12 +31,12 @@ use yii\widgets\ActiveForm;
     </div>
     <?= $form->field($model, 'company_id')->hiddenInput(['value'=>$identify->company_id])->label(false) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 10]) ?>
 
     <?php
         $product_category = \app\modules\product\models\ProductCategory::find();
         $categoryList = $product_category->select(['name','id','superior_id'])->where(['status' => 0])->all();
-        $one_category = $product_category->select(['name','id'])->where(['status' => 0, 'superior_id' => 0])->indexBy('id')->column();
+        $one_category = $model['firstCategory'];
 
         $child_category = [];
         $option_arr = [];
@@ -79,7 +79,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'second_category_id')->dropDownList($second_category)->label('') ?>
 
-    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'number')->textInput(['maxlength' => 10]) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6, 'maxlength' => 200,'placeholder' => '限200字']) ?>
 

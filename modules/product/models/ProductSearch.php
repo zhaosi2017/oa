@@ -2,6 +2,7 @@
 
 namespace app\modules\product\models;
 
+use app\modules\user\models\UserSearch;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -93,10 +94,24 @@ class ProductSearch extends Product
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'product.name', $this->name])
-              ->andFilterWhere(['like', 'creator.account', $this->creator_account])
-              ->andFilterWhere(['like', 'updater.account', $this->updater_account]);
-
+        $searchUser = new UserSearch();
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'product.id', $this->searchIds($this->search_keywords)]);
+        $this->search_type ==2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'creator.id', $searchUser->searchIds($this->search_keywords)]);
+        $this->search_type ==3 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'updater.id', $searchUser->searchIds($this->search_keywords)]);
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['name','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['name'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 }

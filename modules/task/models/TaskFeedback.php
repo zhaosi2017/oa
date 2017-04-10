@@ -38,7 +38,7 @@ class TaskFeedback extends CActiveRecord
         return [
             [['task_id'], 'required'],
             [['task_id', 'create_author_uid', 'create_time', 'type', 'status'], 'integer'],
-            [['content'], 'string'],
+            [['content'], 'string', 'max' => 500],
             [['attachment'], 'string', 'max' => 64],
             [['file'], 'file', 'skipOnEmpty' => true, 'extensions' => 'zip, rar, 7z', 'maxSize'=>1024*1024*10, 'tooBig'=>'文件上传过大！大小不能超过10M',],
         ];
@@ -84,6 +84,12 @@ class TaskFeedback extends CActiveRecord
         return new TaskFeedbackQuery(get_called_class());
     }
 
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->content = Yii::$app->security->decryptByKey(base64_decode($this->content), Yii::$app->params['inputKey']);
+    }
+
     public function beforeSave($insert)
     {
         $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
@@ -91,6 +97,7 @@ class TaskFeedback extends CActiveRecord
         if ($this->isNewRecord) {
             $this->create_author_uid = $uid;
             $this->create_time = $_SERVER['REQUEST_TIME'];
+            $this->content = base64_encode(Yii::$app->security->encryptByKey($this->content,Yii::$app->params['inputKey']));
             return true;
         }
 

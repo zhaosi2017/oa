@@ -2,6 +2,8 @@
 
 namespace app\modules\task\models;
 
+use app\modules\customer\models\CustomerSearch;
+use app\modules\user\models\CompanySearch;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -87,9 +89,9 @@ class TaskCollectionInfoSearch extends TaskCollectionInfo
             'update_time' => $this->update_time,
         ]);
 
-        $this->search_type == 1 && $query->andFilterWhere(['like', 'task_collection_info.receipt_no', $this->search_keywords]);
-        $this->search_type == 2 && $query->andFilterWhere(['like', 'task.number', $this->search_keywords]);
-        $this->search_type == 3 && $query->andFilterWhere(['like', 'customer.name', $this->search_keywords])->orFilterWhere(['like', 'group.name', $this->search_keywords]);
+        $this->search_type == 1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['like', 'task_collection_info.receipt_no', $this->search_keywords]);
+        $this->search_type == 2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['like', 'task.number', $this->search_keywords]);
+        $this->search_type == 3 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'customer.id', (new CustomerSearch())->searchIds($this->search_keywords)])->orFilterWhere(['in', 'group.id', (new CompanySearch())->searchIds($this->search_keywords)]);
 
         return $dataProvider;
     }

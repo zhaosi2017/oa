@@ -3,6 +3,7 @@
 namespace app\modules\user\models;
 
 use yii\db\ActiveQuery;
+use Yii;
 
 /**
  * This is the ActiveQuery class for [[Posts]].
@@ -36,6 +37,10 @@ class PostsQuery extends ActiveQuery
 
     public function downList($department_id)
     {
-        return Posts::find()->select(['name', 'id'])->where(['status'=>0,'department_id'=>$department_id])->indexBy('id')->column();
+        $res = Posts::find()->select(['name', 'id'])->where(['status'=>0,'department_id'=>$department_id])->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 }

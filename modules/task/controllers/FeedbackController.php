@@ -63,7 +63,7 @@ class FeedbackController extends GController
             if ($model->type == 4) {
                 if (TaskCollectionInfo::findOne(['task_id' => $model->task_id, 'type' => 0])) {
                     $model->sendError('收款单还处于“待收款”状态，不能完成任务！');
-                    $this->redirect(['index', 'id' => $model->task_id]);
+                    return $this->redirect(['index', 'id' => $model->task_id]);
                 }
             }
 

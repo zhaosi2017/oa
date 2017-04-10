@@ -91,16 +91,24 @@ class UserSearch extends User
             'user.update_time' => $this->update_time,
         ]);
 
-        $this->search_type ==1 && $query->andFilterWhere(['like', 'user.account', $this->search_keywords]);
-        $this->search_type ==2 && $query->andFilterWhere(['like', 'creator.account', $this->search_keywords]);
-        $this->search_type ==3 && $query->andFilterWhere(['like', 'updater.account', $this->search_keywords]);
-        /*$query->andFilterWhere(['like', 'user.account', $this->account])
-            ->andFilterWhere(['like', 'department.name', $this->department_name])
-            ->andFilterWhere(['like', 'posts.name', $this->posts_name])
-            ->andFilterWhere(['like', 'creator.account', $this->create_author])
-            ->andFilterWhere(['like', 'updater.account', $this->update_author]);*/
-
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'user.id', $this->searchIds($this->search_keywords)]);
+        $this->search_type ==2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'creator.id', $this->searchIds($this->search_keywords)]);
+        $this->search_type ==3 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'updater.id', $this->searchIds($this->search_keywords)]);
         return $dataProvider;
+    }
+
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['account','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['account'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
     }
 
     public function filterCompany()

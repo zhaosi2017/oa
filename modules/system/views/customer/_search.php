@@ -18,8 +18,7 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-lg-6">
-            <?= $form->field($model,'company_id')->dropDownList(\app\modules\user\models\Company::find()
-                ->select(['name','id'])->where(['status'=>0])->indexBy('id')->column(),['prompt'=>'全部公司','onchange'=>'
+            <?= $form->field($model,'company_id')->dropDownList(\app\modules\user\models\Company::find()->downList(),['prompt'=>'全部公司','onchange'=>'
                 $("#search_hide").click();
             '])->label('筛选：'); ?>
         </div>

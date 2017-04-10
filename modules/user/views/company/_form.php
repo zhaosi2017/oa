@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
         ],
     ]) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 20]) ?>
 
     <?php
 
@@ -43,11 +43,9 @@ use yii\widgets\ActiveForm;
         ['onchange' => '
             var sup_id = $(this).val();
             var sup_level_json = '.$sup_level_json.';
-            
             $("#sup_level").val(sup_level_json[sup_id] + "级");      
-        ']) ?>
-
-
+        '])
+    ?>
 
     <div class="form-group">
         <label class="col-sm-3 control-label" for="sup_level">层级</label>

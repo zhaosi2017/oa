@@ -81,9 +81,21 @@ class CustomerSearch extends Customer
             'customer.company_id' => $this->company_id,
         ]);
 
-        $this->search_type ==1 && $query->andFilterWhere(['like', 'customer.name', $this->search_keywords]);
-
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'customer.id', $this->searchIds($this->search_keywords)]);
         return $dataProvider;
     }
 
+    public function searchIds($searchWords)
+    {
+        $ids = [0];
+        $query = $this::find()->select(['name','id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row['name'],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
+    }
 }

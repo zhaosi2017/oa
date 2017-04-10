@@ -31,7 +31,7 @@ $actionId = Yii::$app->requestedAction->id;
 
             'subject_name',
             ['label'=>'上级科目','value'=>function($model){
-                return $model['superior']['subject_name'];
+                return $model['superior']['subject_name'] ? $model['superior']['subject_name'] : '';
             }],
             ['label'=>'可用','value'=>function($model){
                 if($model->enable==0){

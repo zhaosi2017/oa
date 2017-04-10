@@ -41,10 +41,9 @@ $actionId = Yii::$app->requestedAction->id;
                 return $model->name .'('.$model->number.')';
             },'label'=>'任务名称'],
 
-            ['value'=>'requirement','label'=>'任务要求'],
+            ['value'=>'requirement','label'=>'任务要求','format'=>'html'],
             ['label'=>'上级任务', 'value'=>function($model){
-                return $model['product']['second_category_id'];
-//                return $model['superior']['name'];
+                return $model['superior']['number'] ? $model['superior']['number'] : '';
             }],
             ['label'=>'客户', 'value'=>function($model){
                 switch ($model->customer_category){

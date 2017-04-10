@@ -2,6 +2,7 @@
 
 namespace app\modules\task\models;
 
+use Yii;
 use app\modules\customer\models\Customer;
 use app\modules\customer\models\GroupRate;
 use app\modules\user\models\Company;
@@ -39,18 +40,30 @@ class TaskQuery extends ActiveQuery
 
     public function companyDownList()
     {
-        return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+        $res = Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
     public function getRatedCompany($company_id)
     {
         $company_in_ids = GroupRate::find()->select('company_id')->where(['rate_company_id'=>$company_id])->column();
-        return Company::find()->select(['name','id'])->where(['status'=>0])->andWhere(['in','id',$company_in_ids])->indexBy('id')->column();
+        $res = Company::find()->select(['name','id'])->where(['status'=>0])->andWhere(['in','id',$company_in_ids])->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
     public function customerDownList($company_id)
     {
-        return Customer::find()->select(['name','id'])->where(['company_id'=>$company_id,'status'=>0])->indexBy('id')->column();
+        $res = Customer::find()->select(['name','id'])->where(['company_id'=>$company_id,'status'=>0])->indexBy('id')->column();
+        foreach ($res as $id => $name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name),Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
     /**

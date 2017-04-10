@@ -45,7 +45,8 @@ class TaskCollectionInfo extends CActiveRecord
             // [['task_id', 'create_author_uid', 'update_author_uid'], 'required'],
             [['task_id', 'company_id', 'status', 'type', 'company_customer_id', 'customer_category', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['receipt_no','remark'], 'string', 'max' => 64],
+            [['receipt_no','remark'], 'string', 'max' => 500],
+            [['remark'], 'required'],
         ];
     }
 

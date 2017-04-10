@@ -37,9 +37,10 @@ class Posts extends CActiveRecord
             [['name', 'department_id', 'company_id'], 'required'],
             [['id', 'department_id', 'company_id', 'status', 'create_author_uid', 'update_author_uid'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name'], 'string', 'max' => 20],
+//            [['name'], 'string', 'max' => 20],
             //同一部门下不能有相同岗位
-            [['name'], 'unique', 'targetAttribute'=>['name','department_id'],'message'=>'同一部门下不能有相同岗位。'],
+//            [['name'], 'unique', 'targetAttribute'=>['name','department_id'],'message'=>'同一部门下不能有相同岗位。'],
+            [['name'],'checkPosts'],
         ];
     }
 
@@ -68,6 +69,59 @@ class Posts extends CActiveRecord
     public static function find()
     {
         return new PostsQuery(get_called_class());
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->name = Yii::$app->security->decryptByKey(base64_decode($this->name), Yii::$app->params['inputKey']);
+    }
+
+    public function uniquePosts($update_posts = null)
+    {
+        $lists = Posts::find()
+            ->select(['name','department_id','id'])
+            ->where(['department_id'=>$this->department_id])
+            ->indexBy('id')->asArray()->all();
+        foreach ($lists as $id => $list){
+            $dec_name = Yii::$app->security->decryptByKey(base64_decode($list['name']), Yii::$app->params['inputKey']);
+            $update_posts !=  $dec_name && $lists[$id] = $dec_name . '_' . $list['department_id'];
+        }
+        return $lists;
+    }
+
+    public function checkPosts($attribute)
+    {
+        //同一部门下不能有相同岗位
+        if($this->isNewRecord){
+            if(in_array($this->name .'_' . $this->department_id, $this->uniquePosts())){
+                $this->addError($attribute, '同一部门下不能有相同岗位。');
+            }
+        }else{
+            if(in_array($this->name .'_' . $this->department_id, $this->uniquePosts($this->name))){
+                $this->addError($attribute, '同一部门下不能有相同岗位。');
+            }
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        $uid = Yii::$app->user->id ? Yii::$app->user->id : 0;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->create_author_uid = $uid;
+                $this->update_author_uid = $uid;
+                $this->create_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name, Yii::$app->params['inputKey']));
+            }else{
+                $this->name = base64_encode(Yii::$app->security->encryptByKey($this->name, Yii::$app->params['inputKey']));
+                $this->update_author_uid = $uid;
+                $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -108,7 +162,12 @@ class Posts extends CActiveRecord
 
     public function getCompanyList()
     {
-        return Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+        $res = Company::find()->select(['name','id'])->where(['status'=>0])->indexBy('id')->column();
+
+        foreach ($res as $id=>$name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 
     public function getDepartmentList()
@@ -118,6 +177,11 @@ class Posts extends CActiveRecord
             $search = Yii::$app->request->get('PostsSearch');
             $model->andWhere(['company_id'=>$search['company_id']]);
         }
-        return $model->indexBy('id')->column();
+        $res = $model->indexBy('id')->column();
+
+        foreach ($res as $id=>$name){
+            $res[$id] = Yii::$app->security->decryptByKey(base64_decode($name), Yii::$app->params['inputKey']);
+        }
+        return $res;
     }
 }

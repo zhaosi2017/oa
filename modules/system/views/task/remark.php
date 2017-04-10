@@ -79,38 +79,6 @@ $actionId = Yii::$app->requestedAction->id;
                         ['label' => '备注内容', 'format' => 'html', 'value' => function($model){
                             return $model->content;
                         }, 'options' => ['width' => '60%']],
-
-                        [
-                            'class' => 'yii\grid\ActionColumn',
-                            'header' => '操作',
-                            'template' => '{switch}',
-                            'buttons' => [
-                                'switch' => function($url, $model){
-                                    $btn_link = '';
-                                    switch ($model->status){
-                                        case 0:
-                                            $btn_link = Html::a('<i class="glyphicon glyphicon-ban-circle"></i>',
-                                                $url . '&status=1',
-                                                [
-                                                    'class' => 'btn btn-xs',
-                                                    'data-method' => 'post',
-                                                    'data' => ['confirm' => '你确定要作废吗?']
-                                                ]);
-                                            break;
-                                        case 1:
-                                            $btn_link = Html::a('<i class="glyphicon glyphicon-ok"></i>',
-                                                $url . '&status=0',
-                                                [
-                                                    'class' => 'btn btn-xs',
-                                                    'data-method' => 'post',
-                                                    'data' => ['confirm' => '你确定要恢复吗?']
-                                                ]);
-                                            break;
-                                    }
-                                    return $btn_link;
-                                },
-                            ],
-                        ],
                     ],
                 ]); ?>
             </td>

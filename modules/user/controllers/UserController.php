@@ -99,9 +99,7 @@ class UserController extends GController
     public function actionCreate()
     {
         $model = new User();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-
+        if ($model->load(Yii::$app->request->post()) && $model->insert()) {
             //权限逻辑
             $auth = Yii::$app->authManager;
             //添加角色[岗位编号对应岗位这类角色]
@@ -127,9 +125,14 @@ class UserController extends GController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->getSession()->setFlash('success', '操作成功');
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->update()){
+                $model->sendSuccess();
+            }else{
+                return $this->render('update', [
+                    'model' => $model,
+                ]);
+            }
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -141,10 +144,8 @@ class UserController extends GController
     public function actionPermission($id)
     {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post())) {
             $posts = Yii::$app->request->post();
-
             if($posts['unlock']){
                 $loginLog = LoginLogs::find()->where(['uid' => $model->id])->orderBy(['id'=>SORT_DESC])->one();
                 if(!empty($loginLog)){
@@ -155,25 +156,19 @@ class UserController extends GController
                 }
             }
 
-            if($model->email){
-                if(User::findOne(['id'=>'!='.$model->id,'email'=>$model->email . $posts['email-postfix']])){
-                    Yii::$app->getSession()->setFlash('error', '该邮箱已被占用');
-                    return $this->redirect(['index', 'id' => $model->id]);
-                }else{
-                    $model->email = $model->email . $posts['email-postfix'];
-                }
-            }
+            $model->email && $model->email = $model->email . $posts['email-postfix'];
 
-            if($model->password){ //如果勾选中就生成密码保存
-                $password = $model->password[0];
-                $model->password = Yii::$app->getSecurity()->generatePasswordHash($password);
-            }
+            //如果勾选中就生成密码保存
+            $model->password && $model->password = $model->password[0];
 
-            if($model->save()){
-                Yii::$app->getSession()->setFlash('success', '操作成功');
+            if($model->update()){
+                $model->sendSuccess();
             }else{
-                Yii::$app->getSession()->setFlash('error', '操作失败');
+                return $this->render('permission', [
+                    'model' => $model,
+                ]);
             }
+
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
             $model->password = uniqid().rand(10,99);

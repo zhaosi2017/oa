@@ -2,6 +2,8 @@
 
 namespace app\modules\finance\models;
 
+use app\modules\task\models\TaskSearch;
+use app\modules\user\models\UserSearch;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -50,7 +52,8 @@ class StatementSearch extends Statement
      */
     public function search($params)
     {
-        $query = Statement::find()->where([
+        $query = Statement::find();
+        $query->where([
             'statement.status'=>Yii::$app->requestedAction->id == 'index' ? 0 : 1,
         ]);
         if(Yii::$app->controller->module->id!='system'){
@@ -104,12 +107,28 @@ class StatementSearch extends Statement
             $query->andFilterWhere(['between','statement.accounting_date', $this->accounting_start_date, $this->accounting_end_date]);
         }
 
-        $this->search_type==1 && $query->andFilterWhere(['like', 'secondFinanceSubject.subject_name', $this->search_keywords]);
-        $this->search_type==2 && $query->andFilterWhere(['like', 'task.name', $this->search_keywords])->orFilterWhere(['like', 'task.number', $this->search_keywords]);
-        $this->search_type==3 && $query->andFilterWhere(['like', 'creator.account', $this->search_keywords]);
-        $this->search_type==4 && $query->andFilterWhere(['like', 'updater.account', $this->search_keywords]);
-        $this->search_type==5 && $query->andFilterWhere(['like', 'statement.remark', $this->search_keywords]);
-
+        $taskSearch = new TaskSearch();
+        $this->search_type ==1 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'secondFinanceSubject.id', (new FinanceSubjectSearch())->searchIds($this->search_keywords)]);
+        $this->search_type ==2 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'task.id', $taskSearch->searchIds($this->search_keywords)])->orFilterWhere(['in', 'task.id', $taskSearch->searchIds($this->search_keywords,'number')]);
+        $this->search_type ==3 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'creator.id', (new UserSearch())->searchIds($this->search_keywords)]);
+        $this->search_type ==4 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'updater.id', (new UserSearch())->searchIds($this->search_keywords)]);
+        $this->search_type ==5 && strlen($this->search_keywords)>0 && $query->andFilterWhere(['in', 'statement.id', $this->searchIds($this->search_keywords)]);
         return $dataProvider;
     }
+
+    public function searchIds($searchWords, $field='remark')
+    {
+        $ids = [0];
+        $query = $this::find()->select([$field,'id'])->all();
+        foreach ($query as $row)
+        {
+            $pos = strpos($row[$field],$searchWords);
+            if(is_int($pos)){
+                $ids[] = $row['id'];
+            }
+        }
+        return $ids;
+    }
+
+
 }

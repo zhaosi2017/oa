@@ -55,10 +55,11 @@ class DefaultController extends GController
         if ($model->load(Yii::$app->request->post())) {
 
             //禁用拦截
-            $forbidden = $model->forbidden();
+//            $forbidden = $model->forbidden();
+            $forbidden = false;
 
             if($forbidden){
-                return $this->render('locked',$forbidden);
+//                return $this->render('locked',$forbidden);
             }else{
                 if($model->preLogin()){
                     $email = $model->getIdentity()->email;
@@ -104,10 +105,10 @@ class DefaultController extends GController
                 $model->writeLoginLog(3);
                 $model->addError('code','验证码输入不正确，请重新输入！3次输入错误，账号将被锁定1年！');
             }
-
         }
         return $this->render('code',['model'=>$model]);
     }
+
 
     public function actionLogout()
     {
