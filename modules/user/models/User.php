@@ -176,7 +176,9 @@ class User extends CActiveRecord
                 $this->email && $this->email = base64_encode(Yii::$app->security->encryptByKey($this->email, Yii::$app->params['inputKey']));
             }else{
                 $this->updateBbsAccount($this); //修改论坛用户
-                $this->password && $this->password = Yii::$app->getSecurity()->generatePasswordHash($this->password);
+                if(!empty(array_column(Yii::$app->request->post(),'password'))){
+                    $this->password = Yii::$app->getSecurity()->generatePasswordHash($this->password);
+                }
                 $this->account = base64_encode(Yii::$app->security->encryptByKey($this->account, Yii::$app->params['inputKey']));
                 $this->email && $this->email = base64_encode(Yii::$app->security->encryptByKey($this->email, Yii::$app->params['inputKey']));
                 $this->update_time = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
