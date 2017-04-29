@@ -27,18 +27,10 @@ class PasswordForm extends Model
             [['rePassword', 'password'], 'required'],
             [['rePassword', 'password'], 'string', 'length' => [8,15]],
             ['rePassword', 'compare', 'compareAttribute'=>'password'],
-            ['password', 'validatePassword']
+            ['password', 'match', 'pattern' => '/(?-i)(?=^.{8,}$)((?!.*\s)(?=.*[A-Z])(?=.*[a-z]))(?=(1)(?=.*\d)|.*[^A-Za-z0-9])^.*$/', 'message'=>'密码必须包含大写字母、小写字母和数字。'],
         ];
     }
 
-    public function validatePassword($attribute)
-    {
-        if (!$this->hasErrors()) {
-            if(!preg_match('/^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z])[0-9A-Za-z!-)]{8,}$/', $this->password)){
-                $this->addError($attribute, '密码必须包含大写字母、小写字母和数字。');
-            }
-        }
-    }
 
     /**
      * @inheritdoc
