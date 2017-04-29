@@ -24,7 +24,11 @@ class PostgresTest extends \PHPUnit_Framework_TestCase
         if (getenv('APPVEYOR')) {
             self::$config['password'] = 'Password12!';
         }
-        $sql = file_get_contents(\Codeception\Configuration::dataDir() . '/dumps/postgres.sql');
+        $dumpFile = 'dumps/postgres.sql';
+        if (defined('HHVM_VERSION')) {
+            $dumpFile = 'dumps/postgres-hhvm.sql';
+        }
+        $sql = file_get_contents(codecept_data_dir($dumpFile));
         $sql = preg_replace('%/\*(?:(?!\*/).)*\*/%s', '', $sql);
         self::$sql = explode("\n", $sql);
         try {
@@ -142,5 +146,17 @@ class PostgresTest extends \PHPUnit_Framework_TestCase
             'getPrimaryColumn method does not support composite primary keys, use getPrimaryKey instead'
         );
         $this->postgres->getPrimaryColumn('composite_pk');
+    }
+
+    /**
+     * @issue https://github.com/Codeception/Codeception/issues/4059
+     */
+    public function testLoadDumpEndingWithoutDelimiter()
+    {
+        $newDriver = new \Codeception\Lib\Driver\PostgreSql(self::$config['dsn'], self::$config['user'], self::$config['password']);
+        $newDriver->load(['INSERT INTO empty_table VALUES(1, \'test\')']);
+        $res = $newDriver->getDbh()->query("select * from empty_table where field = 'test'");
+        $this->assertNotEquals(false, $res);
+        $this->assertNotEmpty($res->fetchAll());
     }
 }

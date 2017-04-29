@@ -31,13 +31,14 @@ at <https://laravel.com/docs/master/upgrade>.
 * cleanup: `boolean`, default `true` - all database queries will be run in a transaction,
   which will be rolled back at the end of each test.
 * run_database_migrations: `boolean`, default `false` - run database migrations before each test.
-* database_migrations_path: `string`, default `` - path to the database migrations, relative to the root of the application.
+* database_migrations_path: `string`, default `null` - path to the database migrations, relative to the root of the application.
 * run_database_seeder: `boolean`, default `false` - run database seeder before each test.
 * database_seeder_class: `string`, default `` - database seeder class name.
 * environment_file: `string`, default `.env` - the environment file to load for the tests.
 * bootstrap: `string`, default `bootstrap/app.php` - relative path to app.php config file.
 * root: `string`, default `` - root path of the application.
 * packages: `string`, default `workbench` - root path of application packages (if any).
+* vendor_dir: `string`, default `vendor` - optional relative path to vendor directory.
 * disable_exception_handling: `boolean`, default `true` - disable Laravel exception handling.
 * disable_middleware: `boolean`, default `false` - disable all middleware.
 * disable_events: `boolean`, default `false` - disable events (does not disable model events).
@@ -123,7 +124,7 @@ public function seeResponseContains($text)
 ```
 
  * `return` string
- * `throws`  ModuleException
+@throws ModuleException
 
 
 ### _loadPage
@@ -178,8 +179,8 @@ To load arbitrary page for interaction, use `_loadPage` method.
  * `param array` $server
  * `param null` $content
  * `return` mixed|Crawler
- * `throws`  ExternalUrlException
- * `see`  `_loadPage`
+@throws ExternalUrlException
+@see `_loadPage`
 
 
 ### _savePageSource
@@ -211,7 +212,7 @@ an array of credentials.
 ``` php
 <?php
 // provide array of credentials
-$I->amLoggedAs(['username' => 'jane * `example.com',`  'password' => 'password']);
+$I->amLoggedAs(['username' => 'jane@example.com', 'password' => 'password']);
 
 // provide User object
 $I->amLoggedAs( new User );
@@ -230,7 +231,7 @@ Opens web page by action name
 
 ``` php
 <?php
-$I->amOnAction('PostsController * `index');` 
+$I->amOnAction('PostsController@index');
 ?>
 ```
 
@@ -274,7 +275,7 @@ Attaches a file relative to the Codeception data directory to the given file upl
 ``` php
 <?php
 // file is stored in 'tests/_data/prices.xls'
-$I->attachFile('input[ * `type="file"]',`  'prices.xls');
+$I->attachFile('input[@type="file"]', 'prices.xls');
 ?>
 ```
 
@@ -310,6 +311,18 @@ $I->checkOption('#agree');
  * `param` $option
 
 
+### clearApplicationHandlers
+ 
+Clear the registered application handlers.
+
+``` php
+<?php
+$I->clearApplicationHandlers();
+?>
+```
+
+
+
 ### click
  
 Perform a click on a link or a button, given by a locator.
@@ -331,7 +344,7 @@ $I->click('Submit');
 // CSS button
 $I->click('#form input[type=submit]');
 // XPath
-$I->click('//form/*[ * `type=submit]');` 
+$I->click('//form/*[@type=submit]');
 // link in context
 $I->click('Logout', '#nav');
 // using strict locator
@@ -415,9 +428,10 @@ Give a locator as the second parameter to match a specific region.
 
 ```php
 <?php
-$I->dontSee('Login');                    // I can suppose user is already logged in
-$I->dontSee('Sign Up','h1');             // I can suppose it's not a signup page
-$I->dontSee('Sign Up','//body/h1');      // with XPath
+$I->dontSee('Login');                         // I can suppose user is already logged in
+$I->dontSee('Sign Up','h1');                  // I can suppose it's not a signup page
+$I->dontSee('Sign Up','//body/h1');           // with XPath
+$I->dontSee('Sign Up', ['css' => 'body h1']); // with strict CSS locator
 ```
 
 Note that the search is done after stripping all HTML tags from the body,
@@ -568,7 +582,7 @@ $I->dontSeeInField('Body','Type your comment here');
 $I->dontSeeInField('form textarea[name=body]','Type your comment here');
 $I->dontSeeInField('form input[type=hidden]','hidden_value');
 $I->dontSeeInField('#searchform input','Search');
-$I->dontSeeInField('//form/*[ * `name=search]','Search');` 
+$I->dontSeeInField('//form/*[@name=search]','Search');
 $I->dontSeeInField(['name' => 'search'], 'Search');
 ?>
 ```
@@ -720,8 +734,8 @@ Fills a text field or textarea with the given string.
 
 ``` php
 <?php
-$I->fillField("//input[ * `type='text']",`  "Hello World!");
-$I->fillField(['name' => 'email'], 'jon * `mail.com');` 
+$I->fillField("//input[@type='text']", "Hello World!");
+$I->fillField(['name' => 'email'], 'jon@mail.com');
 ?>
 ```
 
@@ -805,6 +819,24 @@ $aLinks = $I->grabMultiple('a', 'href');
  * `return` string[]
 
 
+### grabNumRecords
+ 
+Retrieves number of records from database
+You can pass the name of a database table or the class name of an Eloquent model as the first argument.
+
+``` php
+<?php
+$I->grabNumRecords('users', array('name' => 'davert'));
+$I->grabNumRecords('App\User', array('name' => 'davert'));
+?>
+```
+
+ * `param string` $table
+ * `param array` $attributes
+ * `return` integer
+ * `[Part]` orm
+
+
 ### grabRecord
  
 Retrieves record from database
@@ -885,11 +917,27 @@ $I->have('App\User', [], 'admin');
 ?>
 ```
 
- * `see`  http://laravel.com/docs/5.1/testing#model-factories
+@see http://laravel.com/docs/5.1/testing#model-factories
  * `param string` $model
  * `param array` $attributes
  * `param string` $name
  * `[Part]` orm
+
+
+### haveApplicationHandler
+ 
+Register a handler than can be used to modify the Laravel application object after it is initialized.
+The Laravel application object will be passed as an argument to the handler.
+
+``` php
+<?php
+$I->haveApplicationHandler(function($app) {
+    $app->make('config')->set(['test_value' => '10']);
+});
+?>
+```
+
+ * `param` $handler
 
 
 ### haveBinding
@@ -974,7 +1022,7 @@ $I->haveMultiple('App\User', 10, [], 'admin');
 ?>
 ```
 
- * `see`  http://laravel.com/docs/5.1/testing#model-factories
+@see http://laravel.com/docs/5.1/testing#model-factories
  * `param string` $model
  * `param int` $times
  * `param array` $attributes
@@ -1047,9 +1095,10 @@ parameter to only search within that element.
 
 ``` php
 <?php
-$I->see('Logout');                 // I can suppose user is logged in
-$I->see('Sign Up', 'h1');          // I can suppose it's a signup page
-$I->see('Sign Up', '//body/h1');   // with XPath
+$I->see('Logout');                        // I can suppose user is logged in
+$I->see('Sign Up', 'h1');                 // I can suppose it's a signup page
+$I->see('Sign Up', '//body/h1');          // with XPath
+$I->see('Sign Up', ['css' => 'body h1']); // with strict CSS locator
 ```
 
 Note that the search is done after stripping all HTML tags from the body,
@@ -1085,7 +1134,7 @@ Checks that the specified checkbox is checked.
 <?php
 $I->seeCheckboxIsChecked('#agree'); // I suppose user agreed to terms
 $I->seeCheckboxIsChecked('#signup_form input[type=checkbox]'); // I suppose user agreed to terms, If there is only one checkbox in form.
-$I->seeCheckboxIsChecked('//form/input[ * `type=checkbox`  and  * `name=agree]');` 
+$I->seeCheckboxIsChecked('//form/input[@type=checkbox and @name=agree]');
 ?>
 ```
 
@@ -1113,7 +1162,7 @@ Checks that current url matches action
 
 ``` php
 <?php
-$I->seeCurrentActionIs('PostsController * `index');` 
+$I->seeCurrentActionIs('PostsController@index');
 ?>
 ```
 
@@ -1180,7 +1229,7 @@ $I->seeElement(['css' => 'form input'], ['name' => 'login']);
 
  * `param` $selector
  * `param array` $attributes
- * `return` 
+@return
 
 
 ### seeEventTriggered
@@ -1275,7 +1324,7 @@ $I->seeInField('Body','Type your comment here');
 $I->seeInField('form textarea[name=body]','Type your comment here');
 $I->seeInField('form input[type=hidden]','hidden_value');
 $I->seeInField('#searchform input','Search');
-$I->seeInField('//form/*[ * `name=search]','Search');` 
+$I->seeInField('//form/*[@name=search]','Search');
 $I->seeInField(['name' => 'search'], 'Search');
 ?>
 ```
@@ -1337,9 +1386,9 @@ $form = [
      'checkbox1' => true,
      // ...
 ];
-$I->submitForm('//form[ * `id=my-form]',`  $form, 'submitButton');
+$I->submitForm('//form[@id=my-form]', $form, 'submitButton');
 // $I->amOnPage('/path/to/form-page') may be needed
-$I->seeInFormFields('//form[ * `id=my-form]',`  $form);
+$I->seeInFormFields('//form[@id=my-form]', $form);
 ?>
 ```
 
@@ -1404,6 +1453,24 @@ $I->seeLink('Logout','/logout'); // matches <a href="/logout">Logout</a>
 
  * `param`      $text
  * `param null` $url
+
+
+### seeNumRecords
+ 
+Checks that number of given records were found in database.
+You can pass the name of a database table or the class name of an Eloquent model as the first argument.
+
+``` php
+<?php
+$I->seeNumRecords(1, 'users', array('name' => 'davert'));
+$I->seeNumRecords(1, 'App\User', array('name' => 'davert'));
+?>
+```
+
+ * `param integer` $expectedNum
+ * `param string` $table
+ * `param array` $attributes
+ * `[Part]` orm
 
 
 ### seeNumberOfElements
@@ -1497,7 +1564,7 @@ Selects an option in a select tag or in radio button group.
 <?php
 $I->selectOption('form select[name=account]', 'Premium');
 $I->selectOption('form input[name=payment]', 'Monthly');
-$I->selectOption('//form/select[ * `name=account]',`  'Monthly');
+$I->selectOption('//form/select[@name=account]', 'Monthly');
 ?>
 ```
 
