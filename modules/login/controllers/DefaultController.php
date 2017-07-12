@@ -2,6 +2,7 @@
 
 namespace app\modules\login\controllers;
 
+use app\modules\user\models\User;
 use yii\helpers\Url;
 use app\modules\login\models\LoginForm;
 use yii;
