@@ -14,9 +14,11 @@ $server->on('open', function ($server, $request){
     $server->push($request->fd, $res);*/
 });
 
+require(__DIR__ . '/vendor/autoload.php');
+require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 $server->on('message', function ($server, $frame){
     //echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
-    $res = file_get_contents('http://localhost/oa/web/system/notice/get-push-data');
+    $res = file_get_contents(\yii\helpers\Url::home() . '/system/notice/get-push-data');
     foreach ($server->table as $u) {
         $server->push($u['fd'], $res);//消息广播给所有客户端
     }
