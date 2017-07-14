@@ -25,9 +25,9 @@ class PasswordForm extends Model
         return [
             // username and password are both required
             [['rePassword', 'password'], 'required'],
-            [['rePassword', 'password'], 'string', 'length' => [8,15]],
+//            [['rePassword', 'password'], 'string', 'length' => [8,15]],
             ['rePassword', 'compare', 'compareAttribute'=>'password'],
-            ['password', 'match', 'pattern' => '/(?-i)(?=^.{8,}$)((?!.*\s)(?=.*[A-Z])(?=.*[a-z]))(?=(1)(?=.*\d)|.*[^A-Za-z0-9])^.*$/', 'message'=>'密码必须包含大写字母、小写字母和数字。'],
+            ['password', 'match', 'pattern' => '/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9]{9,15}/', 'message'=>'密码必须包含大写字母、小写字母和数字,且大于8位。'],
         ];
     }
 
