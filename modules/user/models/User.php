@@ -169,13 +169,13 @@ class User extends CActiveRecord
         $this->update_author_uid = $uid;
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
-                $this->createBbsAccount($this); //添加论坛用户
+                //$this->createBbsAccount($this); //添加论坛用户
                 $this->create_author_uid = $uid;
                 $this->auth_key = Yii::$app->security->generateRandomString();
                 $this->account = base64_encode(Yii::$app->security->encryptByKey($this->account, Yii::$app->params['inputKey']));
                 $this->email && $this->email = base64_encode(Yii::$app->security->encryptByKey($this->email, Yii::$app->params['inputKey']));
             }else{
-                $this->updateBbsAccount($this); //修改论坛用户
+                //$this->updateBbsAccount($this); //修改论坛用户
                 if(!empty(array_column(Yii::$app->request->post(),'password'))){
                     $this->password = Yii::$app->getSecurity()->generatePasswordHash($this->password);
                 }
