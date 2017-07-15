@@ -100,8 +100,11 @@ $actionId = Yii::$app->requestedAction->id;
                 'header' => '操作',
                 'template' => '{update} {switch}',
                 'buttons' => [
-                    'update' => function($url){
-                        return Html::a('编辑',$url);
+                    'update' => function($url,$model){
+                        if($model->status==0){
+                            return Html::a('编辑',$url);
+                        }
+                        return '';
                     },
                     'switch' => function($url, $model){
                         $btn_link = '';
@@ -135,6 +138,6 @@ $actionId = Yii::$app->requestedAction->id;
     ]); ?>
 <?php Pjax::end(); ?>
     <p class="text-right ">
-        <?= Html::a('新增公司', ['create'], ['class'=>'btn btn-primary btn-sm']) ?>
+        <?= $actionId =='index' ? Html::a('新增公司', ['create'], ['class'=>'btn btn-primary btn-sm']) : '' ?>
     </p>
 </div>
