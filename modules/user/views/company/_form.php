@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
         $supList = [0=>'无'];
         $sup_level = [0 => 0];
 
-        $condition = $model->isNewRecord ? ['status'=>0] : ['and','status=0',['<', 'level', $model->level],['not in', 'id', $model->id]];
+        $condition = $model->isNewRecord ? ['status'=>0] : ['and','status=0',['<=', 'level', $model->level],['not in', 'id', $model->id]];
         $company_list = \app\modules\user\models\Company::find()->select(['name','id','level'])->where($condition)->orderBy(['id' => SORT_DESC])->all();
 
         if(!empty($company_list)){
