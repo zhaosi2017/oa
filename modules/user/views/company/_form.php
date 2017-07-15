@@ -56,7 +56,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">
-            <?= Html::submitButton($model->isNewRecord ? '添加' : '更新', ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton($model->isNewRecord ? '添加' : '提交', ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
 
