@@ -112,7 +112,7 @@ class PostsController extends GController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->name = base64_encode(Yii::$app->security->encryptByKey($model->name, Yii::$app->params['inputKey']));
+//            $model->name = base64_encode(Yii::$app->security->encryptByKey($model->name, Yii::$app->params['inputKey']));
             $model->update() && $model->sendSuccess();
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
