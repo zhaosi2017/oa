@@ -88,8 +88,11 @@ $actionId = Yii::$app->requestedAction->id;
                 'header' => '操作',
                 'template' => '{update} {switch}',
                 'buttons' => [
-                    'update' => function($url){
-                        return Html::a('编辑',$url);
+                    'update' => function($url, $model){
+                        if($model->status==0){
+                            return Html::a('编辑',$url);
+                        }
+                        return '';
                     },
                     'switch' => function($url, $model){
                         $btn_link = '';
