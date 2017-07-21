@@ -28,7 +28,7 @@ $actionId = Yii::$app->requestedAction->id;
             <table class="table table-bordered text-center" id="purchase_price">
                 <thead>
                 <tr>
-                    <th colspan="6">购买价格</th>
+                    <th colspan="8">购买价格</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -57,6 +57,8 @@ $actionId = Yii::$app->requestedAction->id;
                     <td>B级价格</td>
                     <td>C级价格</td>
                     <td>D级价格</td>
+                    <td>创建人／时间</td>
+                    <td>最后修改人／时间</td>
                     <td>操作</td>
                 </tr>
 
@@ -68,9 +70,12 @@ $actionId = Yii::$app->requestedAction->id;
                             .'<td><input class="form-control" type="number" step="0.01"  name="ProductPurchasePrice['.$money_id.'][b_grade_price]" value="'.$price['b_grade_price'].'"></td>'
                             .'<td><input class="form-control" type="number" step="0.01"  name="ProductPurchasePrice['.$money_id.'][c_grade_price]" value="'.$price['c_grade_price'].'"></td>'
                             .'<td><input class="form-control" type="number" step="0.01"  name="ProductPurchasePrice['.$money_id.'][d_grade_price]" value="'.$price['d_grade_price'].'"></td>'
+                            .'<td>'.$price['creator']['account'].'<br>'.$price['create_time'].'</td>'
+                            .'<td>'.$price['updater']['account'].'<br>'.$price['update_time'].'</td>'
                             .'<td><a class="del-tr">删除</a></td></tr>';
                     }
                 ?>
+
                 <!--<tr>
                     <td>欢乐豆</td>
                     <td><input class="form-control" type="text" id="" name="ProductPurchasePrice[]"></td>
@@ -82,8 +87,11 @@ $actionId = Yii::$app->requestedAction->id;
 
                 </tbody>
             </table>
+            <p class="help-block">注：D级别为最低级别，在购买产品时，价格要比C级别要贵，依次类推！</p>
+            <p class="help-block">注：价格仅限12位，包含小数点前9位，小数点符号“.”，和小数点后2位！</p>
 
-            <table class="table table-bordered text-center" id="execute_price">
+
+            <table class="table table-bordered text-center m-t-lg" id="execute_price">
                 <thead>
                 <tr>
                     <th colspan="5">执行价格</th>
@@ -124,6 +132,8 @@ $actionId = Yii::$app->requestedAction->id;
                 <tr>
                     <td>执行公司</td>
                     <td id="preset-label">欢乐豆</td>
+                    <td id="preset-label">创建人／时间</td>
+                    <td id="preset-label">最后修改人／时间</td>
                     <td>操作</td>
                 </tr>
 
@@ -132,6 +142,8 @@ $actionId = Yii::$app->requestedAction->id;
                 foreach ($execute_price as $company_id => $price){
                     echo '<tr><td>'.$company_column[$company_id].'</td>'
                         .'<td><input class="form-control" required type="number" step="0.01"  name="ProductExecutePrice['.$company_id.'][price]" value="'.$price['price'].'"></td>'
+                        .'<td>'.$price['creator']['account'].'<br>'.$price['create_time'].'</td>'
+                        .'<td>'.$price['updater']['account'].'<br>'.$price['update_time'].'</td>'
                         .'<td><a class="del-tr">删除</a></td></tr>';
                 }
                 ?>
@@ -144,6 +156,7 @@ $actionId = Yii::$app->requestedAction->id;
                 -->
                 </tbody>
             </table>
+            <p class="help-block">注：价格仅限12位，包含小数点前9位，小数点符号“.”，和小数点后2位！</p>
 
             <div class="form-group">
                 <div class="text-right">

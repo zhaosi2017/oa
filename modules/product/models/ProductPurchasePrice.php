@@ -4,6 +4,7 @@ namespace app\modules\product\models;
 
 use app\models\CActiveRecord;
 use app\modules\system\models\Money;
+use app\modules\user\models\User;
 
 /**
  * This is the model class for table "product_purchase_price".
@@ -74,5 +75,23 @@ class ProductPurchasePrice extends CActiveRecord
     public function getMoney()
     {
         return $this->hasOne(Money::className(),['id'=>'money_id'])->alias('money');
+    }
+
+    /**
+     * 获取创建人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreator()
+    {
+        return $this->hasOne(User::className(), ['id' => 'create_author_uid'])->alias('creator');
+    }
+
+    /**
+     * 获取最后修改人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdater()
+    {
+        return $this->hasOne(User::className(), ['id' => 'update_author_uid'])->alias('updater');
     }
 }
