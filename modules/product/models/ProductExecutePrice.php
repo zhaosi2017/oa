@@ -79,4 +79,22 @@ class ProductExecutePrice extends CActiveRecord
         return $this->hasMany(User::className(),['company_id' => 'company_id'])->select(['id','account','company_id'])->alias('user');
     }
 
+    /**
+     * 获取创建人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreator()
+    {
+        return $this->hasOne(User::className(), ['id' => 'create_author_uid'])->alias('creator');
+    }
+
+    /**
+     * 获取最后修改人
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdater()
+    {
+        return $this->hasOne(User::className(), ['id' => 'update_author_uid'])->alias('updater');
+    }
+
 }
