@@ -43,7 +43,7 @@ $actionId = Yii::$app->requestedAction->id;
                 }
                 return $superior;
             }],
-            [
+            /*[
                 'class' => 'yii\grid\DataColumn',
                 'header' => '可见',
                 'value' => function ($data)
@@ -63,7 +63,7 @@ $actionId = Yii::$app->requestedAction->id;
                     }
                     return $str;
                 },
-            ],
+            ],*/
             [
                 'class' => 'yii\grid\DataColumn',
                 'header' => '状态',

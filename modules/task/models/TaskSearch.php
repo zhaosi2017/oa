@@ -69,12 +69,20 @@ class TaskSearch extends Task
                 $query->where(['=', 'task.status', 1]);
                 $query->andWhere(['task.company_id' => $identity->company_id]);
                 break;
-            case 'trash':
+            case 'trashed-index':
                 $query->where(['=', 'task.status', 1]);
                 break;
             case 'wait-index':
                 $query->where(['=', 'task.status', 3]);
                 $query->andWhere(['in','task.product_id',$this->whereExecuteProductIds($identity->company_id)]);
+                break;
+            case 'handle-index':
+                $query->where(['=', 'task.status', 4]);
+//                $query->andWhere(['in','task.product_id',$this->whereExecuteProductIds($identity->company_id)]);
+                break;
+            case 'finished-index':
+                $query->where(['=', 'task.status', 7]);
+//                $query->andWhere(['in','task.product_id',$this->whereExecuteProductIds($identity->company_id)]);
                 break;
             case 'received-index':
                 $query->where(['between', 'task.status', 4, 9]);

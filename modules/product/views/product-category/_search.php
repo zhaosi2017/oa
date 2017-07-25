@@ -18,14 +18,14 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-lg-6">
-            <?= $form->field($model, 'avisible')->checkboxList([
+            <?php /*= $form->field($model, 'avisible')->checkboxList([
                 8 => '直属上级',
                 4 => '直属下级',
                 2 => '集团内旁枝',
                 1 => '集团外公司',
             ],['onclick'=>'
                 $("#search_hide").click();
-            '])->label('可见：') ?>
+            '])->label('可见：') */?>
         </div>
         <div class="col-lg-6">
             <div class="text-right no-padding">

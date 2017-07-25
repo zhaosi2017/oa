@@ -21,21 +21,21 @@ class CategoryController extends GController
         $root_category = RootCategory::findOne(['company_id' => $identify->company_id]);
         if($root_category){
             $model = $root_category;
-            $check_array = [
+            /*$check_array = [
                 $model->visible & 8,
                 $model->visible & 4,
                 $model->visible & 2,
                 $model->visible & 1,
             ];
-            $model->visible = $check_array;
+            $model->visible = $check_array;*/
         }
 
         if($model->load(Yii::$app->request->post())){
-            $visible = (array)$model->visible;
-            $model->visible = array_sum($visible);
+            /*$visible = (array)$model->visible;
+            $model->visible = array_sum($visible);*/
             if($model->save()){
                 $model->sendSuccess();
-                $model->visible = !empty($visible) ? $visible : false;
+//                $model->visible = !empty($visible) ? $visible : false;
                 $model->name = Yii::$app->security->decryptByKey(base64_decode($model->name), Yii::$app->params['inputKey']);
             }else{
                 $model->sendError();
