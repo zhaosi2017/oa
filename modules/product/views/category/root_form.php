@@ -36,7 +36,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput() ?>
 
-    <?= $form->field($model, 'visible',[
+    <?php /*= $form->field($model, 'visible',[
         'template' => "{label}\n<div class=\"col-sm-9\">{input}
             \n<span class=\"help-block m-b-none\">(直属上级勾选后，直属上级公司在发布任务选择产品的时候，可以使用该分类中的产品，若取消勾选，则直属上级单位看不到也选不到该分类下的任何产品；直属下级功能类似，但用来针对直属下级公司；集团内旁枝是指同一个集团公司中除直属上级和直属下级外的其它公司，是否可以看到本分类和分类下的产品；集团外公司是指不属于同一集团下的公司，是否可以看到本分类和分类下的产品。若均不勾选，则表示仅自己公司可见。)</span></div>"
     ])->checkboxList(
@@ -46,7 +46,7 @@ use yii\widgets\ActiveForm;
             2 => '集团内旁枝',
             1 => '集团外公司',
         ]
-    ) ?>
+    ) */?>
 
     <div class="form-group">
         <div class="col-sm-6 col-sm-offset-3">

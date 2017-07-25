@@ -50,7 +50,7 @@ class GController extends Controller
                     //作RBAC权限控制的操作
                     [
                         'actions' => [
-                            'index','rate','sent-index','wait-index','received-index','root-set','summary','ip-lock','record',
+                            'index','rate','sent-index','trashed-index','handle-index','finished-index','wait-index','received-index','root-set','summary','ip-lock','record',
                         ],
                         'allow' => true,
                         'matchCallback' => function () {
@@ -64,6 +64,7 @@ class GController extends Controller
                                 }
                                 return false;
                             }
+//                            var_dump(Yii::$app->user->can(Yii::$app->requestedRoute)) ; exit;
                             return Yii::$app->user->can(Yii::$app->requestedRoute);
                         }
                     ],

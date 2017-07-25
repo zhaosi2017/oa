@@ -71,11 +71,11 @@ class ProductCategoryController extends GController
         }else{
             $model = new ProductCategory();
             if ($model->load(Yii::$app->request->post())) {
-                $visible = (array)$model->avisible;
-                $model->avisible = array_sum($visible);
+                /*$visible = (array)$model->avisible;
+                $model->avisible = array_sum($visible);*/
                 if($model->save()){
                     $model->sendSuccess();
-                    $model->avisible = !empty($visible) ? $visible : false;
+//                    $model->avisible = !empty($visible) ? $visible : false;
                     return $this->redirect('index');
                 }else{
                     $model->sendError();
@@ -103,8 +103,8 @@ class ProductCategoryController extends GController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-            $visible = (array)$model->avisible;
-            $model->avisible = array_sum($visible);
+            /*$visible = (array)$model->avisible;
+            $model->avisible = array_sum($visible);*/
             if($model->save()){
                 $model->sendSuccess();
             }else{
@@ -112,13 +112,13 @@ class ProductCategoryController extends GController
             }
             return $this->redirect(['index', 'id' => $model->id]);
         } else {
-            $visible = [
+            /*$visible = [
                 $model->avisible & 8,
                 $model->avisible & 4,
                 $model->avisible & 2,
                 $model->avisible & 1,
             ];
-            $model->avisible = $visible;
+            $model->avisible = $visible;*/
             return $this->render('update', [
                 'model' => $model,
             ]);

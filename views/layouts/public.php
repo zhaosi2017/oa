@@ -93,22 +93,46 @@ $this->registerJs('
                         <a class="J_menuItem" href="<?= Url::to(['/home/default/index']) ?>"><i class="fa fa-home"></i> <span class="nav-label">主页</span></a>
                     </li>
 
-                    <li class="<?= $module=='task' ? 'active' : '' ?>">
+                    <!--<li class="<?/*= $module=='task' ? 'active' : '' */?>">
                         <a href="#"><i class="fa fa-tasks"></i> <span class="nav-label">任务</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/sent-index']) ?>">已发任务</a></li>
-                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/wait-index']) ?>">待接收任务</a></li>
-                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/received-index']) ?>">已接收任务</a></li>
+                            <li><a class="J_menuItem" href="<?/*= Url::to(['/task/task/sent-index']) */?>">已发任务</a></li>
+                            <li><a class="J_menuItem" href="<?/*= Url::to(['/task/task/wait-index']) */?>">待接收任务</a></li>
+                            <li><a class="J_menuItem" href="<?/*= Url::to(['/task/task/received-index']) */?>">已接收任务</a></li>
                         </ul>
                     </li>
-                    <li class="<?= $module=='product' ? 'active' : '' ?>">
+                    <li class="<?/*= $module=='product' ? 'active' : '' */?>">
                         <a href="#"><i class="fa fa-cart-plus"></i> <span class="nav-label">产品</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a class="J_menuItem" href="<?/*= Url::to(['/product/category/root-set']) */?>">根分类设置</a></li>
+                            <li><a class="J_menuItem" href="<?/*= Url::to(['/product/product-category/index']) */?>">产品分类</a></li>
+                            <li><a class="J_menuItem" href="<?/*= Url::to(['/product/product/index']) */?>">产品管理</a></li>
+                        </ul>
+                    </li>-->
+
+                    <li class="<?= $module=='task' ? 'active' : '' ?>">
+                        <a href="#"><i class="fa fa-tasks"></i> <span class="nav-label">业务</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/create']) ?>">新增任务</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/index']) ?>">任务列表</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/handle-index']) ?>">处理中任务</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/finished-index']) ?>">已完成任务</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/task/task/trashed-index']) ?>">已作废任务</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="<?= $module=='product' ? 'active' : '' ?>">
+                        <a href="#"><i class="fa fa-cart-plus"></i> <span class="nav-label">事务</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li><a class="J_menuItem" href="<?= Url::to(['/product/category/root-set']) ?>">根分类设置</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/product/product-category/index']) ?>">产品分类</a></li>
                             <li><a class="J_menuItem" href="<?= Url::to(['/product/product/index']) ?>">产品管理</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/product/task/handle-index']) ?>">处理中任务</a></li>
+                            <li><a class="J_menuItem" href="<?= Url::to(['/product/task/finished-index']) ?>">已完成任务</a></li>
                         </ul>
                     </li>
+
+
                     <li class="<?= $module=='customer' ? 'active' : '' ?>">
                         <a href="#"><i class="fa fa-user-secret"></i> <span class="nav-label">客户</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

@@ -12,7 +12,7 @@ $actionId = Yii::$app->requestedAction->id;
 $auth = Yii::$app->authManager;
 $permissions = $auth->getPermissionsByRole($model->id);
 $data = [
-    [
+    /*[
         'module' => '任务模块',
         'items' => [
             [
@@ -44,6 +44,58 @@ $data = [
             [
                 'page_name' => '产品管理',
                 'permission' => ['product/product/index'],
+            ],
+        ],
+
+    ],*/
+    [
+        'module' => '业务模块',
+        'items' => [
+            [
+                'page_name' => '新增任务',
+                'permission' => [1 => 'task/task/create',],//注意顺序
+            ],
+            [
+                'page_name' => '任务列表',
+                'permission' => ['task/task/index',],//注意顺序
+            ],
+            [
+                'page_name' => '处理中任务',
+                'permission' => ['task/task/handle-index',], //顺序可指定
+            ],
+            [
+                'page_name' => '已完成任务',
+                'permission' => ['task/task/finished-index'],
+            ],
+            [
+                'page_name' => '已作废任务',
+                'permission' => ['task/task/trashed-index'],
+            ],
+        ],
+
+    ],
+    [
+        'module' => '事务模块',
+        'items' => [
+            [
+                'page_name' => '根分类设置',
+                'permission' => ['product/category/root-set',],//注意顺序
+            ],
+            [
+                'page_name' => '产品分类',
+                'permission' => ['product/product-category/index',], //顺序可指定
+            ],
+            [
+                'page_name' => '产品管理',
+                'permission' => ['product/product/index'],
+            ],
+            [
+                'page_name' => '处理中任务',
+                'permission' => ['product/task/handle-index',],
+            ],
+            [
+                'page_name' => '已完成任务',
+                'permission' => ['product/task/finished-index',],
             ],
         ],
 
