@@ -193,7 +193,8 @@ class TaskController extends GController
                 }
             }
             $model->sendSuccess();
-            return $this->redirect(['sent-detail', 'id' => $model->id]);
+//            return $this->redirect(['sent-detail', 'id' => $model->id]);
+            return $this->redirect(['index', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
